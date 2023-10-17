@@ -1,9 +1,10 @@
 const express = require('express')
 const app = express()
+const os = require('os')
 
 
 // middleware
-require("./middlewareConfig")(app)
+require('./middlewareConfig')(app)
 
 
 const start = (port) => {
@@ -13,8 +14,11 @@ const start = (port) => {
 }
 
 
-// start(8888);
+// start(8888)
 module.exports = {
     start: start
 }
 
+if (process.argv.length >= 3) {
+    start(process.argv[2])
+}

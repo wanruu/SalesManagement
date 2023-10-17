@@ -1,55 +1,86 @@
-import { useState, useEffect } from 'react';
-import React from 'react';
+import React, { useState } from 'react'
+import { Layout, theme, Menu } from 'antd'
+import {
+    SettingOutlined,
+    PlusCircleOutlined,
+    MinusCircleOutlined,
+    UserOutlined,
+    BarChartOutlined,
+    DropboxOutlined,
+    QuestionCircleOutlined
+} from '@ant-design/icons'
 
-import MyMenu from './components/MyMenu.js'
-import InvoiceList from './pages/InvoiceList.js'
-import NewInvoice from './pages/NewInvoice.js';
-import Setting from './pages/Setting.js';
-import Bin from './pages/Bin.js';
-import SaleStat from './pages/SaleStat.js'
-import CustomerStat from './pages/CustomerStat.js';
-import ProductStat from './pages/ProductStat.js';
+const { Header, Content, Footer, Sider } = Layout
+
+
+import SalesOrderPage from './pages/SalesOrderPage.js'
+import SalesRefundPage from './pages/SalesRefundPage.js'
+import PurchaseOrderPage from './pages/PurchaseOrderPage.js'
+import PurchaseRefundPage from './pages/PurchaseRefundPage.js'
+import SettingPage from './pages/SettingPage.js'
+import ProductPage from './pages/ProductPage.js'
+import PartnerPage from './pages/PartnerPage.js'
+import HelpPage from './pages/HelpPage.js'
+
+
+const defaultMenuKey = 'salesOrder'
 
 function App() {
-    const [menuKey, setMenuKey] = useState('newInvoice');
+    const [menuKey, setMenuKey] = useState(defaultMenuKey)
+    const [collapsed, setCollapsed] = useState(false)
+    const { token: { colorBgContainer }, } = theme.useToken()
 
+    // drafts
+    const [salesOrders, setSalesOrders] = useState([])
+    const [salesRefunds, setSalesRefunds] = useState([])
+    const [purchaseOrders, setPurchaseOrders] = useState([])
+    const [purchaseRefunds, setPurchaseRefunds] = useState([])
+
+    // Pages
     const pages = {
-        // 'newInvoice': <NewInvoice />,
-        'invoices': <InvoiceList />,
-        'sales': <SaleStat />,
-        'products': <ProductStat />,
-        'customers': <CustomerStat />,
-        'bin': <Bin />,
-        'settings': <Setting />,
-    };
+        'salesOrder': <SalesOrderPage drafts={salesOrders} setDrafts={setSalesOrders} />,
+        'salesRefund': <SalesRefundPage drafts={salesRefunds} setDrafts={setSalesRefunds} />,
+        'purchaseOrder': <PurchaseOrderPage drafts={purchaseOrders} setDrafts={setPurchaseOrders} />,
+        'purchaseRefund': <PurchaseRefundPage drafts={purchaseRefunds} setDrafts={setPurchaseRefunds} />,
+        'product': <ProductPage />,
+        'partner': <PartnerPage />,
+        'settings': <SettingPage />,
+        'help': <HelpPage />
+    }
 
-    const onSelectMenuKey = (key) => {
-        setMenuKey(key);
-    };
+    // Menu
+    const getMenuItem = (label, key, icon, children, type) => {
+        return { key, icon, children, label, type }
+    }
+    const menuItems = [
+        getMenuItem('清单', 'order', <PlusCircleOutlined />, [
+            getMenuItem('销售清单', 'salesOrder'),
+            getMenuItem('采购清单', 'purchaseOrder')
+        ]),
+        getMenuItem('退货单', 'refund', <MinusCircleOutlined />, [
+            getMenuItem('销售退货', 'salesRefund'),
+            getMenuItem('采购退货', 'purchaseRefund')
+        ]),
+        getMenuItem('产品', 'product', <DropboxOutlined />),
+        getMenuItem('客户 / 供应商', 'partner', <UserOutlined />),
+        getMenuItem('统计数据', 'stat', <BarChartOutlined />),
+        getMenuItem('设置', 'settings', <SettingOutlined />),
+        getMenuItem('帮助', 'help', <QuestionCircleOutlined />)
+    ]
 
-
-    const [newInvoicePageState, setNewInvoicePageState] = useState(0);
-    useEffect(() => {
-        if (menuKey === 'newInvoice') {
-            setNewInvoicePageState(newInvoicePageState + 1);
-        }
-    }, [menuKey]);
-
-    return (
-        <div style={{ overflow: 'hidden' }}>
-            <div style={{ float: 'left', width: '20%', height: '100vh', overflow: 'auto', }}>
-                <MyMenu setSelectedMenuKey={onSelectMenuKey} defaultKey={menuKey} />
-            </div>
-            <div style={{ float: 'right', width: '80%', height: '100vh', overflow: 'auto', }} >
-                <div style={{ marginLeft: '15px', marginRight: '15px' }}>
-                    <div style={{ display: menuKey !== 'newInvoice' ? 'none' : 'block', overflow: 'none', }}>
-                        <NewInvoice state={newInvoicePageState} />
-                    </div>
-                    {menuKey !== 'newInvoice' ? pages[menuKey] : ''}
-                </div>
-            </div>
-        </div>
-    );
+    // Return
+    return <Layout hasSider style={{ minHeight: '100vh' }}>
+        <Sider collapsible collapsed={collapsed} onCollapse={(value) => setCollapsed(value)}>
+            <Menu theme='dark' items={menuItems} mode='inline' defaultSelectedKeys={[defaultMenuKey]}
+                defaultOpenKeys={['order', 'refund']} onSelect={({ key }) => setMenuKey(key)}
+            />
+        </Sider>
+        <Layout>
+            <Content style={{ padding: '0 16px', background: colorBgContainer }}>
+                {pages[menuKey]}
+            </Content>
+        </Layout>
+    </Layout>
 }
 
-export default App;
+export default App

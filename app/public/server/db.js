@@ -16,27 +16,75 @@ fs.chmod(dbName, '777', (err) => {
 })
 
 
+const partner = `CREATE TABLE IF NOT EXISTS partner(
+    name TEXT PRIMARY KEY,
+    phone TEXT,
+    address TEXT,
+    folder TEXT
+);`
 
-const createInvoices = 'CREATE table IF NOT EXISTS invoices' +
-    '(id TEXT NOT NULL, customer TEXT NOT NULL, create_date TEXT NOT NULL, delete_date TEXT, is_paid INTEGER, is_invoiced INTEGER, ' +
-    'PRIMARY KEY(id))'
-const createProducts = 'CREATE table IF NOT EXISTS products' +
-    '(invoice_id TEXT NOT NULL, material TEXT NOT NULL, name TEXT NOT NULL, spec TEXT NOT NULL, ' +
-    'unit_price REAL NOT NULL, quantity REAL NOT NULL, remark TEXT, ' +
-    'FOREIGN KEY(invoice_id) REFERENCES invoices(id) ON DELETE CASCADE)'
+const product = `CREATE TABLE IF NOT EXISTS product(
+    id TEXT UNIQUE,
+    material TEXT NOT NULL, 
+    name TEXT NOT NULL, 
+    spec TEXT NOT NULL, 
+    unit TEXT NOT NULL,
+    quantity DECIMAL NOT NULL,
+    PRIMARY KEY(material, name, spec)
+);`
 
+
+const invoiceItem = `CREATE TABLE IF NOT EXISTS invoiceItem(
+    id INTEGER PRIMARY KEY AUTOINCREMENT,
+    productId TEXT NOT NULL,
+    price DECIMAL NOT NULL,
+    discount INTEGER NOT NULL,
+    quantity DECIMAL NOT NULL,
+    weight DECIMAL,
+    originalAmount MONEY NOT NULL,
+    amount MONEY NOT NULL,
+    remark TEXT,
+    delivered INTEGER,
+    invoiceId TEXT NOT NULL,
+    FOREIGN KEY(invoiceId) REFERENCES invoice(id) ON DELETE CASCADE,
+    FOREIGN KEY(productId) REFERENCES product(id) ON DELETE CASCADE
+);`
+
+const invoice = `CREATE TABLE IF NOT EXISTS invoice(
+    id TEXT PRIMARY KEY,
+    type INTEGER NOT NULL,
+    partner TEXT NOT NULL,
+    date TEXT NOT NULL,
+    amount MONEY NOT NULL,
+    prepayment MONEY NOT NULL,
+    payment MONEY NOT NULL,
+    FOREIGN KEY(partner) REFERENCES partner(name) ON DELETE CASCADE
+);`
+
+const invoiceRelation = `CREATE TABLE IF NOT EXISTS invoiceRelation(
+    orderId TEXT NOT NULL,
+    refundId TEXT NOT NULL,
+    FOREIGN KEY(orderId) REFERENCES invoice(id) ON DELETE CASCADE,
+    FOREIGN KEY(refundId) REFERENCES invoice(id) ON DELETE CASCADE
+);`
+
+
+const creations = [ 
+    partner, product, invoice, invoiceItem, invoiceRelation
+]
 
 // create tables
 db.serialize(() => {
     console.log('Init database')
     db.run('PRAGMA foreign_keys=ON')  // auto delete product when deleting invoice
     
-    db.run(createInvoices, (err) => {
-        if (err) console.log(err)
-    })
-    db.run(createProducts, (err) => {
-        if (err) console.log(err)
-    })
+    for (const creation of creations) {
+        db.run(creation, (err) => {
+            if (err) {
+                console.error(err)
+            }
+        })
+    }
 })
 
 
