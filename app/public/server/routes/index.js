@@ -5,6 +5,7 @@ const purchaseRefundRouter = require('./purchaseRefundRoute')
 const productRouter = require('./productRoute')
 const partnerRouter = require('./partnerRoute')
 const promptRouter = require('./promptRoute')
+const statisticRouter = require('./statisticRoute')
 
 
 const routes = (app) => {
@@ -15,6 +16,7 @@ const routes = (app) => {
     app.use('/purchaseOrder', purchaseOrderRouter)
     app.use('/purchaseRefund', purchaseRefundRouter)
     app.use('/prompt', promptRouter)
+    app.use('/statistic', statisticRouter)
 }
 
 module.exports = routes
