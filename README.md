@@ -11,7 +11,7 @@
     "amount" "1",
     "items": [
         {
-        	"material": "xxx",
+            "material": "xxx",
             "name": "xxx",
             "spec": "xxx",
             "unit": "xxx",
@@ -20,7 +20,7 @@
             "discount": "1",
             "quantity": "1",
             "originalAmount": "1",
-    		"amount": "1",
+            "amount": "1",
             "remark": "xxx"
         }
     ]
@@ -35,7 +35,7 @@
 
 ```js
 {
-	"no": "xxx",  // invoice id: text or undefined
+    "no": "xxx",  // invoice id: text or undefined
     "customer": "xxx",
     "date": "MMMM-YY-DD",  // create_date: string
     "items": [
@@ -165,7 +165,7 @@ params: no或nos
 
 ```js
 {
-	"deleted": false,  // undefined, true or false
+    "deleted": false,  // undefined, true or false
 }
 ```
 
@@ -173,10 +173,10 @@ params: no或nos
 
    ```js
    {
-   	"no": "xxx",
-       "customer": "xxx",
-       "date": "YYYY-MM-DD",  // 已被删除则是create_date与delete_date
-       "amount": 1000  // 单据总金额，保留两位小数
+        "no": "xxx",
+        "customer": "xxx",
+        "date": "YYYY-MM-DD",  // 已被删除则是create_date与delete_date
+        "amount": 1000  // 单据总金额，保留两位小数
    }
    ```
 
