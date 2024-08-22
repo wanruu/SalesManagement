@@ -4,7 +4,7 @@
 
 ### POST /salesOrder
 
-```json
+```js
 {
     "partner": "xxx",
     "date": "MMMM-YY-DD",
@@ -33,10 +33,10 @@
 
 ### POST /invoice
 
-```json
+```js
 {
 	"no": "xxx",  // invoice id: text or undefined
-    "customer": "xxx",  // customer name
+    "customer": "xxx",
     "date": "MMMM-YY-DD",  // create_date: string
     "items": [
         {
@@ -64,10 +64,10 @@ params: no或nos
 
 1. 返回未删除的invoice list，每一项格式如下 (group by invoice id)：
 
-```json
+```js
 {
     "no": "xxx",
-    "customer": "xxx",  // customer name
+    "customer": "xxx",
     "date": "MMMM-YY-DD",  // create_date: string
     "items": [
         {
@@ -77,7 +77,7 @@ params: no或nos
             "unitPrice": 1,
             "quantity": 1,
             "remark": "xxx"
-        },...
+        }
     ]
 }
 ```
@@ -92,7 +92,7 @@ params: no或nos
 
 ### DELETE /invoice
 
-```json
+```js
 {
     "no": "xxx",
     "oper" "xxx"  // bin or destroy
@@ -115,9 +115,9 @@ params: no或nos
 
 ### PUT /invoice/pay
 
-```json
+```js
 {
-    "isPaid": true,  // bool
+    "isPaid": true,
     "no": "xxx"
 }
 ```
@@ -126,9 +126,9 @@ params: no或nos
 
 ### PUT /invoice/invoice
 
-```json
+```js
 {
-    "isInvoiced": true,  // bool
+    "isInvoiced": true,
     "no": "xxx"
 }
 ```
@@ -137,7 +137,7 @@ params: no或nos
 
 ### POST /invoice/upload
 
-```json
+```js
 {
     "invoices": [
         {
@@ -163,7 +163,7 @@ params: no或nos
 
 ### GET /invoice/overview
 
-```json
+```js
 {
 	"deleted": false,  // undefined, true or false
 }
@@ -171,7 +171,7 @@ params: no或nos
 
 1. 如果deleted是undefined或false，则搜索未被删除的单据；否则搜索已被删除的单据，返回`200`格式如下。
 
-   ```json
+   ```js
    {
    	"no": "xxx",
        "customer": "xxx",
@@ -187,7 +187,7 @@ params: no或nos
 
 ### GET /prompt/customer
 
-```json
+```js
 {
     "keyword": "xxx",
     "maxLen": 5
@@ -196,7 +196,7 @@ params: no或nos
 
 ### GET /prompt/productMaterial
 
-```json
+```js
 {
     "keyword": "xxx",
     "maxLen": 5
@@ -205,7 +205,7 @@ params: no或nos
 
 ### GET /prompt/productName
 
-```json
+```js
 {
     "name": "xxx",
     "maxLen": 5
@@ -214,7 +214,7 @@ params: no或nos
 
 ### GET /prompt/productSpec
 
-```json
+```js
 {
     "spec": "xxx",
     "maxLen": 5
