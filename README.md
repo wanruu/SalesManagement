@@ -1,5 +1,3 @@
-[TOC]
-
 # API
 
 ## salesOrder
@@ -36,7 +34,7 @@
 ### POST /invoice
 
 ```json
-body: {
+{
 	"no": "xxx",  // invoice id: text or undefined
     "customer": "xxx",  // customer name
     "date": "MMMM-YY-DD",  // create_date: string
@@ -48,7 +46,7 @@ body: {
             "unitPrice": 1,
             "quantity": 1,
             "remark": "xxx"
-        },...
+        }
     ]
 }
 ```
@@ -95,7 +93,7 @@ params: no或nos
 ### DELETE /invoice
 
 ```json
-body: {
+{
     "no": "xxx",
     "oper" "xxx"  // bin or destroy
 }
@@ -118,7 +116,7 @@ body: {
 ### PUT /invoice/pay
 
 ```json
-body: {
+{
     "isPaid": true,  // bool
     "no": "xxx"
 }
@@ -129,7 +127,7 @@ body: {
 ### PUT /invoice/invoice
 
 ```json
-body: {
+{
     "isInvoiced": true,  // bool
     "no": "xxx"
 }
@@ -140,7 +138,7 @@ body: {
 ### POST /invoice/upload
 
 ```json
-body: {
+{
     "invoices": [
         {
             "no": "xxx",
@@ -166,7 +164,7 @@ body: {
 ### GET /invoice/overview
 
 ```json
-params: {
+{
 	"deleted": false,  // undefined, true or false
 }
 ```
@@ -184,133 +182,13 @@ params: {
 
 2. 服务器错误则返回`500`。
 
-## Stat
-
-### GET /stat/price
-
-```json
-params: {
-    "customer": "xxx",  // required
-    "material": "xxx",  // required
-    "productName": "xxx",  // required
-    "productSpec": "xxx"  // required
-}
-```
-
-返回：
-
-```json
-{
-	"no": "xxx",
-    "unitPrice": 100,
-    "date": "YYYY-MM-DD",
-    "quantity": 100,
-    "remark": "xxx"
-}
-```
-
-### GET /stat/today
-
-无需参数，返回格式为：
-
-```json
-{
-    "nCustomers": 100,  // 客户数
-    "nProducts": 100,  // 产品数
-    "nInvoices": 100,  // 单据数
-    "maxAmount": 100,  // 单据最大金额
-    "minAmount": 100,  // 单据最小金额
-    "amount": 100,  // 总成交金额
-}
-```
-
-### GET /stat/history
-
-params中range可以为year、month或者day，返回数据格式如下：
-
-```json
-{
-    "date": "xxx",  // YYYY or YYYY-MM or YYYY-MM-DD
-    "amount": 100.00  // 总成交金额
-}
-```
-
-否则返回`400`。
-
-### GET /stat/account
-
-```json
-params: {
-    "customer": "xxx",  // optional
-    "startDate": "YYYY-MM-DD",  // optional, 包含
-    "endDate": "YYYY-MM-DD"  // optional, 包含
-}
-```
-
-返回list，每个item的格式为 (group by customer)：
-
-```json
-{
-    "customer": "xxx",
-    "amount": 1000.00,
-    "invoices": [
-        {
-            "no": "xxx",
-            "date": "YYYY-MM-DD",  // create_date
-            "amount": 10.00
-        }, ...
-    ]
-}
-```
-
-### GET /stat/product/overview
-
-```json
-params: {
-    "material": "xxx",  // optional
-    "name": "xxx",  // optional
-    "spec": "xxx",  // optional
-    "startDate": "YYYY-MM-DD",  // optional, 包含
-    "endDate": "YYYY-MM-DD"  // optional, 包含
-}
-```
-
-返回list，每一项格式为 (group by material, name, spec)：
-
-```json
-{
-    "material": "xxx",
-    "name": "xxx",
-    "spec": "xxx",
-    "quantity": 1000,  // sum
-    "amount": 1000.00  // sum
-}
-```
-
-### GET /stat/product/detail
-
-与`GET /stat/product/overview`类似，但material、name、spec是必需项。
-
-返回list，每一项格式为：
-
-```json
-{
-    "no": "xxx",
-    "customer": "xxx",
-    "date": "YYYY-MM-DD",
-    "quantity": 1000,
-    "unitPrice": 10,
-    "remark": "xxx",
-    "amount": 1000.00
-}
-```
 
 ## Prompt
 
 ### GET /prompt/customer
 
 ```json
-params: {
+{
     "keyword": "xxx",
     "maxLen": 5
 }
@@ -319,7 +197,7 @@ params: {
 ### GET /prompt/productMaterial
 
 ```json
-params: {
+{
     "keyword": "xxx",
     "maxLen": 5
 }
@@ -328,7 +206,7 @@ params: {
 ### GET /prompt/productName
 
 ```json
-params: {
+{
     "name": "xxx",
     "maxLen": 5
 }
@@ -337,8 +215,44 @@ params: {
 ### GET /prompt/productSpec
 
 ```json
-params: {
+{
     "spec": "xxx",
     "maxLen": 5
+}
+```
+
+## Statistic
+
+### `GET` /statistic/range
+
+#### Description
+Return the time span of all invoices.
+
+#### Response data
+```js
+{ minDate: "YYYY-MM-DD", maxDate: "YYYY-MM-DD" }
+```
+
+
+### `GET` /statistic/abstract/sales
+
+#### Description
+Analyze all sales invoices within the time range 
+and return some data metrics.
+
+#### Request params
+```js
+{ startDate: "YYYY-MM-DD", endDate: "YYYY-MM-DD" }
+```
+
+#### Response data
+```js
+{
+    grossIncome: 0.00,
+    income: 0.00,
+    refund: 0.00,
+    nCustomers: 0,
+    nProducts: 0,
+    nInvoices: 0
 }
 ```
