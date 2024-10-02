@@ -22,7 +22,7 @@ export default function PhoneAccessView() {
     const size = 200
 
     return <Space direction='vertical'>
-        { window.electronAPI.queryServerIp() == 'localhost' ?
+        {/* { window.electronAPI.queryServerIp() == 'localhost' ?
             <div style={{ width: size, height: size, borderRadius: '10px', border: 'solid 1px lightgray', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
                 <Space>
                     <ExclamationCircleFilled style={{ color: 'red' }} />
@@ -36,6 +36,6 @@ export default function PhoneAccessView() {
             '请确认电脑已连接到网络' :
             '同一WiFi下扫码访问'
         }
-        </Row>
+        </Row> */}
     </Space>
 }
