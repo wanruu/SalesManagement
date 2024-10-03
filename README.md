@@ -1,258 +1,76 @@
-# API
+# Table of Contents
+- [Introduction](#introduction)
+- [Features](#features)
+- [Database](#database)
+    - [Diagram](#diagram)
 
-## salesOrder
+---
 
-### POST /salesOrder
+# Introduction
+This is an Electron application for sales management, implemented by React.js, Node.js (server) and SQLite.
 
-```js
-{
-    "partner": "xxx",
-    "date": "MMMM-YY-DD",
-    "amount" "1",
-    "items": [
-        {
-            "material": "xxx",
-            "name": "xxx",
-            "spec": "xxx",
-            "unit": "xxx",
 
-            "price": "1",
-            "discount": "1",
-            "quantity": "1",
-            "originalAmount": "1",
-            "amount": "1",
-            "remark": "xxx"
-        }
-    ]
+
+# Features
+- [API](API)
+
+
+
+# Database
+Use sqlite3 database to store data in a single file `sales.db`.
+
+## Diagram
+![db diagram](screenshots/db_diagram.png)
+
+Following is the source code in DBML (Database Markup Language) to draw the database diagram. (Website: https://dbdiagram.io)
+```
+Table product {
+  id text unique
+  material text [primary key]
+  name text [primary key]
+  spec text [primary key]
+  unit text
 }
-```
 
-1. partner、date、items、amount缺一不可，否则返回`400: Insufficient data`。成功则返回`{"id": "xxx"}`。
-2. date必须为`MMMM-YY-DD`格式，否则返回`400: Wrong data format, use MMMM-YY-DD`。
-3. 服务器错误则返回`500`。
-
-### POST /invoice
-
-```js
-{
-    "no": "xxx",  // invoice id: text or undefined
-    "customer": "xxx",
-    "date": "MMMM-YY-DD",  // create_date: string
-    "items": [
-        {
-            "material": "xxx",
-            "name": "xxx",
-            "spec": "xxx",
-            "unitPrice": 1,
-            "quantity": 1,
-            "remark": "xxx"
-        }
-    ]
+Table partner {
+  name text [primary key]
+  phone text
+  address text
+  folder text
 }
-```
 
-1. 如果no是undefined，则认为是新单据，customer、date、items缺一不可，否则返回`400: Insufficient data`。成功则返回`{"no": "xxx"}`。
-2. 如何no不是undefined，则更新旧单据，只更新提供的数据。成功则返回`200`，无数据。
-
-2. date必须为`MMMM-YY-DD`格式，否则返回`400: Wrong data format, use MMMM-YY-DD`。
-
-3. 服务器错误则返回`500`。
-
-### GET /invoice
-
-params: no或nos
-
-1. 返回未删除的invoice list，每一项格式如下 (group by invoice id)：
-
-```js
-{
-    "no": "xxx",
-    "customer": "xxx",
-    "date": "MMMM-YY-DD",  // create_date: string
-    "items": [
-        {
-            "material": "xxx",
-            "name": "xxx",
-            "spec": "xxx",
-            "unitPrice": 1,
-            "quantity": 1,
-            "remark": "xxx"
-        }
-    ]
+Table invoiceItem {
+  id integer [primary key]
+  productId text
+  price decimal
+  discount integer
+  quantity decimal
+  weight decimal
+  originalAmount money
+  amount money
+  remark text
+  delivered integer
+  invoiceId text
 }
-```
 
-2. 服务器错误则返回`500`。
-
-3. 如果需要返回删除的invoice list，使用`GET /invoice/deleted`，只接受no。
-
-### GET /invoice/deleted
-
-参数为`{"no": "xxx"}`，可选
-
-### DELETE /invoice
-
-```js
-{
-    "no": "xxx",
-    "oper" "xxx"  // bin or destroy
+Table invoice {
+  id text [primary key]
+  type integer
+  partner text
+  date text
+  amount money
+  prepayment money
+  payment money
 }
-```
 
-1. no和oper缺一不可，否则返回`400: Insufficient data`。
-2. oper为bin表示移入回收站，只更新delete_date，返回`200`。
-3. oper为destroy表示彻底删除，返回`200`。
-
-4. 服务器错误则返回`500`。
-
-### PUT /invoice/recover
-
-1. body中no如果是undefined，返回`400: Insufficient data`。
-
-2. 更新指定invoice的delete_date为NULL，返回`200`。
-
-3. 服务器错误则返回`500`。
-
-### PUT /invoice/pay
-
-```js
-{
-    "isPaid": true,
-    "no": "xxx"
+Table invoiceRelation {
+  orderId text
+  refundId text
 }
-```
 
-返回`500`或`200`。
-
-### PUT /invoice/invoice
-
-```js
-{
-    "isInvoiced": true,
-    "no": "xxx"
-}
-```
-
-返回`500`或`200`。
-
-### POST /invoice/upload
-
-```js
-{
-    "invoices": [
-        {
-            "no": "xxx",
-            "customer": "xxx",
-            "date": "YYYY-MM-DD",
-            "isPaid": true,
-            "isInvoiced": true,
-            "items": [
-                "material": "xxx",
-                "name": "xxx",
-                "spec": "xxx",
-                "unitPrice": 1,
-                "quantity": 1,
-                "remark": "xxx"
-            ]
-        }, ...
-    ]
-}
-```
-
-返回`500`或`200`。
-
-### GET /invoice/overview
-
-```js
-{
-    "deleted": false,  // undefined, true or false
-}
-```
-
-1. 如果deleted是undefined或false，则搜索未被删除的单据；否则搜索已被删除的单据，返回`200`格式如下。
-
-   ```js
-   {
-        "no": "xxx",
-        "customer": "xxx",
-        "date": "YYYY-MM-DD",  // 已被删除则是create_date与delete_date
-        "amount": 1000  // 单据总金额，保留两位小数
-   }
-   ```
-
-2. 服务器错误则返回`500`。
-
-
-## Prompt
-
-### GET /prompt/customer
-
-```js
-{
-    "keyword": "xxx",
-    "maxLen": 5
-}
-```
-
-### GET /prompt/productMaterial
-
-```js
-{
-    "keyword": "xxx",
-    "maxLen": 5
-}
-```
-
-### GET /prompt/productName
-
-```js
-{
-    "name": "xxx",
-    "maxLen": 5
-}
-```
-
-### GET /prompt/productSpec
-
-```js
-{
-    "spec": "xxx",
-    "maxLen": 5
-}
-```
-
-## Statistic
-
-### `GET` /statistic/range
-
-#### Description
-Return the time span of all invoices.
-
-#### Response data
-```js
-{ minDate: "YYYY-MM-DD", maxDate: "YYYY-MM-DD" }
-```
-
-
-### `GET` /statistic/abstract/sales
-
-#### Description
-Analyze all sales invoices within the time range 
-and return some data metrics.
-
-#### Request params
-```js
-{ startDate: "YYYY-MM-DD", endDate: "YYYY-MM-DD" }
-```
-
-#### Response data
-```js
-{
-    grossIncome: 0.00,
-    income: 0.00,
-    refund: 0.00,
-    nCustomers: 0,
-    nProducts: 0,
-    nInvoices: 0
-}
+Ref: invoiceItem.productId > product.id
+Ref: invoice.partner > partner.name
+Ref: invoiceItem.invoiceId > invoice.id
+Ref: invoiceRelation.orderId > invoice.id
+Ref: invoiceRelation.refundId > invoice.id
 ```
