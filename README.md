@@ -1,3 +1,5 @@
+[简体中文](README_zh_CN.md)
+
 # Table of Contents
 - [Introduction](#introduction)
 - [Features](#features)
@@ -12,7 +14,7 @@ This is an Electron application for sales management, implemented by React.js, N
 
 
 # Features
-- [API](API)
+- [API](API.md)
 
 
 

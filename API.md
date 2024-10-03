@@ -1,4 +1,4 @@
-[简体中文](API_zh_CN)
+[简体中文](API_zh_CN.md)
 
 # API
 - [💡 Specifications](#💡-specifications)
