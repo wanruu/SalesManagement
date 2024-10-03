@@ -25,10 +25,10 @@ Use sqlite3 database to store data in a single file `sales.db`.
 Following is the source code in DBML (Database Markup Language) to draw the database diagram. (Website: https://dbdiagram.io)
 ```
 Table product {
-  id text unique
-  material text [primary key]
-  name text [primary key]
-  spec text [primary key]
+  id integer [primary key]
+  material text
+  name text
+  spec text
   unit text
 }
 
@@ -41,36 +41,32 @@ Table partner {
 
 Table invoiceItem {
   id integer [primary key]
-  productId text
+  productId integer
   price decimal
   discount integer
   quantity decimal
   weight decimal
-  originalAmount money
-  amount money
+  originalAmount decimal
+  amount decimal
   remark text
-  delivered integer
+  delivered boolean
   invoiceId text
 }
 
 Table invoice {
-  id text [primary key]
-  type integer
-  partner text
+  id integer [primary key]
+  number text
+  type text
+  partnerName text
+  orderId integer
   date text
-  amount money
-  prepayment money
-  payment money
-}
-
-Table invoiceRelation {
-  orderId text
-  refundId text
+  amount decimal
+  prepayment decimal
+  payment decimal
 }
 
 Ref: invoiceItem.productId > product.id
-Ref: invoice.partner > partner.name
+Ref: invoice.partnerName > partner.name
 Ref: invoiceItem.invoiceId > invoice.id
-Ref: invoiceRelation.orderId > invoice.id
-Ref: invoiceRelation.refundId > invoice.id
+Ref: invoice.orderId > invoice.id
 ```
