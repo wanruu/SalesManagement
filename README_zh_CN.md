@@ -15,7 +15,7 @@ This is an Electron application for sales management, implemented by React.js, N
 
 
 # 特性
-- [API](API_zh_CN)
+- [API](API_zh_CN.md)
 
 
 # 数据库
