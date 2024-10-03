@@ -2,3 +2,4 @@ node_modules
 sales.db
 build/
 dist/
+__pycache__
