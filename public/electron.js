@@ -1,6 +1,6 @@
 const { app, BrowserWindow, ipcMain } = require('electron')
 const path = require('path')
-const backend = require('./server')
+const backend = require('../server')
 const net = require('net')
 const os = require('os')
 // const appDir = path.dirname(app.getAppPath())
