@@ -1,0 +1,1 @@
+export { default as InvoiceTypeTag } from './InvoiceTypeTag'
