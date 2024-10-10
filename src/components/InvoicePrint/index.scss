@@ -1,0 +1,20 @@
+.invoiceWrapper {
+    position: relative;
+}
+
+.invoiceWrapper::before {
+    content: "";
+    display: block;
+}
+
+.invoiceContent {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    z-index: 1;
+    background-color: white;
+    box-sizing: border-box;
+    border: 1px solid lightgray
+}

@@ -1,0 +1,35 @@
+.invoiceFormTable {
+    tbody tr:not(.ant-table-measure-row) td {
+        // decrease gap between cell & input
+        padding: 5px 4px !important;
+    }
+    
+    .ant-select-selection-item {
+        // decrease select padding
+        padding: 0px !important;
+    }
+
+    // select arrow
+    .ant-select-arrow {
+        display: none
+    }
+
+    // select dropdown
+    .rc-virtual-list .ant-select-item {
+        padding-left: 2px !important;
+        padding-right: 2px !important;
+        text-align: center;
+    }
+}
+
+.orderFormTable {
+    .ant-table-container {
+        // fix table height
+        height: 480px;  // 10 rows
+    }
+
+    // discount addon (%)
+    .discountInput .ant-input-number-group-addon {
+        padding: 0px 3px;
+    }
+}
