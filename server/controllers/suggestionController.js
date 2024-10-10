@@ -1,6 +1,6 @@
 const { pinyin } = require('pinyin-pro')
 const BaseController = require('./baseController')
-const { Partner, Product } = require('../models')
+const { Partner, Product, sequelize } = require('../models')
 
 
 class SuggestionController extends BaseController {
@@ -25,7 +25,7 @@ class SuggestionController extends BaseController {
     productMaterialIndex = async (req, res, next) => {
         try {
             const products = await Product.findAll({ 
-                attributes: [[Sequelize.fn('DISTINCT', Sequelize.col('material')), 'material']]
+                attributes: [[sequelize.fn('DISTINCT', sequelize.col('material')), 'material']]
             })
             const results = this.matchSort(products.map(p => p.material), req.query.keyword)
             return res.json(results)
@@ -37,7 +37,7 @@ class SuggestionController extends BaseController {
     productNameIndex = async (req, res, next) => {
         try {
             const products = await Product.findAll({ 
-                attributes: [[Sequelize.fn('DISTINCT', Sequelize.col('name')), 'name']]
+                attributes: [[sequelize.fn('DISTINCT', sequelize.col('name')), 'name']]
             })
             const results = this.matchSort(products.map(p => p.name), req.query.keyword)
             return res.json(results)
@@ -49,7 +49,7 @@ class SuggestionController extends BaseController {
     productSpecIndex = async (req, res, next) => {
         try {
             const products = await Product.findAll({ 
-                attributes: [[Sequelize.fn('DISTINCT', Sequelize.col('spec')), 'spec']]
+                attributes: [[sequelize.fn('DISTINCT', sequelize.col('spec')), 'spec']]
             })
             const results = this.matchSort(products.map(p => p.spec), req.query.keyword)
             return res.json(results)
