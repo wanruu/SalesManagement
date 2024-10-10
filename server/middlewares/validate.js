@@ -27,7 +27,7 @@ const orderItemSchema = Joi.object({
     weight: Joi.number().allow(null),
     originalAmount: Joi.number().required(),
     amount: Joi.number().required(),
-    remark: Joi.string().allow(""),
+    remark: Joi.string().allow("").allow(null),
     delivered: Joi.boolean().required(),
 })
 
@@ -40,7 +40,7 @@ const refundItemSchema = Joi.object({
     weight: Joi.number().allow(null),
     originalAmount: Joi.number().required(),
     amount: Joi.number().required(),
-    remark: Joi.string().allow(""),
+    remark: Joi.string().allow("").allow(null),
     delivered: Joi.boolean().required(),
 })
 
@@ -50,6 +50,7 @@ const orderSchema = Joi.object({
     amount: Joi.number().required(),
     prepayment: Joi.number().required(),
     payment: Joi.number().required(),
+    orderId: Joi.valid(null).optional(),
     invoiceItems: Joi.array().items(orderItemSchema).required()
 })
 
