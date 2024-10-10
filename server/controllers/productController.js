@@ -1,5 +1,5 @@
 const BaseController = require('./baseController')
-const { Product, InvoiceItem, sequelize } = require('../models')
+const { Product, InvoiceItem, sequelize, Invoice } = require('../models')
 
 
 class ProductController extends BaseController {
@@ -34,7 +34,11 @@ class ProductController extends BaseController {
                 where: params,
                 include: {
                     model: InvoiceItem,
-                    as: 'invoiceItems'
+                    as: 'invoiceItems',
+                    include: {
+                        model: Invoice,
+                        as: 'invoice'
+                    }
                 },
                 // order: [
                 //     [{ model: InvoiceItem, as: 'invoiceItems'}, 'id', 'DESC']
