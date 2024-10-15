@@ -1,32 +1,14 @@
 import React from 'react'
-import { Table, Button, Space, Tabs, Segmented } from 'antd'
+import { Tabs, Segmented } from 'antd'
 import { useSelector, useDispatch } from 'react-redux'
 import { InvoiceManager } from '../components/InvoiceManager'
 import { INVOICE_BASICS } from '../utils/config'
-import { InvoiceTypeTag } from '../components/Tag'
+import { DraftTable } from '../components/Table'
 
 
 const typeOptions = Object.keys(INVOICE_BASICS).map(key => (
     { value: key, label: INVOICE_BASICS[key].title }
 ))
-
-
-const DraftTable = ({ drafts, onEdit, onDelete }) => {
-    const columns = [
-        { title: '标签', dataIndex: 'label' },
-        { title: '类型', dataIndex: 'type', render: type => <InvoiceTypeTag type={type} /> },
-        { title: '交易对象', dataIndex: ['editInvoice', 'partnerName'] },
-        { title: '创建时间', dataIndex: ['createAt'], render: d => d?.format('HH:mm:ss') },
-        { title: '产品数', dataIndex: ['editInvoice', 'invoiceItems'], render: i => i?.length },
-        { title: '操作', render: (_, draft, index) => (<Space>
-            <Button onClick={_ => onEdit?.(draft)} type='primary' ghost>编辑</Button>
-            <Button onClick={_ => onDelete?.(draft)} danger>删除</Button>
-        </Space>)}
-    ].map(i => ({ ...i, align: 'center' }))
-
-    return <Table dataSource={drafts.filter(d => !d.invoice)} 
-        columns={columns} scroll={{ x: 'max-content' }} />
-}
 
 
 const DraftPage = () => {
