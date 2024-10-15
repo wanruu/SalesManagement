@@ -8,9 +8,9 @@ import _ from 'lodash'
 import { useDispatch, useSelector } from 'react-redux'
 import { DEFAULT_PAGINATION, invoiceSettings } from '../utils/config'
 import { MyWorkBook, MyWorkSheet } from '../utils/export'
-import ProductSearchBox from '../components/product/SearchBox'
-import { ProductForm } from '../components/Form'
-import productService from '../services/productService'
+import ProductSearchBox from '../components/Search/ProductSearch'
+import { ProductForm } from '../components/ProductManager'
+import { productService } from '../services'
 import { ProductManager } from '../components/ProductManager'
 
 

@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react'
-import { Modal, Button, Space, message, Tag, Affix, theme } from 'antd'
+import { Modal, Button, Space, message, Affix, theme } from 'antd'
 import { Decimal } from 'decimal.js'
 import {
     ExclamationCircleFilled, ExportOutlined,
@@ -9,15 +9,13 @@ import { useSelector, useDispatch } from 'react-redux'
 
 const { confirm } = Modal
 
-import invoiceService from '../services/invoiceService'
+import { invoiceService } from '../services'
 
 import { INVOICE_TITLE_OPTIONS, invoiceSettings } from '../utils/config'
 import { MyWorkBook, MyWorkSheet } from '../utils/export'
-import InvoiceSearchBox from '../components/invoice/SearchBox'
-import MyFloatButton from '../components/common/MyFloatButton'
+import { InvoiceSearch } from '../components/Search'
 import { emptyInvoice } from '../utils/invoiceUtils'
-import InvoiceListView from '../components/invoice/InvoiceListView'
-// import { NewInvoiceModal, InvoiceModal } from '../components/Modal'
+import { InvoiceTable } from '../components/Table'
 
 
 export default function InvoicePage({ type }) {
@@ -166,7 +164,7 @@ export default function InvoicePage({ type }) {
         </Affix>
 
         <div className='pageMainContent'>
-            <InvoiceListView type={type} invoices={invoices} 
+            <InvoiceTable type={type} invoices={invoices} 
                 onDelete={i => showDeleteConfirm([i])}
                 onSelect={setSelectedInvoiceId} />
         </div>

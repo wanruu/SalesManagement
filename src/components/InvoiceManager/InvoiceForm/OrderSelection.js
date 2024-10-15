@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react'
 import { Form, Input, Table, Button, Space } from 'antd'
 import { INVOICE_BASICS, invoiceSettings } from '../../../utils/config'
-import invoiceService from '../../../services/invoiceService'
+import { invoiceService } from '../../../services'
 import { PartnerInput } from '../../Input'
 
 

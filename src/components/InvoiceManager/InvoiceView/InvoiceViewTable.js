@@ -1,6 +1,6 @@
 import React from 'react'
 import { Table, Tag } from 'antd'
-import { invoiceSettings, DELIVER_COLORS } from '../../utils/config'
+import { invoiceSettings, DELIVER_COLORS } from '../../../utils/config'
 
 
 /*

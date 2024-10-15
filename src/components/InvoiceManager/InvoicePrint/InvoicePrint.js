@@ -1,7 +1,7 @@
 import React, { useRef } from 'react'
 import { Col, Space, Button } from 'antd'
 import { useReactToPrint } from 'react-to-print'
-import { printSettings } from '../../utils/config'
+import { printSettings } from '../../../utils/config'
 import InvoicePrintTable from './InvoicePrintTable'
 import InvoicePrintHeader from './InvoicePrintHeader'
 import InvoicePrintFooter from './InvoicePrintFooter'

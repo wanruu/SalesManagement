@@ -1,6 +1,5 @@
 import React, { useState, useEffect } from 'react'
 import { Table, Button, Space, message, Modal, Tag, theme, Affix } from 'antd'
-import Axios from 'axios'
 import {
     ExclamationCircleFilled, PlusOutlined, ClearOutlined,
     ExportOutlined, DownOutlined, UpOutlined
@@ -11,13 +10,11 @@ import { useSelector, useDispatch } from 'react-redux'
 const { confirm } = Modal
 
 
-import partnerService from '../services/partnerService'
-
-import PartnerEditView from '../components/partner/PartnerEditView'
-import PartnerView from '../components/partner/PartnerView'
-import { baseURL, DEFAULT_PAGINATION } from '../utils/config'
+import { partnerService } from '../services'
+import { PartnerForm } from '../components/PartnerManager'
 import { MyWorkBook, MyWorkSheet } from '../utils/export'
-import SearchBox from '../components/partner/SearchBox'
+import { PartnerSearch } from '../components/Search'
+import { PartnerTable } from '../components/Table'
 
 
 export default function PartnerPage() {
@@ -26,41 +23,31 @@ export default function PartnerPage() {
 
     const [messageApi, contextHolder] = message.useMessage()
     const [editPartner, setEditPartner] = useState(undefined)
-    const [selectedPartnerName, setSelectedPartnerName] = useState(undefined)
+    const [selectedPartner, setSelectedPartner] = useState(undefined)
     const { token: { colorBgContainer }, } = theme.useToken()
     const showSearchBox = useSelector(state => state.page.partner?.showSearchBox)
     const dispatch = useDispatch()
     const [affixed, setAffixed] = useState(false)
 
-    const load = async () => {
-        try {
-            const response = await partnerService.fetchPartners()
-            setPartners(response.data)
-        } catch (err) {
-            
-        }
+    const load = () => {
+        partnerService.fetchMany().then(res => {
+            setPartners(res.data)
+        }).catch(err => {
 
-        // isCustomer: partner.orderId != null,
-        // isProvider: partner.purchaseId != null,
+        })
     }
 
-    const showDeleteConfirm = (names) => {
-        const title = names.length === 1 ? `是否删除交易对象 “${names[0]}” ?` : `是否删除 ${names.length} 个交易对象?`
+    const showDeleteConfirm = (partners) => {
+        const title = partners.length === 1 ? `是否删除交易对象 “${partners[0].name}” ?` : `是否删除 ${partners.length} 个交易对象?`
         confirm({
             title: title, icon: <ExclamationCircleFilled />,
             content: '确认删除后不可撤销',
             okText: '删除', okType: 'danger', cancelText: '取消',
             onOk() {
-                Axios({
-                    method: 'delete',
-                    baseURL: baseURL(),
-                    url: `/partner`,
-                    data: { names: names },
-                    'Content-Type': 'application/json',
-                }).then(_ => {
+                partnerService.deleteMany(partners).then(res => {
                     messageApi.open({ type: 'success', content: '删除成功' })
                     load()
-                }).catch(_ => {
+                }).catch(err => {
                     messageApi.open({ type: 'error', content: '删除失败' })
                 })
             }
@@ -87,35 +74,7 @@ export default function PartnerPage() {
         wb.save()
     }
 
-    const columns = [
-        { title: '序号', align: 'center', render: (_, __, idx) => idx + 1, fixed: 'left' },
-        { title: '姓名', align: 'center', dataIndex: 'name' },
-        { title: '文件位置', align: 'center', dataIndex: 'folder' },
-        { title: '电话', align: 'center', dataIndex: 'phone' },
-        { title: '地址', align: 'center', dataIndex: 'address' },
-        {
-            title: '身份', align: 'center', render: (_, record) => {
-                const customer = record.isCustomer ? <Tag color='blue'>客户</Tag> : null
-                const provider = record.isProvider ? <Tag color='gold'>供应商</Tag> : null
-                return <>{customer} {provider}</>
-            }
-        },
-        {
-            title: '操作', align: 'center', fixed: 'right', render: (_, record) =>
-                <Space>
-                    <Button type='primary' ghost onClick={_ => setEditPartner(record)}>编辑</Button>
-                    {
-                        record.isCustomer || record.isProvider ?
-                            <Button onClick={_ => setSelectedPartnerName(record.name)}>查看</Button> :
-                            <Button danger onClick={_ => showDeleteConfirm([record.name])}>删除</Button>
-                    }
-                </Space>
-        }
-    ]
-
-    useEffect(() => {
-        load()
-    }, [])
+    useEffect(load, [])
 
     // scroll position listener & recover
     const scrollY = useSelector(state => state.page.partner.scrollY)
@@ -133,19 +92,22 @@ export default function PartnerPage() {
     useEffect(() => window.scrollTo(0, scrollY), [partners])
     // ------------------------------------
 
-    return <Space direction='vertical' style={{ width: '100%' }}>
+    return <Space direction='vertical' style={{ width: '100%' }} className='pageMainContent'>
         {contextHolder}
 
-        <Modal title={editPartner && editPartner.name !== '' ? '编辑交易对象' : '新增交易对象'} open={editPartner !== undefined} destroyOnClose
+        <Modal title={editPartner?.name ? '编辑交易对象' : '新增交易对象'} open={editPartner} destroyOnClose
             onCancel={_ => setEditPartner(undefined)} footer={null}>
-            <PartnerEditView partner={editPartner} dismiss={_ => setEditPartner(undefined)} refresh={load} messageApi={messageApi} />
+            <PartnerForm partner={editPartner} onPartnerChange={_ => {
+                setEditPartner(undefined)
+                load()
+            }} />
         </Modal>
 
-        <Modal open={selectedPartnerName !== undefined} onCancel={_ => setSelectedPartnerName(undefined)} title='交易对象详情' footer={null} destroyOnClose width={900}>
-            <PartnerView name={selectedPartnerName} dismiss={_ => setSelectedPartnerName(undefined)} refresh={load} />
+        <Modal open={selectedPartner} onCancel={_ => setSelectedPartner(undefined)} title='交易对象详情' footer={null} width='90%'>
+            
         </Modal>
 
-        <Affix offsetTop={0} onChange={setAffixed}>
+        {/* <Affix offsetTop={0} onChange={setAffixed}>
             <Space className={`toolBar-${affixed}`} direction='vertical' style={{ background: colorBgContainer }} size={0}>
                 <Space wrap>
                     <Button icon={<PlusOutlined />} onClick={_ => setEditPartner({ name: '', phone: '', address: '', folder: '' })}>新增</Button>
@@ -157,13 +119,14 @@ export default function PartnerPage() {
                         {showSearchBox ? '收起搜索' : '展开搜索'}
                     </Button>
                 </Space>
-                <SearchBox data={partners} setFilteredData={setFilteredPartners} />
+                <PartnerSearch data={partners} setFilteredData={setFilteredPartners} />
             </Space>
-        </Affix>
+        </Affix> */}
 
-        <div className='pageMainContent'>
-            <Table dataSource={filteredPartners} bordered rowKey={record => record.name}
-                scroll={{ x: 'max-content' }} pagination={DEFAULT_PAGINATION} columns={columns} />
-        </div>
+        <PartnerTable partners={partners} 
+            onEdit={p => setEditPartner(p)} 
+            onSelect={p => setSelectedPartner(p)}
+            onDelete={p => showDeleteConfirm([p])}
+        />
     </Space>
 }

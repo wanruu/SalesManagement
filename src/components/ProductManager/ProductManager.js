@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react'
 import ProductTable from './ProductTable'
-import productService from '../../services/productService'
+import { productService } from '../../services'
 
 
 const ProductManager = ({ product: initProduct }) => {

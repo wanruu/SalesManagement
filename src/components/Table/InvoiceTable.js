@@ -3,10 +3,10 @@ import { Table, Button, Tag } from 'antd'
 import { DeleteOutlined } from '@ant-design/icons'
 
 
-import { DEFAULT_PAGINATION, DELIVER_COLORS, INVOICE_TITLE_OPTIONS, invoiceSettings, INVOICE_BASICS } from '../../utils/config'
+import { DEFAULT_PAGINATION, DELIVER_COLORS, invoiceSettings, INVOICE_BASICS } from '../../utils/config'
 
 
-const InvoiceListView = ({ type, invoices, onSelect, onDelete }) => {
+const InvoiceTable = ({ type, invoices, onSelect, onDelete }) => {
     const columns = useMemo(() => {
         const ifShowDelivered = invoiceSettings.get('ifShowDelivered') == 'true'
         const amountSign = invoiceSettings.get('ifShowAmountSign') === 'true' ? invoiceSettings.get('amountSign') : ''
@@ -80,11 +80,11 @@ const InvoiceListView = ({ type, invoices, onSelect, onDelete }) => {
         ]
         .filter(i => i != null)
         .map(col => ({ ...col, align: 'center' }))
-    }, [localStorage, type, onSelect, onDelete])
+    }, [type, onSelect, onDelete])
 
     return <Table dataSource={invoices} bordered rowKey={record => record.id}
         columns={columns} pagination={DEFAULT_PAGINATION} scroll={{ x: 'max-content' }} />
 }
 
 
-export default InvoiceListView
+export default InvoiceTable

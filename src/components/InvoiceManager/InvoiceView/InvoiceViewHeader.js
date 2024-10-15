@@ -3,7 +3,7 @@ import { Col, Row, Space } from 'antd'
 // import _ from 'lodash'
 import dayjs from 'dayjs'
 import Decimal from 'decimal.js'
-import { invoiceSettings, DATE_FORMAT, INVOICE_BASICS } from '../../utils/config'
+import { invoiceSettings, DATE_FORMAT, INVOICE_BASICS } from '../../../utils/config'
 // import PartnerPopoverView from '../partner/PartnerPopoverView'
 
 

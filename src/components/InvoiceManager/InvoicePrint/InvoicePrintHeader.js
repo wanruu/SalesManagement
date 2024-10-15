@@ -2,7 +2,7 @@ import React from 'react'
 import dayjs from 'dayjs'
 import { Row, Col, Space } from 'antd'
 import { FieldNumberOutlined } from '@ant-design/icons'
-import { printSettings, INVOICE_BASICS, DATE_FORMAT } from '../../utils/config'
+import { printSettings, INVOICE_BASICS, DATE_FORMAT } from '../../../utils/config'
 
 
 /* 

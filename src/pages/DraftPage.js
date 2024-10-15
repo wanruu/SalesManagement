@@ -2,7 +2,7 @@ import React, { useState, useRef } from 'react'
 import { Table, Modal, Button, FloatButton, Space, Popover, Tabs, Segmented } from 'antd'
 import { PlusOutlined, InboxOutlined } from '@ant-design/icons'
 import { useSelector, useDispatch } from 'react-redux'
-import InvoiceManager from '../components/InvoiceManager'
+import { InvoiceManager } from '../components/InvoiceManager'
 import { emptyInvoice } from '../utils/invoiceUtils'
 import { INVOICE_BASICS } from '../utils/config'
 

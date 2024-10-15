@@ -1,6 +1,6 @@
 import React from 'react'
 import { Row, Col } from 'antd'
-import { printSettings } from '../../utils/config'
+import { printSettings } from '../../../utils/config'
 
 
 const InvoicePrintFooter = () => {

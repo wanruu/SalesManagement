@@ -46,6 +46,18 @@ const partnerService = {
             throw error
         }
     },
+
+    deleteMany: async (partners) => {
+        try {
+            const deletePromises = partners.map(partner =>
+                apiClient.delete(`/partners/${partner.name}`)
+            )
+            const responses = await Promise.all(deletePromises)
+            return responses
+        } catch (error) {
+            throw error
+        }
+    }
 }
 
 export default partnerService
