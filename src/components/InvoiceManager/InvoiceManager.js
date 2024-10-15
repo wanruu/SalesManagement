@@ -1,10 +1,10 @@
 import React, { useEffect, useState } from 'react'
 import { Col, Button, Space } from 'antd'
 import { emptyInvoice } from '../../utils/invoiceUtils'
-import InvoicePrint  from '../InvoicePrint'
-import { InvoiceView } from '../InvoiceView'
-import { InvoiceForm } from '../Form'
-import invoiceService from '../../services/invoiceService'
+import { InvoicePrint }  from './InvoicePrint'
+import { InvoiceView } from './InvoiceView'
+import { InvoiceForm } from './InvoiceForm'
+import { invoiceService } from '../../services'
 
 
 

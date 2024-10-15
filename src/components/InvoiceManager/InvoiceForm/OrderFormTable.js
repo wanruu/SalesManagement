@@ -5,7 +5,7 @@ import Decimal from 'decimal.js'
 import { invoiceSettings } from '../../../utils/config'
 import { emptyInvoiceItem } from '../../../utils/invoiceUtils'
 import { ProductInput } from '../../Input'
-import productService from '../../../services/productService'
+import { productService } from '../../../services'
 import { updateItemAmount, updateTotalAmount, updateQuantityByRemark, deliveredOptions } from './InvoiceFormTableUtils'
 
 const { Item } = Form

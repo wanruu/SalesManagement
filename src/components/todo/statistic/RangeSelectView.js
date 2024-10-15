@@ -5,7 +5,7 @@ import { Col, Row, Select, Space, Button, DatePicker } from 'antd'
 import { LeftOutlined, RightOutlined } from '@ant-design/icons'
 
 
-import { baseURL } from '../../utils/config'
+import { baseURL } from '../../../utils/config'
 
 const { RangePicker } = DatePicker
 

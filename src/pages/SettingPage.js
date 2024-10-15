@@ -2,11 +2,10 @@ import { Anchor, Row, Col } from 'antd'
 import React, { useEffect } from 'react'
 import * as XLSX from 'xlsx'
 
-// import uuid from 'react-uuid'
 import { useSelector, useDispatch } from 'react-redux'
 
 
-import PhoneAccessView from '../components/common/PhoneAccessView'
+// import PhoneAccessView from '../components/common/PhoneAccessView'
 import PrintSettingView from '../components/setting/PrintSettingView'
 import FunctionSettingView from '../components/setting/FunctionSettingView'
 import ProductSettingView from '../components/setting/ProductSettingView'

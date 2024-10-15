@@ -1,6 +1,6 @@
 import React from 'react'
-import { printSettings, invoiceSettings } from '../../utils/config'
-import { digitUppercase } from '../../utils/invoiceUtils'
+import { printSettings, invoiceSettings } from '../../../utils/config'
+import { digitUppercase } from '../../../utils/invoiceUtils'
 import './InvoicePrintTable.scss'
 
 

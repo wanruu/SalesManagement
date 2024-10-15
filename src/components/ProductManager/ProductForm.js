@@ -1,7 +1,7 @@
 import React, { useEffect } from 'react'
 import { Input, Space, Button, Form, message, Col, Select } from 'antd'
 import { invoiceSettings } from '../../utils/config'
-import productService from '../../services/productService'
+import { productService } from '../../services'
 
 const { Item } = Form
 
