@@ -15,13 +15,14 @@ import './InvoiceForm.scss'
         invoice: used to reset form (invoice with id field can be regarded as existing invoice)
     Optional:
         onCancel: called when form is cancelled
+        onFormChange: called when form is changed
         onInvoiceChange: called then form is successfully submitted and response is received
  */
-const InvoiceForm = ({ type, invoice, onInvoiceChange, onCancel }) => {
+const InvoiceForm = ({ type, invoice, onInvoiceChange, onFormChange, onCancel }) => {
     const [form] = Form.useForm()
     const isOrder = type.includes('Order')
 
-    const resetForm = () => {
+    const initForm = () => {
         if (invoice) {
             const newInvoice = {
                 ...invoice, 
@@ -101,10 +102,12 @@ const InvoiceForm = ({ type, invoice, onInvoiceChange, onCancel }) => {
         message.error('表格不完整')
     }
 
-    useEffect(resetForm, [invoice])
+    useEffect(initForm, [invoice])
 
     return (
-        <Form form={form} onKeyDown={handleKeyDown} onFinish={handleFinish} onFinishFailed={handleFinishFailed}>
+        <Form form={form} onKeyDown={handleKeyDown} 
+            onValuesChange={onFormChange}
+            onFinish={handleFinish} onFinishFailed={handleFinishFailed}>
             <InvoiceFormHeader type={type} />
             { isOrder ? <OrderFormTable /> : <RefundTable /> }
             <Col align='end' style={{ marginTop: '10px' }}>

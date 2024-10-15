@@ -7,16 +7,23 @@ import { InvoiceForm } from './InvoiceForm'
 import { invoiceService } from '../../services'
 
 
-
 /*
     Required: type
     Optional:
-        initInvoice
-        initMode
+        invoice
+        editInvoice
+        mode
         onInvoiceChange
+        onFormChange
         onCancel
  */
-const InvoiceManager = ({ type, initInvoice, initMode='view', onInvoiceChange, onCancel }) => {
+const InvoiceManager = ({ 
+    type, 
+    invoice: initInvoice,
+    editInvoice,
+    mode: initMode='view', 
+    onInvoiceChange, onFormChange, onCancel 
+}) => {
     const [invoice, setInvoice] = useState(undefined)
     const [mode, setMode] = useState(initMode)
 
@@ -35,10 +42,11 @@ const InvoiceManager = ({ type, initInvoice, initMode='view', onInvoiceChange, o
 
     const modeDict = {
         'edit': (
-            <InvoiceForm type={type} invoice={invoice}
+            <InvoiceForm type={type} invoice={editInvoice}
                 onCancel={_ => {
                     invoice?.id ? setMode('view') : onCancel?.()
                 }}
+                onFormChange={onFormChange}
                 onInvoiceChange={invoice => {
                     onInvoiceChange?.(invoice)
                     setInvoice(invoice)

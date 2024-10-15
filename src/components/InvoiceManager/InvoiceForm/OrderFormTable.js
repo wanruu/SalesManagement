@@ -138,26 +138,10 @@ const OrderFormTable = () => {
             <Item name={[field.name, 'delivered']} noStyle>
                 <Select options={deliveredOptions} getPopupContainer={getPopupContainer} />
             </Item>
-        ),
-        operRender: (_, field, idx) => (
-            <Button danger onClick={_ => deleteItem(field.name)}>
-                删除
-            </Button>
-        ),
+        )
     }
 
-    const addItem = () => {
-        form.setFieldValue('invoiceItems', [...form.getFieldValue('invoiceItems'), emptyInvoiceItem()])
-    }
-
-    const deleteItem = (rowIndex) => {
-        const items = form.getFieldValue('invoiceItems')
-        items.splice(rowIndex, 1)
-        form.setFieldValue('invoiceItems', items)
-        updateTotalAmount(form)
-    }
-
-    const columns = [
+    const columns = (remove) => [
         { title: '序号', width: 70, fixed: 'left', render: (_, field, idx) => field.name + 1 },
         !ifShowMaterial ? null :
         { title: '材质', width: 100, render: renders.productRender('material') },
@@ -174,17 +158,24 @@ const OrderFormTable = () => {
         { title: '备注', width: 180, render: renders.remarkRender },
         !ifShowDelivered ? null :
         { title: '配送', width: 80, render: renders.deliveredRender },
-        { title: '操作', width: 70, fixed: 'right', render: renders.operRender },
+        { title: '操作', width: 70, fixed: 'right', render: (_, field, idx) => (
+            <Button danger onClick={_ => remove(field.name)}>
+                删除
+            </Button>
+        )},
     ]
     .filter(i => i != null)
     .map(i => ({ ...i, align: 'center' }))
 
     return <Form.List name='invoiceItems' rules={[{required: true}]}>
-        {(fields) =>
+        {(fields, { add, remove }) =>
             <Table className='invoiceFormTable orderFormTable' id={tableId}
                 scroll={{ x: 'max-content', y: 'max-content' }} bordered
-                dataSource={fields} columns={columns}
-                footer={_ => <Button onClick={addItem} type='primary' ghost>新增一项</Button>}
+                dataSource={fields} columns={columns(remove)}
+                footer={_ => 
+                    <Button onClick={_ => add(emptyInvoiceItem())} type='primary' ghost>
+                        新增一项
+                    </Button>}
             />
         }
     </Form.List>
