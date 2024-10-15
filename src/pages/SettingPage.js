@@ -6,12 +6,11 @@ import { useSelector, useDispatch } from 'react-redux'
 
 
 // import PhoneAccessView from '../components/common/PhoneAccessView'
-import PrintSettingView from '../components/setting/PrintSettingView'
-import FunctionSettingView from '../components/setting/FunctionSettingView'
-import ProductSettingView from '../components/setting/ProductSettingView'
-import DisplaySettingView from '../components/setting/DisplaySettingView'
-// import './settingPage.css'
-import CustomSettingView from '../components/setting/CustomSettingView'
+import PrintSettingView from '../components/SettingItems/PrintSettingView'
+import FunctionSettingView from '../components/SettingItems/FunctionSettingView'
+import ProductSettingView from '../components/SettingItems/ProductSettingView'
+import DisplaySettingView from '../components/SettingItems/DisplaySettingView'
+import CustomSettingView from '../components/SettingItems/CustomSettingView'
 
 
 
@@ -164,40 +163,36 @@ export default function SettingPage() {
     useEffect(() => window.scrollTo(0, scrollY), [])
     // ------------------------------------
 
-    return (
-        <div className='setting'>
-            <Row>
-                <Col span={20} style={{ paddingRight: '15px' }}>
-                    <div className='pageMainContent'>
-                        {
-                            anchorItems.map(i => <div key={i.key}>{i.content}</div>)
-                        }
-                    </div>
-                </Col>
-                <Col span={4}>
-                    <Anchor items={anchorItems} style={{ paddingTop: '15px' }} />
-                </Col>
-            </Row>
+    return <div className='pageMainContent'>
+        <Row>
+            <Col span={20} style={{ paddingRight: '15px' }}>
+                {
+                    anchorItems.map(i => <div key={i.key}>{i.content}</div>)
+                }
+            </Col>
+            <Col span={4}>
+                <Anchor items={anchorItems} style={{ paddingTop: '15px' }} />
+            </Col>
+        </Row>
 
-            {/* <PhoneAccessView /> */}
-            {/* <Space direction='vertical' style={{ width: '100%' }}>
-                <Collapse>
-                    { 
-                        collapseItems.map(item => (
-                            <Collapse.Panel header={item.header} key={item.header}>
-                                { item.content }
-                            </Collapse.Panel>
-                        ))
-                    }
-                </Collapse>
-            </Space> */}
+        {/* <PhoneAccessView /> */}
+        {/* <Space direction='vertical' style={{ width: '100%' }}>
+            <Collapse>
+                { 
+                    collapseItems.map(item => (
+                        <Collapse.Panel header={item.header} key={item.header}>
+                            { item.content }
+                        </Collapse.Panel>
+                    ))
+                }
+            </Collapse>
+        </Space> */}
 
-            {/* <h2>导入</h2>
-            <Upload directory accept='.xlsx' customRequest={handleUpload}>
-                <Button>
-                    选择.xlsx文件
-                </Button>
-            </Upload> */}
-        </div>
-    )
+        {/* <h2>导入</h2>
+        <Upload directory accept='.xlsx' customRequest={handleUpload}>
+            <Button>
+                选择.xlsx文件
+            </Button>
+        </Upload> */}
+    </div>
 }
