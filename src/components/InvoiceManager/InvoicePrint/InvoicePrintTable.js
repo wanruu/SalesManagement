@@ -1,6 +1,7 @@
 import React from 'react'
-import { printSettings, invoiceSettings } from '../../../utils/config'
+import { invoiceSettings } from '../../../utils/config'
 import { digitUppercase } from '../../../utils/invoiceUtils'
+import { useSelector } from 'react-redux'
 import './InvoicePrintTable.scss'
 
 
@@ -9,7 +10,8 @@ import './InvoicePrintTable.scss'
 */
 const InvoicePrintTable = ({ invoice }) => {
     const ifShowMaterial = invoiceSettings.get('ifShowMaterial') === 'true'
-    const amountSign = printSettings.get('ifShowPrintAmountSign') === 'true' ? printSettings.get('printAmountSign') : ''
+    const amountSign = useSelector(state => state.printSetting.amountSign.value)
+    const fontSize = useSelector(state => state.printSetting.tableFontSize.value || state.printSetting.tableFontSize.defaultValue)
     const tableColumns = [
         ifShowMaterial ? { title: '材质', dataIndex: ['product', 'material'], width: '5%' } : null,
         { title: '名称', dataIndex: ['product', 'name'], width: '10%' },
@@ -39,7 +41,7 @@ const InvoicePrintTable = ({ invoice }) => {
     }
 
     return (
-        <div style={{ fontSize: printSettings.get('tableFontSize') + 'px' }}>
+        <div style={{ fontSize: fontSize + 'px' }}>
             <table className='invoicePrintTable' style={{ width: '100%', height: '100%' }} >
                 <thead>
                     <tr>

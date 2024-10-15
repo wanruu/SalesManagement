@@ -130,8 +130,7 @@ export default function SettingPage() {
             key: 'print', href: '#print', title: '打印设置', content: <PrintSettingView />,
             children: [
                 { key: 'print-overall', href: '#print-overall', title: '清单整体' },
-                { key: 'print-title', href: '#print-title', title: '标题' },
-                { key: 'print-subtitle', href: '#print-subtitle', title: '副标题' },
+                { key: 'print-title', href: '#print-title', title: '标题 & 副标题' },
                 { key: 'print-info', href: '#print-info', title: '头部' },
                 { key: 'print-table', href: '#print-table', title: '表格' },
                 { key: 'print-footer', href: '#print-footer', title: '脚注' },
@@ -165,12 +164,12 @@ export default function SettingPage() {
 
     return <div className='pageMainContent'>
         <Row>
-            <Col span={20} style={{ paddingRight: '15px' }}>
+            <Col span={19} style={{ paddingRight: '15px' }}>
                 {
                     anchorItems.map(i => <div key={i.key}>{i.content}</div>)
                 }
             </Col>
-            <Col span={4}>
+            <Col span={5}>
                 <Anchor items={anchorItems} style={{ paddingTop: '15px' }} />
             </Col>
         </Row>
