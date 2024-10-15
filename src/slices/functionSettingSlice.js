@@ -29,12 +29,11 @@ const DEFAULT_SETTINGS = {
 
 
 const initialState = (() => {
-    const settings = DEFAULT_SETTINGS
-    for (const key of Object.keys(settings)) {
-        const localData = JSON.parse(localStorage.getItem(`${SLICE_NAME}/${key}`))
-        if (localData !== null) {
-            settings[key] = localData
-        }
+    const settings = {}
+    for (const key of Object.keys(DEFAULT_SETTINGS)) {
+        const localValue = JSON.parse(localStorage.getItem(`${SLICE_NAME}/${key}`))
+        const defaultValue = DEFAULT_SETTINGS[key]
+        settings[key] = { value: localValue, defaultValue: defaultValue }
     }
     return settings
 })()
@@ -46,8 +45,14 @@ const functionSettingSlice = createSlice({
     reducers: {
         setItem(state, action) {
             const { key, value } = action.payload
-            state[key] = value
             localStorage.setItem(`${SLICE_NAME}/${key}`, JSON.stringify(value))
+            return {
+                ...state,
+                [key]: {
+                    ...state[key],
+                    value: value
+                }
+            }
         }
     }
 })

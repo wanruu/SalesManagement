@@ -6,39 +6,39 @@ const SLICE_NAME = 'printSetting'
 
 const DEFAULT_SETTINGS = {
     // size
-    width: 772,
-    height: 493,
-    hPadding: 28,
-    vPadding: 24,
+    width: { value: null, defaultValue: 772 },
+    height: { value: null, defaultValue: 493 },
+    hPadding: { value: null, defaultValue: 28 },
+    vPadding: { value: null, defaultValue: 24 },
     // title
-    title: 'xx公司',
-    titleFontSize: 23,
+    title: { value: null, defaultValue: 'xx公司' },
+    titleFontSize: { value: null, defaultValue: 23 },
     // subtitle
-    salesOrderSubtitle: '销售单',
-    salesRefundSubtitle: '销售退货单',
-    purchaseOrderSubtitle: '采购单',
-    purchaseRefundSubtitle: '采购退货单',
-    subtitleFontSize: 20,
-    subtitleStyle: 'inline',
+    salesOrderSubtitle: { value: null, defaultValue: '销售单' },
+    salesRefundSubtitle: { value: null, defaultValue: '销售退货单' },
+    purchaseOrderSubtitle: { value: null, defaultValue: '采购单' },
+    purchaseRefundSubtitle: { value: null, defaultValue: '采购退货单' },
+    subtitleFontSize: { value: null, defaultValue: 20 },
+    subtitleStyle: { value: 'inline', defaultValue: 'inline' },
     // header
-    headerFontSize: 14,
-    ifShowPhone: false,
-    ifShowAddress: false,
+    headerFontSize: { value: null, defaultValue: 14 },
+    ifShowPhone: { value: true, defaultValue: true },
+    ifShowAddress: { value: true, defaultValue: true },
     // footer
-    footer: '脚注1\n脚注2\n脚注3',
-    footerFontSize: 12,
+    footer: { value: null, defaultValue: '脚注1\n脚注2\n脚注3' },
+    footerFontSize: { value: null, defaultValue: 12 },
     // table
-    tableFontSize: 14,
-    amountSign: '￥',
+    tableFontSize: { value: null, defaultValue: 14 },
+    amountSign: { value: '¥', defaultValue: '' },
 }
 
 
 const initialState = (() => {
     const settings = DEFAULT_SETTINGS
     for (const key of Object.keys(settings)) {
-        const localData = JSON.parse(localStorage.getItem(`${SLICE_NAME}/${key}`))
-        if (localData !== null) {
-            settings[key] = localData
+        const localValue = JSON.parse(localStorage.getItem(`${SLICE_NAME}/${key}`))
+        if (localValue !== null) {
+            settings[key].value = localValue
         }
     }
     return settings
@@ -51,8 +51,14 @@ const printSettingSlice = createSlice({
     reducers: {
         setItem(state, action) {
             const { key, value } = action.payload
-            state[key] = value
             localStorage.setItem(`${SLICE_NAME}/${key}`, JSON.stringify(value))
+            return {
+                ...state,
+                [key]: {
+                    ...state[key],
+                    value: value
+                }
+            }
         }
     }
 })

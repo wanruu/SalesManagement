@@ -2,32 +2,37 @@ import React from 'react'
 import dayjs from 'dayjs'
 import { Row, Col, Space } from 'antd'
 import { FieldNumberOutlined } from '@ant-design/icons'
-import { printSettings, INVOICE_BASICS, DATE_FORMAT } from '../../../utils/config'
+import { INVOICE_BASICS, DATE_FORMAT } from '../../../utils/config'
+import { useSelector } from 'react-redux'
 
 
 /* 
     Required: invoice, type 
 */
 const InvoicePrintHeader = ({ type, invoice }) => {
+    const settings = useSelector(state => state.printSetting)
+    const getSetting = (key) => {
+        return settings[key]?.value || settings[key]?.defaultValue
+    }
+
     // Style
-    const fontSize = { fontSize: printSettings.get('headerFontSize') + 'px' }
+    const fontSize = { fontSize: getSetting('headerFontSize') + 'px' }
+    const titleFontSize = { fontSize: getSetting('titleFontSize') + 'px' }
+    const subtitleFontSize = { fontSize: getSetting('subtitleFontSize') + 'px' }    
 
     // Display condition
-    const ifShowAddress = printSettings.get('ifShowAddress') === 'true' && invoice?.partner?.address
-    const ifShowPhone = printSettings.get('ifShowPhone') === 'true' && invoice?.partner?.phone
-    const ifInline = printSettings.get('subtitleStyle') === 'inline'
+    const ifShowAddress = settings.ifShowAddress.value && invoice?.partner?.address
+    const ifShowPhone = settings.ifShowPhone.value && invoice?.partner?.phone
+    const ifInline = settings.subtitleStyle.value === 'inline'
 
     // Content
-    const title = printSettings.get('title').replace(/ /g, '\xa0')
+    const title = getSetting('title').replace(/ /g, '\xa0')
     const subtitle = {
-        salesOrder: printSettings.get('salesOrderSubtitle'),
-        salesRefund: printSettings.get('salesRefundSubtitle'),
-        purchaseOrder: printSettings.get('purchaseOrderSubtitle'),
-        purchaseRefund: printSettings.get('purchaseRefundSubtitle')
+        salesOrder: getSetting('salesOrderSubtitle'),
+        salesRefund: getSetting('salesRefundSubtitle'),
+        purchaseOrder: getSetting('purchaseOrderSubtitle'),
+        purchaseRefund: getSetting('purchaseRefundSubtitle')
     }[type].replace(/ /g, '\xa0') || '错误'
-    // Style
-    const titleFontSize = { fontSize: printSettings.get('titleFontSize') + 'px' }
-    const subtitleFontSize = { fontSize: printSettings.get('subtitleFontSize') + 'px' }    
 
     // Return
     return <Space style={{ width: '100%' }} direction='vertical' size='10px'>
@@ -51,12 +56,12 @@ const InvoicePrintHeader = ({ type, invoice }) => {
                 {invoice?.number}
             </Col>
         </Row>
-        {!ifShowPhone ? null : <span style={{ ...fontSize }}>电话：{invoice?.phone}</span>}
+        {!ifShowPhone ? null : <Col align='left' style={{ ...fontSize }}>电话：{invoice?.partner?.phone}</Col>}
         {!ifShowAddress ? null :
-            <span style={{ ...fontSize }}>
+            <Col align='left' style={{ ...fontSize }}>
                 {INVOICE_BASICS[type].addressTitle}：
-                {invoice?.address}
-            </span>
+                {invoice?.partner?.address}
+            </Col>
         }
     </Space>
 }

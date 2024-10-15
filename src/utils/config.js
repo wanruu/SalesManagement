@@ -6,17 +6,6 @@ export const baseURL = () => {
 export const DATE_FORMAT = 'YYYY-MM-DD'
 
 
-export const DEFAULT_PRINT_SETTINGS = {
-    width: 772, height: 493, hPadding: 28, vPadding: 24,
-    title: 'xx公司', titleFontSize: 23,
-    salesOrderSubtitle: '销售单', salesRefundSubtitle: '销售退货单', 
-    purchaseOrderSubtitle: '采购单', purchaseRefundSubtitle: '采购退货单',
-    subtitleFontSize: 20, subtitleStyle: 'inline',
-    headerFontSize: 14, ifShowPhone: 'false', ifShowAddress: 'false',
-    footer: '脚注1\n脚注2\n脚注3', footerFontSize: 12,
-    tableFontSize: 14, ifShowPrintAmountSign: 'true', printAmountSign: '￥',
-}
-
 export const UNIT_OPTIONS = [
     { key: '只', label: '只', value: '只', default: true, showing: true },
     { key: '千只', label: '千只', value: '千只', default: false, showing: true },
@@ -107,10 +96,3 @@ export const invoiceSettings = {
     get: (key) =>  localStorage.getItem(key) || DEFAULT_INVOICE_SETTINGS[key],
     set: (key, value) => localStorage.setItem(key, value)
 }
-
-
-export const printSettings = {
-    get: (key) =>  localStorage.getItem(key) || DEFAULT_PRINT_SETTINGS[key],
-    set: (key, value) => localStorage.setItem(key, value)
-}
-
