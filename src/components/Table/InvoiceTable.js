@@ -1,9 +1,9 @@
 import React, { useMemo } from 'react'
-import { Table, Button, Tag } from 'antd'
+import { Table, Button } from 'antd'
 import { DeleteOutlined } from '@ant-design/icons'
+import { DeliverTag } from '../Tag'
 
-
-import { DEFAULT_PAGINATION, DELIVER_COLORS, INVOICE_BASICS } from '../../utils/config'
+import { DEFAULT_PAGINATION, INVOICE_BASICS } from '../../utils/config'
 
 
 const InvoiceTable = ({ type, invoices, onSelect, onDelete }) => {
@@ -61,7 +61,7 @@ const InvoiceTable = ({ type, invoices, onSelect, onDelete }) => {
             {
                 title: '配送情况', 
                 dataIndex: 'delivered',
-                render: d => <Tag color={DELIVER_COLORS[d]}>{d}</Tag>
+                render: d => <DeliverTag value={d} />
             } : null,
             ifShowRefund ? 
             {

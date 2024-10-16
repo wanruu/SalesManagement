@@ -1,14 +1,19 @@
 import React, { useEffect, useRef, useState } from 'react'
-import { Tag, Form, Select, DatePicker, Space, Input, Button, InputNumber, Card, Tooltip, Row, Divider } from 'antd'
+import { Form, Select, DatePicker, Space, Input, Button, InputNumber, Card, Tooltip, Row, Divider } from 'antd'
 import { ExclamationCircleOutlined, SwapOutlined } from '@ant-design/icons'
 import { pinyin } from 'pinyin-pro'
 import { useSelector, useDispatch } from 'react-redux'
-import { DATE_FORMAT, DELIVER_COLORS, INVOICE_DELIVER_OPTIONS } from '../../utils/config'
+import { DATE_FORMAT } from '../../utils/config'
+import { DeliverTag } from '../Tag'
 
 
 const { Item } = Form
 const { RangePicker } = DatePicker
 
+
+const INVOICE_DELIVER_OPTIONS = [
+    '未配送', '部分配送', '全部配送'
+].map(val => ({ value: val, label: val }))
 
 
 /*
@@ -118,11 +123,11 @@ function ComplexSearchBox(props) {
             event.preventDefault()
             event.stopPropagation()
         }
-        return <Tag color={DELIVER_COLORS[value]}
+        return <DeliverTag value={label} 
             onMouseDown={onPreventMouseDown}
             closable={closable} onClose={onClose}
             style={{ marginRight: 3 }}
-        >{label}</Tag>
+         />
     }
 
     const partnerTitle = ['salesOrder', 'salesRefund'].includes(props.type) ? '客户' : '供应商'
