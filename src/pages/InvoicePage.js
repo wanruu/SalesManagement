@@ -11,7 +11,7 @@ const { confirm } = Modal
 
 import { invoiceService } from '../services'
 
-import { INVOICE_TITLE_OPTIONS } from '../utils/config'
+import { INVOICE_BASICS } from '../utils/config'
 import { MyWorkBook, MyWorkSheet } from '../utils/export'
 import { InvoiceSearch } from '../components/Search'
 import { emptyInvoice } from '../utils/invoiceUtils'
@@ -100,8 +100,7 @@ export default function InvoicePage({ type }) {
             ifShowDelivered ? { title: '配送情况', dataIndex: 'delivered' } : null,
             { title: '关联退货单', dataIndex: 'refundId' }
         ].filter(h => h != null)
-        const title = INVOICE_TITLE_OPTIONS.filter(o => o.key === type)?.[0]?.label || ''
-        let wb = new MyWorkBook(title ? title + '单' : '错误')
+        let wb = new MyWorkBook(INVOICE_BASICS[type].title ?? '错误')
         let ws = new MyWorkSheet('总览')
         ws.writeJson(filteredInvoices, headers)
         wb.writeSheet(ws)

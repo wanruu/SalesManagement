@@ -26,15 +26,6 @@ export const DELIVER_COLORS = {
     '部分配送': 'gold'
 }
 
-
-export const INVOICE_TITLE_OPTIONS = [
-    { key: 'salesOrder', label: '销售' },
-    { key: 'purchaseOrder', label: '采购' },
-    { key: 'salesRefund', label: '销售退货' },
-    { key: 'purchaseRefund', label: '采购退货' }
-]
-
-
 export const INVOICE_BASICS = {
     salesOrder: {
         title: '销售单',
