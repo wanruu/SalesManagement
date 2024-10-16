@@ -28,7 +28,7 @@ const PartnerTable = ({ partners, onSelect, onEdit, onDelete }) => {
         { title: '操作', fixed: 'right', render: (_, partner) =>
             <Space>
                 <Button type='primary' ghost onClick={_ => onEdit?.(partner)}>编辑</Button>
-                { partner.invoiceNum > 0 ?
+                { partner.salesNum + partner.purchaseNum > 0 ?
                     <Button onClick={_ => onSelect?.(partner)}>查看</Button> :
                     <Button danger onClick={_ => onDelete?.(partner)}>删除</Button>
                 }
