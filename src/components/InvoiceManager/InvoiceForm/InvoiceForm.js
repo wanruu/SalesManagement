@@ -102,7 +102,9 @@ const InvoiceForm = ({ type, invoice, onInvoiceChange, onFormChange, onCancel })
         message.error('表格不完整')
     }
 
-    useEffect(initForm, [])
+    // 确保金额改变时不调用，只有type改变才调用
+    // type改变时会清空数据
+    useEffect(initForm, [type])
 
     return (
         <Form form={form} onKeyDown={handleKeyDown} 

@@ -28,7 +28,6 @@ export const emptyInvoice = (itemsNum=0, defaultUnit=null) => {
     return {
         partnerName: '',
         date: dayjs(),
-        draftTime: undefined,
         amount: '0',
         prepayment: '',
         payment: '',
