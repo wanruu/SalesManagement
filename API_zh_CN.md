@@ -147,7 +147,18 @@
 ## 👤 交易对象
 ### 交易对象列表
 - **GET** `/partners`
-- 不带参数
+- 参数`query`（可选）
+    ```js
+    {
+        keyword: "xx", 
+        name: "xx",
+        address: "xx",
+        folder: "xx",
+        phone: "xx",
+        sortBy: "name",
+        order: "ASC",
+    }
+    ```
 - 返回值
     ```json
     [
@@ -156,7 +167,8 @@
             "phone": "电话1",  // or null
             "address": "地址1",  // or null
             "folder": "文件夹1",  // or null
-            "invoiceNum": 1,
+            "salesNum": 1,
+            "purchaseNum": 1,
         },
     ]
     ```
