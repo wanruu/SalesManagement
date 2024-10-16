@@ -1,17 +1,17 @@
 import React, { useState, useEffect } from 'react'
-import { Table, Space, Button, Modal, message, Affix, theme } from 'antd'
+import { Space, Button, Modal, message, Affix, theme } from 'antd'
 import {
     ExclamationCircleFilled, PlusOutlined, ClearOutlined,
     ExportOutlined, UpOutlined, DownOutlined
 } from '@ant-design/icons'
 import _ from 'lodash'
 import { useDispatch, useSelector } from 'react-redux'
-import { DEFAULT_PAGINATION } from '../utils/config'
 import { MyWorkBook, MyWorkSheet } from '../utils/export'
 import ProductSearchBox from '../components/Search/ProductSearch'
 import { ProductForm } from '../components/ProductManager'
 import { productService } from '../services'
 import { ProductManager } from '../components/ProductManager'
+import { ProductTable } from '../components/Table'
 
 
 const { confirm } = Modal
@@ -42,28 +42,6 @@ export default function ProductPage() {
 
         })
     }
-
-    const tableColumns = [
-        { title: '序号', align: 'center', render: (_, __, idx) => idx + 1, fixed: 'left' },
-        !ifShowMaterial ? null :
-        { title: '材质', dataIndex: 'material', align: 'center' },
-        { title: '名称', dataIndex: 'name', align: 'center' },
-        { title: '规格', dataIndex: 'spec', align: 'center' },
-        // { title: '库存', dataIndex: 'quantity', align: 'center', render: quantity => <span style={{ color: quantity < 0 ? 'red': 'black' }}>{quantity.toLocaleString()}</span> },
-        { title: '单位', dataIndex: 'unit', align: 'center' },
-        // { title: '预估重量', dataIndex: 'estimatedWeight', align: 'center', render: w => w == null ? null : w.toLocaleString() },
-        {
-            title: '操作', align: 'center', fixed: 'right', render: (_, record) =>
-                <Space>
-                    <Button type='primary' ghost onClick={_ => setEditProduct(record)}>编辑</Button>
-                    {record.invoiceItemNum > 0 ?
-                        <Button onClick={_ => setSelectedProduct(record)}>查看</Button> :
-                        <Button danger onClick={_ => showDeleteConfirm([record])}>删除</Button>
-                    }
-                </Space>
-        }
-    ].filter(i => i != null)
-    
 
     const showDeleteConfirm = (products) => {
         const title = products.length === 1 ? `是否删除产品 “${products[0].material} ${products[0].name} ${products[0].spec}” ?` : `是否删除 ${products.length} 个产品 ?`
@@ -161,8 +139,11 @@ export default function ProductPage() {
         </Affix>
 
         <div className='pageMainContent'>
-            <Table dataSource={filteredProducts} bordered rowKey={record => record.id} columns={tableColumns}
-                pagination={DEFAULT_PAGINATION} scroll={{ x: 'max-content' }} />
+            <ProductTable products={products} 
+                onSelect={p => setSelectedProduct(p)}
+                onDelete={p => showDeleteConfirm([p])}
+                onEdit={p => setEditProduct(p)}
+            />
         </div>
     </Space>
 }
