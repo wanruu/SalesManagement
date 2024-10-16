@@ -1,213 +1,50 @@
-import React, { useEffect, useRef, useState } from 'react'
-import { Form, Select, Space, Input, Button, Tooltip, Row, Divider } from 'antd'
-import { ExclamationCircleOutlined, SwapOutlined } from '@ant-design/icons'
-import { pinyin } from 'pinyin-pro'
-import { useSelector, useDispatch } from 'react-redux'
+import React, { useEffect } from 'react'
+import { Form, Select, Space, Input, Button } from 'antd'
+import { useSelector } from 'react-redux'
 
 
 const { Item } = Form
 
 
-/*
-    Required: data, setFilteredData
-*/
-export default function ProductSearchBox(props) {
-    const mode = useSelector(state => state.page.product?.searchMode || 'simple')
-    const showing = useSelector(state => state.page.product?.showSearchBox)
-    const dispatch = useDispatch()
-
-    // Animation
-    const nodeRef = useRef(null)
-    const [height, setHeight] = useState(0)
-    const [animate, setAnimate] = useState(false)
-    useEffect(() => {
-        if (nodeRef.current) {
-            setHeight(nodeRef.current.offsetHeight)
-        }
-    }, [mode, showing])
-    useEffect(() => {
-        setAnimate(true)  // 在组件挂载后，启用动画效果
-    }, [])
-
-    const modeDict = {
-        'simple': {
-            title: <>智能搜索<Tooltip title='支持材质、名称、规格、单位，以空格分开。'>
-                <ExclamationCircleOutlined style={{ color: 'gray', marginLeft: '3px' }} />
-            </Tooltip></>,
-            content: <div style={{ display: showing ? 'block' : 'none' }}><SimpleSearchBar {...props} /></div>
-        },
-        'complex': { 
-            title: '高级搜索', 
-            content: <div style={{ display: showing ? 'block' : 'none' }}><ComplexSearchBox {...props} /></div>
-        }
-    }
-
-    const changeMode = () => {
-        dispatch({ type: 'page/setSearchMode', menuKey: 'product', searchMode: mode === 'simple' ? 'complex' : 'simple' })
-    }
-
-    return (
-        <div style={{ transition: animate ? 'height 0.2s ease-in-out' : '', height: animate ? height : 'auto', overflowY: 'hidden' }}>
-            <div ref={nodeRef}>
-                {
-                    showing ? <div style={{ paddingTop: '10px' }}>
-                        <Divider style={{ margin: 0, padding: '5px 0' }} />
-                        <Row style={{ justifyContent: 'space-between', marginBottom: '10px' }}>
-                            <b style={{ fontSize: '12pt' }}>
-                                {modeDict[mode]?.title}
-                            </b>
-                            <Button size='small' type='text' style={{ color: 'gray', fontSize: '10pt' }} onClick={changeMode}>
-                                <Space size={1} direction='horizontal'>
-                                    <SwapOutlined />
-                                    <span>切换模式</span>
-                                </Space>
-                            </Button>
-                        </Row>
-                    </div> : null
-                }
-                {modeDict[mode]?.content}
-            </div>
-        </div>
-    )
-}
-
-
-
-/*
-    Required: data, setFilteredData
-*/
-function SimpleSearchBar(props) {
-    const keywords = useSelector(state => state.page.product.keywords || '')
-    const dispatch = useDispatch()
-
-    const filterData = () => {
-        const keywordArray = keywords.replace(/\s+/g, ' ').split(' ').filter(k => k !== '')
-        const filteredData = (props.data || []).filter(record => {
-            const textToVerify = [
-                record.material, record.name, record.spec, record.unit,
-                pinyin(record.material, { pattern: 'first', toneType: 'none', type: 'array' }).join(''),
-                pinyin(record.material, { toneType: 'none', type: 'array' }).join(''),
-                pinyin(record.name, { pattern: 'first', toneType: 'none', type: 'array' }).join(''),
-                pinyin(record.name, { toneType: 'none', type: 'array' }).join(''),
-                pinyin(record.spec, { pattern: 'first', toneType: 'none', type: 'array' }).join(''),
-                pinyin(record.spec, { toneType: 'none', type: 'array' }).join(''),
-                pinyin(record.unit, { pattern: 'first', toneType: 'none', type: 'array' }).join(''),
-                pinyin(record.unit, { toneType: 'none', type: 'array' }).join('')
-            ]
-            for (const keyword of keywordArray) {
-                const results = textToVerify.map(text => (text || '').includes(keyword))
-                if (results.filter(r => r).length === 0) {
-                    return false
-                }
-            }
-            return true
-        })
-        props.setFilteredData(filteredData)
-    }
-
-    const handleInputKeyDown = (event) => {
-        if (event.key === 'Enter') {
-            filterData()
-        }
-    }
-
-    const handleInputChange = (event) => {
-        dispatch({ type: 'page/updateKeywords', menuKey: 'product', payload: event.target.value })
-    }
-
-    useEffect(filterData, [props.data])
-
-    return (
-        <Space.Compact style={{ width: '100%' }}>
-            <Input placeholder='输入关键词' allowClear value={keywords}
-                onKeyDown={handleInputKeyDown} onChange={handleInputChange} />
-            <Button onClick={filterData} type='primary'>搜索</Button>
-        </Space.Compact>
-    )
-}
-
-
-/*
-    Required: data, setFilteredData
-*/
-function ComplexSearchBox(props) {
+const ProductSearch = ({ initialValues, onSearch, onChange, onReset }) => {
     const [form] = Form.useForm()
 
-    const searchForm = useSelector(state => state.page.product.searchForm || {})
-    const dispatch = useDispatch()
     const ifShowMaterial = useSelector(state => state.functionSetting.ifShowMaterial.value)
     const units = useSelector(state => state.functionSetting.units.value)
     const unitOptions = units.map(u => ({ label: u, value: u }))
 
-    // Form control
     const initForm = () => {
         form.resetFields()
-        form.setFieldsValue(searchForm)
-        filterData()
+        form.setFieldsValue(initialValues)
     }
     const resetForm = () => {
         form.resetFields()
-        props.setFilteredData(props.data || [])
+        onReset?.()
     }
-    const filterData = () => {
-        const conds = form.getFieldsValue()
-        const targetMaterial = (conds.material || '').replace(' ', '')
-        const targetName = (conds.name || '').replace(' ', '')
-        const targetSpec = (conds.spec || '').replace(' ', '')
 
-        const filteredData = (props.data || []).filter(record => {
-            const material = record.material.replace(' ', '')
-            const name = record.name.replace(' ', '')
-            const spec = record.spec.replace(' ', '')
-            return (
-                material.includes(targetMaterial) ||
-                pinyin(material, { pattern: 'first', toneType: 'none', type: 'array' }).join('').includes(targetMaterial) ||
-                pinyin(material, { toneType: 'none', type: 'array' }).join('').includes(targetMaterial)
-            ) && (
-                    name.includes(targetName) ||
-                    pinyin(name, { pattern: 'first', toneType: 'none', type: 'array' }).join('').includes(targetName) ||
-                    pinyin(name, { toneType: 'none', type: 'array' }).join('').includes(targetName)
-                ) && (
-                    spec.includes(targetSpec) ||
-                    pinyin(spec, { pattern: 'first', toneType: 'none', type: 'array' }).join('').includes(targetSpec) ||
-                    pinyin(spec, { toneType: 'none', type: 'array' }).join('').includes(targetSpec)
-                ) &&
-                (
-                    !conds.unit || conds.unit.length === 0 || conds.unit.includes(record.unit)
-                )
-        })
-        props.setFilteredData(filteredData)
-    }
-    const handleFormValuesChange = (values) => {
-        dispatch({ type: 'page/updateSearchForm', menuKey: 'product', payload: values })
-    }
-    const handleFormReset = () => {
-        dispatch({ type: 'page/resetSearchForm', menuKey: 'product' })
-    }
-    useEffect(initForm, [props.data])
+    useEffect(initForm, [])
 
-    // Render
     const itemStyle = { style: { margin: '8px 0px' } }
-
+    
     return (
-        <Form form={form} onFinish={filterData} onReset={resetForm}
-            onValuesChange={handleFormValuesChange} onResetCapture={handleFormReset}
-            labelCol={{ span: 4 }} wrapperCol={{ span: 20 }}>
+        <Form form={form} onFinish={_ => onSearch?.()} onReset={resetForm}
+            onValuesChange={onChange}
+            labelCol={{ span: 2 }} wrapperCol={{ span: 20 }}>
             {
                 ifShowMaterial ?
                     <Item label='材质' name='material' {...itemStyle}>
-                        <Input placeholder='材质' allowClear />
+                        <Input placeholder='材质' allowClear style={{ maxWidth: '400px'}} />
                     </Item> : null
             }
             <Item label='名称' name='name' {...itemStyle}>
-                <Input placeholder='名称' allowClear />
+                <Input placeholder='名称' allowClear style={{ maxWidth: '400px'}} />
             </Item>
             <Item label='规格' name='spec' {...itemStyle}>
-                <Input placeholder='规格' allowClear />
+                <Input placeholder='规格' allowClear style={{ maxWidth: '400px'}} />
             </Item>
             <Item label='单位' name='unit' {...itemStyle}>
                 <Select placeholder='选择单位' allowClear mode='multiple'
-                    options={unitOptions}
+                    options={unitOptions} style={{ maxWidth: '400px'}}
                 />
             </Item>
             <Item label=' ' colon={false} style={{ marginTop: 0, marginBottom: 0 }} >
@@ -219,3 +56,5 @@ function ComplexSearchBox(props) {
         </Form>
     )
 }
+
+export default ProductSearch

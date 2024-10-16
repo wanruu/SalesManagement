@@ -18,7 +18,8 @@ class ProductController extends BaseController {
                 ]
             }
             const products = await Product.findAll(options)
-            return res.send(products)
+            req.products = products
+            next()
         } catch (error) {
             return this.handleError(res, error)
         }

@@ -63,4 +63,60 @@ const filterPartners = (req, res, next) => {
 }
 
 
-module.exports = { filterPartners }
+const filterProducts = (req, res, next) => {
+    const products = req.products
+    const { keyword, material, name, spec, unit } = req.query
+    const keywords = keyword?.split('\s+')
+
+    let newProducts 
+    if (!keywords) {
+        newProducts = products.filter(p => {
+            return (
+                !material ||
+                p.material.includes(material) ||
+                pinyin(p.material, { pattern: 'first', toneType: 'none', type: 'array' }).join('').includes(material) ||
+                pinyin(p.material, { toneType: 'none', type: 'array' }).join('').includes(material)
+            ) &&
+            (
+                !name ||
+                p.name.includes(name) ||
+                pinyin(p.name, { pattern: 'first', toneType: 'none', type: 'array' }).join('').includes(name) ||
+                pinyin(p.name, { toneType: 'none', type: 'array' }).join('').includes(name)
+            ) &&
+            (
+                !spec ||
+                p.spec.includes(spec) ||
+                pinyin(p.spec, { pattern: 'first', toneType: 'none', type: 'array' }).join('').includes(spec) ||
+                pinyin(p.spec, { toneType: 'none', type: 'array' }).join('').includes(spec)
+            ) &&
+            (
+                !unit ||
+                unit.includes(p.unit)
+            )
+        })
+    } else {
+        newProducts = products.filter(p => {
+            let textToVerify = [p.unit]
+            for (const key of ['material', 'name', 'spec']) {
+                const value = p[key]
+                if (value != null && value !== '') {
+                    textToVerify = [
+                        ...textToVerify, value,
+                        pinyin(value, { pattern: 'first', toneType: 'none', type: 'array' }).join(''),
+                        pinyin(value, { toneType: 'none', type: 'array' }).join(''),
+                    ]
+                }
+            }
+            for (const keyword of keywords) {
+                const results = textToVerify.map(text => text.includes(keyword))
+                if (results.filter(r => r).length === 0) {
+                    return false
+                }
+            }
+            return true
+        })
+    }
+    res.send(newProducts)
+}
+
+module.exports = { filterPartners, filterProducts }
