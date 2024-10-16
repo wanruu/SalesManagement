@@ -1,7 +1,7 @@
 import React from 'react'
-import { Table, Tag } from 'antd'
-import { DELIVER_COLORS } from '../../../utils/config'
+import { Table } from 'antd'
 import { useSelector } from 'react-redux'
+import { DeliverTag } from '../../Tag'
 
 
 /*
@@ -38,10 +38,8 @@ const InvoiceViewTable = ({ type, invoice }) => {
         { title: '备注', dataIndex: 'remark', width: 200 },
         !ifShowDelivered ? null :
         {
-            title: '配送', dataIndex: 'delivered', fixed: 'right', render: delivered => {
-                const text = delivered ? '已配送' : '未配送'
-                return <Tag color={DELIVER_COLORS[text]}>{text}</Tag>
-            }
+            title: '配送', dataIndex: 'delivered', fixed: 'right', render: delivered => 
+                <DeliverTag value={delivered ? '已配送' : '未配送'} />
         }
     ]
     .filter(i => i != null)

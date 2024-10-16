@@ -14,18 +14,6 @@ export const DEFAULT_PAGINATION = {
 }
 
 
-export const INVOICE_DELIVER_OPTIONS = [
-    '未配送', '部分配送', '全部配送'
-].map(val => ({ value: val, label: val }))
-
-
-export const DELIVER_COLORS = {
-    '全部配送': 'green',
-    '已配送': 'green',
-    '未配送': 'red',
-    '部分配送': 'gold'
-}
-
 export const INVOICE_BASICS = {
     salesOrder: {
         title: '销售单',
