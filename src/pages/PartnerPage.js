@@ -1,15 +1,7 @@
 import React, { useState, useEffect } from 'react'
-import { Table, Button, Space, message, Modal, Tag, theme, Affix } from 'antd'
-import {
-    ExclamationCircleFilled, PlusOutlined, ClearOutlined,
-    ExportOutlined, DownOutlined, UpOutlined
-} from '@ant-design/icons'
+import { Button, Space, message, Modal } from 'antd'
+import { ExclamationCircleFilled, ClearOutlined, ExportOutlined } from '@ant-design/icons'
 import { useSelector, useDispatch } from 'react-redux'
-
-
-const { confirm } = Modal
-
-
 import { partnerService } from '../services'
 import { PartnerForm } from '../components/PartnerManager'
 import { MyWorkBook, MyWorkSheet } from '../utils/export'
@@ -17,22 +9,21 @@ import { PartnerTable } from '../components/Table'
 import SearchManager from '../components/Search/SearchManager'
 
 
-export default function PartnerPage() {
+const { confirm } = Modal
+
+
+const PartnerPage = () => {
     const [partners, setPartners] = useState([])
 
     const [messageApi, contextHolder] = message.useMessage()
     const [editPartner, setEditPartner] = useState(undefined)
     const [selectedPartner, setSelectedPartner] = useState(undefined)
-    const { token: { colorBgContainer }, } = theme.useToken()
     
     // redux
-    const showSearchBox = useSelector(state => state.page.partner.showSearchBox)
     const searchMode = useSelector(state => state.page.partner.searchMode)
     const keywords = useSelector(state => state.page.partner.keywords)
     const searchForm = useSelector(state => state.page.partner.searchForm)
     const dispatch = useDispatch()
-
-    const [affixed, setAffixed] = useState(false)
 
     const load = () => {
         const params = searchMode == 'simple' ? { keyword: keywords } : searchForm
@@ -125,3 +116,5 @@ export default function PartnerPage() {
         
     </Space>
 }
+
+export default PartnerPage
