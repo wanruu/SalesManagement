@@ -1,8 +1,9 @@
 import React, { useState, useEffect } from 'react'
 import { Form, Input, Table, Button, Space } from 'antd'
-import { INVOICE_BASICS, invoiceSettings } from '../../../utils/config'
+import { INVOICE_BASICS } from '../../../utils/config'
 import { invoiceService } from '../../../services'
 import { PartnerInput } from '../../Input'
+import { useSelector } from 'react-redux'
 
 
 const { Item } = Form
@@ -14,6 +15,7 @@ const { Item } = Form
 */
 const OrderSelection = ({ type, onCancel }) => {
     const orderType = INVOICE_BASICS[type].orderType
+    const amountSign = useSelector(state => state.functionSetting.amountSign.value)
 
     const form = Form.useFormInstance()
     const [searchForm] = Form.useForm()
@@ -46,10 +48,7 @@ const OrderSelection = ({ type, onCancel }) => {
             { title: '序号', render: (_, __, idx) => idx + 1 },
             { title: INVOICE_BASICS[orderType]?.title, dataIndex: 'number', },
             { title: INVOICE_BASICS[orderType]?.partnerTitle, dataIndex: 'partnerName', },
-            { title: '金额', dataIndex: 'amount', render: amount => {
-                const amountSign = invoiceSettings.get('ifShowAmountSign') === 'true' ? invoiceSettings.get('amountSign') : ''
-                return amountSign + amount.toLocaleString()
-            }},
+            { title: '金额', dataIndex: 'amount', render: amount => amountSign + amount.toLocaleString() },
             { title: '日期', dataIndex: 'date' },
             { title: '操作', render: (_, order) => (
                 form.getFieldValue(['order', 'id']) == order.id ?

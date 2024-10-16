@@ -6,7 +6,7 @@ import {
 } from '@ant-design/icons'
 import _ from 'lodash'
 import { useDispatch, useSelector } from 'react-redux'
-import { DEFAULT_PAGINATION, invoiceSettings } from '../utils/config'
+import { DEFAULT_PAGINATION } from '../utils/config'
 import { MyWorkBook, MyWorkSheet } from '../utils/export'
 import ProductSearchBox from '../components/Search/ProductSearch'
 import { ProductForm } from '../components/ProductManager'
@@ -32,9 +32,8 @@ export default function ProductPage() {
     // redux
     const showSearchBox = useSelector(state => state.page.product.showSearchBox)
     const dispatch = useDispatch()
-    
-
-    const ifShowMaterial = invoiceSettings.get('ifShowMaterial') === 'true'
+    const ifShowMaterial = useSelector(state => state.functionSetting.ifShowMaterial.value)
+    const defaultUnit = useSelector(state => state.functionSetting.defaultUnit.value)
 
     const load = () => {
         productService.fetchMany().then(res => {
@@ -88,7 +87,6 @@ export default function ProductPage() {
     }
 
     const handleExport = () => {
-        const ifShowMaterial = invoiceSettings.get('ifShowMaterial') === 'true'
         const headers = [
             ifShowMaterial ? { title: '材质', dataIndex: 'material' } : null,
             { title: '名称', dataIndex: 'name' },
@@ -105,7 +103,7 @@ export default function ProductPage() {
     const handleCreateProduct = () => {
         setEditProduct({
             material: '', name: '', spec: '',
-            unit: JSON.parse(invoiceSettings.get('unitOptions')).filter(unit => unit.default)[0].label
+            unit: defaultUnit
         })
     }
 

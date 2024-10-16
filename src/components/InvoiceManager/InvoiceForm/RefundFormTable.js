@@ -2,8 +2,8 @@ import React from 'react'
 import { Form, Input, Table, Button, InputNumber, Select, Space, Col } from 'antd'
 import { EditOutlined } from '@ant-design/icons'
 import Decimal from 'decimal.js'
-import { invoiceSettings } from '../../../utils/config'
 import { updateItemAmount, updateTotalAmount, updateQuantityByRemark, deliveredOptions } from './InvoiceFormTableUtils'
+import { useSelector } from 'react-redux'
 
 
 const { Item } = Form
@@ -18,9 +18,9 @@ const getPopupContainer = () => document.getElementById(tableId)
  */
 const AllRefundTable = () => {
     const form = Form.useFormInstance()
-    const ifShowDiscount = invoiceSettings.get('ifShowDiscount') === 'true'
-    const ifShowMaterial = invoiceSettings.get('ifShowMaterial') === 'true'
-    const ifShowDelivered = invoiceSettings.get('ifShowDelivered') === 'true'
+    const ifShowDiscount = useSelector(state => state.functionSetting.ifShowDiscount.value)
+    const ifShowMaterial = useSelector(state => state.functionSetting.ifShowMaterial.value)
+    const ifShowDelivered = useSelector(state => state.functionSetting.ifShowDelivered.value)
 
     const refund = (rowIndex) => {
         const item = form.getFieldValue(['order', 'invoiceItems', rowIndex])
@@ -138,11 +138,11 @@ const AllRefundTable = () => {
  */
 const RefundTable = () => {
     const form = Form.useFormInstance()
-    const ifShowDiscount = invoiceSettings.get('ifShowDiscount') === 'true'
-    const ifShowMaterial = invoiceSettings.get('ifShowMaterial') === 'true'
-    const ifShowDelivered = invoiceSettings.get('ifShowDelivered') === 'true'
-    const allowEditAmount = invoiceSettings.get('allowEditAmount') === 'true'
-    const ifShowRemarkCalculator = invoiceSettings.get('ifShowRemarkCalculator') === 'true'
+    const ifShowDiscount = useSelector(state => state.functionSetting.ifShowDiscount.value)
+    const ifShowMaterial = useSelector(state => state.functionSetting.ifShowMaterial.value)
+    const ifShowDelivered = useSelector(state => state.functionSetting.ifShowDelivered.value)
+    const allowEditAmount = useSelector(state => state.functionSetting.allowEditAmount.value)
+    const ifShowRemarkCalculator = useSelector(state => state.functionSetting.ifShowRemarkCalculator.value)
 
     const render = (name) => (
         (_, field, idx) => form.getFieldValue(['invoiceItems', field.name, ...name])

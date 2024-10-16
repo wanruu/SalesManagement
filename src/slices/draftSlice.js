@@ -13,10 +13,10 @@ const draftSlice = createSlice({
     },
     reducers: {
         add(state, action) {
-            const { type } = action.payload
+            const { type, defaultUnit } = action.payload
             const tabIndex = state.newTabIndex
             const newDraft = {
-                editInvoice: type.includes('Order') ? emptyInvoice(1) : emptyInvoice(0),
+                editInvoice: type.includes('Order') ? emptyInvoice(1, defaultUnit) : emptyInvoice(0),
                 type: type,
                 key: tabIndex,
                 label: `新建 ${tabIndex}`,
@@ -108,13 +108,13 @@ const draftSlice = createSlice({
             }
         },
         updateType(state, action) {
-            const { type, key } = action.payload
+            const { type, key, defaultUnit } = action.payload
             const newDrafts = state.drafts.map(draft => {
                 if (draft.key === key) {
                     return { 
                         ...draft, 
                         type: type, 
-                        editInvoice: type.includes('Order') ? emptyInvoice(1) : emptyInvoice(0)
+                        editInvoice: type.includes('Order') ? emptyInvoice(1, defaultUnit) : emptyInvoice(0)
                     }
                 }
                 return draft
@@ -145,7 +145,10 @@ const draftSlice = createSlice({
             const { values, key } = action.payload
             const newDrafts = state.drafts.map(draft => {
                 if (draft.key === key) {
-                    return { ...draft, editInvoice: values }
+                    return { 
+                        ...draft, 
+                        editInvoice: values
+                    }
                 }
                 return draft
             })

@@ -1,8 +1,5 @@
 import dayjs from 'dayjs'
-import Decimal from 'decimal.js'
-// import uuid from 'react-uuid'
-
-import { invoiceSettings } from './config'
+import store from '../store'
 
 
 export const dcInvoice = (invoice) => {
@@ -12,18 +9,22 @@ export const dcInvoice = (invoice) => {
     return newInvoice
 }
 
-export const emptyInvoiceItem = () => {
-    const unitOptions = JSON.parse(invoiceSettings.get('unitOptions'))
-    const defaultUnit = unitOptions.filter(o => o.default)[0].label
+export const emptyInvoiceItem = (unit=null) => {
+    if (!unit) {
+        unit = store.getState().functionSetting.defaultUnit.value
+    }
     return {
-        product: { material: '', name: '', spec: '', unit: defaultUnit, },
+        product: { material: '', name: '', spec: '', unit: unit, },
         quantity: null, price: null, originalAmount: '0', 
         discount: 100, amount: '0', remark: '', 
         delivered: false, weight: null
     }
 }
 
-export const emptyInvoice = (itemsNum=0, type='salesOrder') => {
+export const emptyInvoice = (itemsNum=0, defaultUnit=null) => {
+    if (!defaultUnit && itemsNum !== 0) {
+        defaultUnit = store.getState().functionSetting.defaultUnit.value
+    }
     return {
         partnerName: '',
         date: dayjs(),
@@ -31,14 +32,13 @@ export const emptyInvoice = (itemsNum=0, type='salesOrder') => {
         amount: '0',
         prepayment: '',
         payment: '',
-        type: type,
-        invoiceItems:  [...Array(itemsNum).keys()].map(_ => emptyInvoiceItem())
+        invoiceItems:  [...Array(itemsNum).keys()].map(_ => emptyInvoiceItem(defaultUnit))
     }
 }
 
 
 export const isOrderItemEmpty = (item) => {
-    const ifShowMaterial = invoiceSettings.get('ifShowMaterial') === 'true'
+    const ifShowMaterial = store.getState().functionSetting.ifShowMaterial.value
     if (ifShowMaterial) 
         return item.product.material === '' && item.product.name === '' && item.product.spec === '' && 
             item.quantity === null && item.price === null && item.remark === '' && 
@@ -54,7 +54,7 @@ export const isOrderItemComplete = (item) => {
 }
 
 export const isProductRepeat = (items) => {
-    const ifShowMaterial = invoiceSettings.get('ifShowMaterial') === 'true'
+    const ifShowMaterial = store.getState().functionSetting.ifShowMaterial.value
     const isSameProduct = (item1, item2) => {
         if (ifShowMaterial) return item1.name === item2.name && item1.spec === item2.spec && item1.material === item2.material
         return item1.name === item2.name && item1.spec === item2.spec

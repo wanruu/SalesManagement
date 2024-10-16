@@ -2,11 +2,11 @@ import React, { useState } from 'react'
 import { Form, Input, Table, Button, InputNumber, Select, Space } from 'antd'
 import { LineChartOutlined } from '@ant-design/icons'
 import Decimal from 'decimal.js'
-import { invoiceSettings } from '../../../utils/config'
 import { emptyInvoiceItem } from '../../../utils/invoiceUtils'
 import { ProductInput } from '../../Input'
 import { productService } from '../../../services'
 import { updateItemAmount, updateTotalAmount, updateQuantityByRemark, deliveredOptions } from './InvoiceFormTableUtils'
+import { useSelector } from 'react-redux'
 
 const { Item } = Form
 
@@ -20,11 +20,12 @@ const OrderFormTable = () => {
     const form = Form.useFormInstance()
     const [historyProduct, setHistoryProduct] = useState(undefined)  // TODO: history modal
 
-    const ifShowDiscount = invoiceSettings.get('ifShowDiscount') === 'true'
-    const ifShowMaterial = invoiceSettings.get('ifShowMaterial') === 'true'
-    const ifShowDelivered = invoiceSettings.get('ifShowDelivered') === 'true'
-    const allowEditAmount = invoiceSettings.get('allowEditAmount') === 'true'
-    const ifShowRemarkCalculator = invoiceSettings.get('ifShowRemarkCalculator') === 'true'
+    const ifShowDiscount = useSelector(state => state.functionSetting.ifShowDiscount.value)
+    const ifShowMaterial = useSelector(state => state.functionSetting.ifShowMaterial.value)
+    const ifShowDelivered = useSelector(state => state.functionSetting.ifShowDelivered.value)
+    const allowEditAmount = useSelector(state => state.functionSetting.allowEditAmount.value)
+    const ifShowRemarkCalculator = useSelector(state => state.functionSetting.ifShowRemarkCalculator.value)
+    const units = useSelector(state => state.functionSetting.units.value)
 
     const updateUnit = (rowIndex) => {
         const product = form.getFieldValue(['invoiceItems', rowIndex, 'product'])
@@ -59,7 +60,7 @@ const OrderFormTable = () => {
             }}>
                 {({ getFieldValue }) => {
                     const product = getFieldValue(['invoiceItems', field.name, 'product'])
-                    const unitOptions = JSON.parse(invoiceSettings.get('unitOptions')).filter(unit => unit.showing)
+                    const unitOptions = units.map(u => ({ label: u, value: u }))
                     return product.id ? product?.unit :
                         <Item name={[field.name, 'product', 'unit']} rules={[{required: true}]} noStyle>
                             <Select align='center' style={{ width: '100%' }} options={unitOptions}

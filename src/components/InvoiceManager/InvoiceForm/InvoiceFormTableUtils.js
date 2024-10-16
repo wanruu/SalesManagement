@@ -1,6 +1,6 @@
 import { evaluate } from 'mathjs'
 import Decimal from 'decimal.js'
-import { invoiceSettings } from '../../../utils/config'
+import store from '../../../store'
 
 
 const calcEquation = (equation) => {
@@ -11,17 +11,17 @@ const calcEquation = (equation) => {
 }
 
 const calcItemAmount = (item) => {
+    const itemAmountDigitNum = store.getState().functionSetting.itemAmountDigitNum.value
     const quantity = Decimal(item.quantity || 0)
     const price = Decimal(item.price || 0)
     const discount = Decimal(item.discount || 0)
-    const itemAmountDigitNum = parseInt(invoiceSettings.get('itemAmountDigitNum'))
     const originalAmount = quantity.times(price).toFixed(itemAmountDigitNum, Decimal.ROUND_HALF_UP)
     const amount = quantity.times(price).times(discount).dividedBy(100).toFixed(itemAmountDigitNum, Decimal.ROUND_HALF_UP)
     return { originalAmount, amount }
 }
 
 const calcTotalAmount = (items) => {
-    const invoiceAmountDigitNum = parseInt(invoiceSettings.get('invoiceAmountDigitNum'))
+    const invoiceAmountDigitNum = store.getState().functionSetting.invoiceAmountDigitNum.value
     const amount = items.reduce((previous, current) => {
         return previous.plus(current.amount || 0)
     }, Decimal(0)).toFixed(invoiceAmountDigitNum, Decimal.ROUND_HALF_UP)

@@ -11,7 +11,7 @@ const { confirm } = Modal
 
 import { invoiceService } from '../services'
 
-import { INVOICE_TITLE_OPTIONS, invoiceSettings } from '../utils/config'
+import { INVOICE_TITLE_OPTIONS } from '../utils/config'
 import { MyWorkBook, MyWorkSheet } from '../utils/export'
 import { InvoiceSearch } from '../components/Search'
 import { emptyInvoice } from '../utils/invoiceUtils'
@@ -83,10 +83,11 @@ export default function InvoicePage({ type }) {
         })
     }
 
+    const ifShowDelivered = useSelector(state => state.functionSetting.ifShowDelivered.value)
+    const ifShowPayment = useSelector(state => state.functionSetting.ifShowPayment.value)
+
     // button handler
     const handleExport = () => {
-        const ifShowDelivered = invoiceSettings.get('ifShowDelivered') == 'true'
-        const ifShowPayment = invoiceSettings.get('ifShowPayment') === 'true'
         const headers = [
             { title: '单号', dataIndex: 'id' },
             { title: '客户', dataIndex: 'partner' },

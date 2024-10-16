@@ -5,7 +5,7 @@ import { InvoicePrint }  from './InvoicePrint'
 import { InvoiceView } from './InvoiceView'
 import { InvoiceForm } from './InvoiceForm'
 import { invoiceService } from '../../services'
-
+import { useSelector } from 'react-redux'
 
 /*
     Required: type
@@ -26,12 +26,10 @@ const InvoiceManager = ({
 }) => {
     const [invoice, setInvoice] = useState(undefined)
     const [mode, setMode] = useState(initMode)
-
+    
     const load = () => {
         const id = initInvoice?.id
-        if (!id) {
-            setInvoice(type.includes('Order') ? emptyInvoice(1) : emptyInvoice(0))
-        } else {
+        if (id) {
             invoiceService.fetch(type, id).then(res => {
                 setInvoice(res.data)
             }).catch(err => {

@@ -5,9 +5,6 @@ import { pinyin } from 'pinyin-pro'
 import { useSelector, useDispatch } from 'react-redux'
 
 
-import { invoiceSettings } from '../../utils/config'
-
-
 const { Item } = Form
 
 
@@ -138,6 +135,9 @@ function ComplexSearchBox(props) {
 
     const searchForm = useSelector(state => state.page.product.searchForm || {})
     const dispatch = useDispatch()
+    const ifShowMaterial = useSelector(state => state.functionSetting.ifShowMaterial.value)
+    const units = useSelector(state => state.functionSetting.units.value)
+    const unitOptions = units.map(u => ({ label: u, value: u }))
 
     // Form control
     const initForm = () => {
@@ -194,7 +194,7 @@ function ComplexSearchBox(props) {
             onValuesChange={handleFormValuesChange} onResetCapture={handleFormReset}
             labelCol={{ span: 4 }} wrapperCol={{ span: 20 }}>
             {
-                invoiceSettings.get('ifShowMaterial') === 'true' ?
+                ifShowMaterial ?
                     <Item label='材质' name='material' {...itemStyle}>
                         <Input placeholder='材质' allowClear />
                     </Item> : null
@@ -207,7 +207,7 @@ function ComplexSearchBox(props) {
             </Item>
             <Item label='单位' name='unit' {...itemStyle}>
                 <Select placeholder='选择单位' allowClear mode='multiple'
-                    options={JSON.parse(invoiceSettings.get('unitOptions')).filter(o => o.showing)}
+                    options={unitOptions}
                 />
             </Item>
             <Item label=' ' colon={false} style={{ marginTop: 0, marginBottom: 0 }} >

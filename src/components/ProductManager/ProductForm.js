@@ -1,7 +1,8 @@
 import React, { useEffect } from 'react'
 import { Input, Space, Button, Form, message, Col, Select } from 'antd'
-import { invoiceSettings } from '../../utils/config'
 import { productService } from '../../services'
+import { useSelector } from 'react-redux'
+
 
 const { Item } = Form
 
@@ -12,9 +13,10 @@ const { Item } = Form
 */
 const ProductForm = ({ product, onProductChange }) => {
     const [form] = Form.useForm()
-    const ifShowMaterial = invoiceSettings.get('ifShowMaterial') === 'true'
-    const unitOptions = JSON.parse(invoiceSettings.get('unitOptions')).filter(unit => unit.showing)
-    const defaultUnit = unitOptions.find(o => o.default)?.value ?? unitOptions[0].value
+    const ifShowMaterial = useSelector(state => state.functionSetting.ifShowMaterial.value)
+    const units = useSelector(state => state.functionSetting.units.value)
+    const unitOptions = units.map(u => ({ label: u, value: u }))
+    const defaultUnit = useSelector(state => state.functionSetting.defaultUnit.value)
 
     const handleFinish = async () => {
         const data = form.getFieldsValue(true)

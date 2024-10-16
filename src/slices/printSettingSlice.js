@@ -29,7 +29,7 @@ const DEFAULT_SETTINGS = {
     footerFontSize: { value: null, defaultValue: 12 },
     // table
     tableFontSize: { value: null, defaultValue: 14 },
-    amountSign: { value: '¥', defaultValue: '' },
+    amountSign: { value: '￥', defaultValue: '' },
 }
 
 
