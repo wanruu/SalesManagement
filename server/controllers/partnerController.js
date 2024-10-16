@@ -1,28 +1,30 @@
 const { Op } = require('sequelize')
 const BaseController = require('./baseController')
-const { Partner, Invoice, sequelize } = require('../models')
+const { Partner, Invoice } = require('../models')
 
 
 class PartnerController extends BaseController {
     index = async (req, res, next) => {
         try {
+            const { sortBy='name', order='ASC' } = req.query
             const options = {
                 include: {
                     model: Invoice,
                     as: 'invoices',
-                    attributes: []
+                    attributes: ['type']
                 },
                 group: ['Partner.name'],
-                attributes: [
-                    ...Object.keys(Partner.attributes),
-                    [sequelize.fn('COUNT', sequelize.col('invoices.id')), 'invoiceNum']
-                ],
-                order: [
-                    ['name', 'ASC']
-                ]
+                order: [[sortBy, order]]
             }
             const partners = await Partner.findAll(options)
-            return res.send(partners)
+            partners.forEach(p => {
+                const newPartner = p.dataValues
+                newPartner.salesNum = p.invoices.filter(i => i.type.includes('sales')).length
+                newPartner.purchaseNum = p.invoices.filter(i => i.type.includes('purchase')).length
+                delete newPartner.invoices
+            })
+            req.partners = partners
+            next()
         } catch (error) {
             return this.handleError(res, error)
         }
