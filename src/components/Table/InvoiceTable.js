@@ -2,7 +2,7 @@ import React, { useMemo } from 'react'
 import { Table, Button } from 'antd'
 import { DeleteOutlined } from '@ant-design/icons'
 import { DeliverTag } from '../Tag'
-
+import { useSelector } from 'react-redux'
 import { DEFAULT_PAGINATION, INVOICE_BASICS } from '../../utils/config'
 
 
