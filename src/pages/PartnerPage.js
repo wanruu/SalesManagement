@@ -13,27 +13,33 @@ const { confirm } = Modal
 import { partnerService } from '../services'
 import { PartnerForm } from '../components/PartnerManager'
 import { MyWorkBook, MyWorkSheet } from '../utils/export'
-import { PartnerSearch } from '../components/Search'
 import { PartnerTable } from '../components/Table'
+import SearchManager from '../components/Search/SearchManager'
 
 
 export default function PartnerPage() {
     const [partners, setPartners] = useState([])
-    const [filteredPartners, setFilteredPartners] = useState([])
 
     const [messageApi, contextHolder] = message.useMessage()
     const [editPartner, setEditPartner] = useState(undefined)
     const [selectedPartner, setSelectedPartner] = useState(undefined)
     const { token: { colorBgContainer }, } = theme.useToken()
-    const showSearchBox = useSelector(state => state.page.partner?.showSearchBox)
+    
+    // redux
+    const showSearchBox = useSelector(state => state.page.partner.showSearchBox)
+    const searchMode = useSelector(state => state.page.partner.searchMode)
+    const keywords = useSelector(state => state.page.partner.keywords)
+    const searchForm = useSelector(state => state.page.partner.searchForm)
     const dispatch = useDispatch()
+
     const [affixed, setAffixed] = useState(false)
 
     const load = () => {
-        partnerService.fetchMany().then(res => {
+        const params = searchMode == 'simple' ? { keyword: keywords } : searchForm
+        partnerService.fetchMany(params).then(res => {
             setPartners(res.data)
         }).catch(err => {
-
+            setPartners([])
         })
     }
 
@@ -65,7 +71,7 @@ export default function PartnerPage() {
         ]
         let wb = new MyWorkBook('交易对象')
         let ws = new MyWorkSheet('总览')
-        ws.writeJson(filteredPartners.map(p => {
+        ws.writeJson(partners.map(p => {
             p.isCustomer = p.isCustomer ? '是' : ''
             p.isProvider = p.isProvider ? '是' : ''
             return p
@@ -73,8 +79,6 @@ export default function PartnerPage() {
         wb.writeSheet(ws)
         wb.save()
     }
-
-    useEffect(load, [])
 
     // scroll position listener & recover
     const scrollY = useSelector(state => state.page.partner.scrollY)
@@ -107,26 +111,17 @@ export default function PartnerPage() {
             
         </Modal>
 
-        {/* <Affix offsetTop={0} onChange={setAffixed}>
-            <Space className={`toolBar-${affixed}`} direction='vertical' style={{ background: colorBgContainer }} size={0}>
-                <Space wrap>
-                    <Button icon={<PlusOutlined />} onClick={_ => setEditPartner({ name: '', phone: '', address: '', folder: '' })}>新增</Button>
-                    <Button icon={<ExportOutlined />} onClick={handleExport} disabled={filteredPartners.length === 0}>导出</Button>
-                    <Button icon={<ClearOutlined />} type='dashed' danger disabled={filteredPartners.filter(p => !p.isCustomer && !p.isProvider).length === 0}
-                        onClick={_ => showDeleteConfirm(filteredPartners.filter(p => !p.isCustomer && !p.isProvider).map(p => p.name))}>清理</Button>
-                    <Button onClick={_ => dispatch({ type: 'page/toggleShowSearchBox', menuKey: 'partner' })}
-                        icon={showSearchBox ? <UpOutlined /> : <DownOutlined />}>
-                        {showSearchBox ? '收起搜索' : '展开搜索'}
-                    </Button>
-                </Space>
-                <PartnerSearch data={partners} setFilteredData={setFilteredPartners} />
-            </Space>
-        </Affix> */}
-
+        <Space wrap>
+            <Button icon={<ExportOutlined />} onClick={handleExport} disabled={partners.length === 0}>导出</Button>
+            <Button icon={<ClearOutlined />} type='dashed' danger disabled={partners.filter(p => p.salesNum==0 && p.purchaseNum==0).length === 0}
+                onClick={_ => showDeleteConfirm(partners.filter(p => p.salesNum==0 && p.purchaseNum==0))}>清理</Button>
+        </Space>
+        <SearchManager pageKey='partner' onSearch={load} />
         <PartnerTable partners={partners} 
             onEdit={p => setEditPartner(p)} 
             onSelect={p => setSelectedPartner(p)}
             onDelete={p => showDeleteConfirm([p])}
         />
+        
     </Space>
 }
