@@ -8,9 +8,6 @@ import { useSelector, useDispatch } from 'react-redux'
 // import PhoneAccessView from '../components/common/PhoneAccessView'
 import PrintSettingView from '../components/SettingItems/PrintSettingView'
 import FunctionSettingView from '../components/SettingItems/FunctionSettingView'
-import ProductSettingView from '../components/SettingItems/ProductSettingView'
-import DisplaySettingView from '../components/SettingItems/DisplaySettingView'
-import CustomSettingView from '../components/SettingItems/CustomSettingView'
 
 
 
@@ -105,25 +102,16 @@ export default function SettingPage() {
 
     const anchorItems = [
         {
-            key: 'product', href: '#product', title: '产品设置', content: <ProductSettingView />,
-            children: [
-                { key: 'product-material', href: '#product-material', title: '材质' },
-                { key: 'product-unit', href: '#product-unit', title: '单位' },
-            ]
-        },
-        {
             key: 'function', href: '#function', title: '功能设置', content: <FunctionSettingView />,
             children: [
-                { key: 'function-amount', href: '#function-amount', title: '金额计算' },
+                { key: 'function-material', href: '#function-material', title: '材质' },
+                { key: 'function-unit', href: '#function-unit', title: '单位' },
+                { key: 'function-amount', href: '#function-amount', title: '金额' },
                 { key: 'function-discount', href: '#function-discount', title: '折扣' },
+                { key: 'function-remark', href: '#function-remark', title: '备注' },
                 { key: 'function-deliver', href: '#function-deliver', title: '配送' },
-                { key: 'function-payment', href: '#function-payment', title: '付款' }
-            ]
-        },
-        {
-            key: 'custom', href: '#custom', title: '用户定制', content: <CustomSettingView />,
-            children: [
-                { key: 'custom-remark-quantity', href: '#custom-remark-quantity', title: '备注计算' },
+                { key: 'function-payment', href: '#function-payment', title: '付款' },
+                { key: 'function-refund', href: '#function-refund', title: '退货' },
             ]
         },
         {
@@ -135,12 +123,6 @@ export default function SettingPage() {
                 { key: 'print-table', href: '#print-table', title: '表格' },
                 { key: 'print-footer', href: '#print-footer', title: '脚注' },
                 { key: 'print-preview', href: '#print-preview', title: '打印预览' }
-            ]
-        },
-        {
-            key: 'display', href: '#display', title: '显示设置', content: <DisplaySettingView />,
-            children: [
-                { key: 'display-amount', href: '#display-amount', title: '金额' }
             ]
         },
     ]

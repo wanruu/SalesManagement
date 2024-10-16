@@ -6,34 +6,35 @@ const SLICE_NAME = 'functionSetting'
 
 const DEFAULT_SETTINGS = {
     // discount
-    ifShowDiscount: false,
+    ifShowDiscount: { value: false, defaultValue: false },
     // material
-    ifShowMaterial: false,
+    ifShowMaterial: { value: false, defaultValue: false },
     // delivered
-    ifShowDelivered: false,
+    ifShowDelivered: { value: false, defaultValue: false },
     // payment
-    ifShowPayment: false,
+    ifShowPayment: { value: false, defaultValue: false },
     // refund
-    ifShowRefund: false,
+    ifShowRefund: { value: true, defaultValue: true },
     // unit
-    units: ['只', '千只'],
-    defaultUnit: '只',
+    units: { value: ['只', '千只'], defaultValue: ['只', '千只'] },
+    defaultUnit: { value: '只', defaultValue: '只' },
     // amount
-    amountSign: '￥',
-    allowEditAmount: false,
-    itemAmountDigitNum: 3,
-    invoiceAmountDigitNum: 2,
+    amountSign: { value: '￥', defaultValue: '' },
+    allowEditAmount: { value: false, defaultValue: false },
+    itemAmountDigitNum: { value: 3, defaultValue: 3 },
+    invoiceAmountDigitNum: { value: 2, defaultValue: 2 },
     // remark calculator
-    ifShowRemarkCalculator: true,
+    ifShowRemarkCalculator: { value: true, defaultValue: true },
 }
 
 
 const initialState = (() => {
-    const settings = {}
-    for (const key of Object.keys(DEFAULT_SETTINGS)) {
+    const settings = DEFAULT_SETTINGS
+    for (const key of Object.keys(settings)) {
         const localValue = JSON.parse(localStorage.getItem(`${SLICE_NAME}/${key}`))
-        const defaultValue = DEFAULT_SETTINGS[key]
-        settings[key] = { value: localValue, defaultValue: defaultValue }
+        if (localValue !== null) {
+            settings[key].value = localValue
+        }
     }
     return settings
 })()

@@ -2,9 +2,10 @@ import React, { useState } from 'react'
 import { Form, Button, InputNumber, Row, DatePicker, Space, Col, Modal } from 'antd'
 import { EditOutlined } from '@ant-design/icons'
 import Decimal from 'decimal.js'
-import { INVOICE_BASICS, invoiceSettings } from '../../../utils/config'
+import { INVOICE_BASICS } from '../../../utils/config'
 import { PartnerInput } from '../../Input'
 import OrderSelection from './OrderSelection'
+import { useSelector } from 'react-redux'
 
 
 const { Item } = Form
@@ -19,15 +20,14 @@ const { Item } = Form
 const InvoiceFormHeader = ({ type }) => {
     const form = Form.useFormInstance()
     const [isSelectionModalOpen, setSelectionModalOpen] = useState(false)
+    const allowEditAmount = useSelector(state => state.functionSetting.allowEditAmount.value)
+    const ifShowPayment = useSelector(state => state.functionSetting.ifShowPayment.value)
 
     // Layout
     const colLayout = { xs: 24, sm: 11, md: 7 }
     const formItemLayout = { labelCol: { span: 8 } }
 
     const isRefund = ['salesRefund', 'purchaseRefund'].includes(type)
-    const allowEditAmount = invoiceSettings.get('allowEditAmount') === 'true'
-    const ifShowPayment = invoiceSettings.get('ifShowPayment') === 'true'
-
     const modalTitle = `选择${INVOICE_BASICS[INVOICE_BASICS[type].orderType]?.title}（待退货）`
 
     return <Space direction='vertical' style={{ width: '100%' }} size={0}>

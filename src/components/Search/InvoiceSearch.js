@@ -3,8 +3,7 @@ import { Tag, Form, Select, DatePicker, Space, Input, Button, InputNumber, Card,
 import { ExclamationCircleOutlined, SwapOutlined } from '@ant-design/icons'
 import { pinyin } from 'pinyin-pro'
 import { useSelector, useDispatch } from 'react-redux'
-
-import { DATE_FORMAT, DELIVER_COLORS, INVOICE_DELIVER_OPTIONS, invoiceSettings } from '../../utils/config'
+import { DATE_FORMAT, DELIVER_COLORS, INVOICE_DELIVER_OPTIONS } from '../../utils/config'
 
 
 const { Item } = Form
@@ -68,6 +67,7 @@ function ComplexSearchBox(props) {
 
     const searchForm = useSelector(state => state.page[props.type]?.searchForm || {})
     const dispatch = useDispatch()
+    const ifShowMaterial = useSelector(state => state.functionSetting.ifShowMaterial.value)
 
     // Form control
     const initForm = () => {
@@ -151,7 +151,7 @@ function ComplexSearchBox(props) {
                 </Item>
             </Item>
             {
-                invoiceSettings.get('ifShowDelivered') === 'true' ?
+                ifShowMaterial ?
                     <Item label='配送情况' name='delivered' {...itemStyle}>
                         <Select placeholder='选择配送情况'
                             mode='multiple' tagRender={deliveredTagRender}

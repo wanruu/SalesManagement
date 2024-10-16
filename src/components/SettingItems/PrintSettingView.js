@@ -1,24 +1,14 @@
-import { Input, InputNumber, Space, Select, Checkbox, Form, Radio, Row, Divider, Tooltip, Card, Button } from 'antd'
+import { Input, InputNumber, Space, Select, Checkbox, Form, Radio, Divider, Card } from 'antd'
 import React, { useState } from 'react'
-import { createRoot } from 'react-dom/client'
 import dayjs from 'dayjs'
-import { QuestionCircleOutlined } from '@ant-design/icons'
 import { useSelector, useDispatch } from 'react-redux'
 import { DATE_FORMAT, INVOICE_BASICS } from '../../utils/config'
 import { InvoicePrint } from '../InvoiceManager'
 import Title from 'antd/es/typography/Title'
+import { TipsView } from './utils'
 
 
 const { Item } = Form
-
-
-const TipsView = ({ title }) => {
-    return (
-        <Tooltip title={title} >
-            <QuestionCircleOutlined style={{ marginLeft: '3px', color: 'gray' }} />
-        </Tooltip>
-    )
-}
 
 
 const subtitleStyleOptions = [

@@ -1,5 +1,4 @@
 import React from 'react'
-import { invoiceSettings } from '../../../utils/config'
 import { digitUppercase } from '../../../utils/invoiceUtils'
 import { useSelector } from 'react-redux'
 import './InvoicePrintTable.scss'
@@ -9,7 +8,8 @@ import './InvoicePrintTable.scss'
     Required: invoice
 */
 const InvoicePrintTable = ({ invoice }) => {
-    const ifShowMaterial = invoiceSettings.get('ifShowMaterial') === 'true'
+    const ifShowMaterial = useSelector(state => state.functionSetting.ifShowMaterial.value)
+
     const amountSign = useSelector(state => state.printSetting.amountSign.value)
     const fontSize = useSelector(state => state.printSetting.tableFontSize.value || state.printSetting.tableFontSize.defaultValue)
     const tableColumns = [

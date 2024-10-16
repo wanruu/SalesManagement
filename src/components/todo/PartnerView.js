@@ -5,9 +5,10 @@ import Decimal from 'decimal.js'
 import { TableOutlined, CloseOutlined, SearchOutlined } from '@ant-design/icons'
 
 
-import { baseURL, invoiceSettings, DATE_FORMAT } from '../../utils/config'
+import { baseURL, DATE_FORMAT } from '../../utils/config'
 import { MyWorkBook, MyWorkSheet } from '../../utils/export'
 // import {InvoiceModal} from '../Modal'
+import { useSelector } from 'react-redux'
 
 
 const { Column, ColumnGroup } = Table
@@ -157,7 +158,7 @@ function InvoiceTable(props) {
         </Table.Summary>
     }
 
-    const amountSign = invoiceSettings.get('ifShowAmountSign') === 'true' ? invoiceSettings.get('amountSign') : ''
+    const amountSign = useSelector(state => state.functionSetting.amountSign.value)
 
     return <>
         <Modal title={selectedInvoiceType ? `${INVOICE_TYPE_2_DICT[selectedInvoiceType].str} (${selectedInvoiceId})` : ''} 
@@ -210,9 +211,9 @@ function InvoiceItemTable(props) {
         purchaseRefund: { str: '采购退款单', view: _ => <InvoiceFullView id={selectedInvoiceId} messageApi={props.messageApi} refresh={props.refresh} allowEditPartner={false} /> }
     }
 
-    const ifShowMaterial = invoiceSettings.get('ifShowMaterial') === 'true'
-    const ifShowDiscount = invoiceSettings.get('ifShowDiscount') === 'true'
-    const amountSign = invoiceSettings.get('ifShowAmountSign') === 'true' ? invoiceSettings.get('amountSign') : ''
+    const amountSign = useSelector(state => state.functionSetting.amountSign.value)
+    const ifShowMaterial = useSelector(state => state.functionSetting.ifShowMaterial.value)
+    const ifShowDiscount = useSelector(state => state.functionSetting.ifShowDiscount.value)
 
     const getSummary = (items) => {
         const orderOriginalAmount = items.reduce((total, cur) => total.plus(cur.orderOriginalAmount || 0), Decimal(0))
@@ -326,12 +327,13 @@ function ProductTable(props) {
             <Button type='primary' ghost onClick={_ => exportExcel([[props.products, PRODUCT_TABLE_HEADERS]], '产品')}>导出</Button>
         </Row>
     }
-    const amountSign = invoiceSettings.get('ifShowAmountSign') === 'true' ? invoiceSettings.get('amountSign') : ''
+    const amountSign = useSelector(state => state.functionSetting.amountSign.value)
+    const ifShowMaterial = useSelector(state => state.functionSetting.ifShowMaterial.value)
 
     return <Table dataSource={props.products} {...DEFAULT_TABLE_SETTINGS} rowKey={r => r.id} footer={getFooter}>
         { NUMBER_COLUMN }
         <ColumnGroup title='产品信息' align='center'>
-            { invoiceSettings.get('ifShowMaterial') === 'true' ? 
+            { ifShowMaterial ? 
                 <Column title='材质' dataIndex='material' align='center' width={50} /> : null }
             <Column title='名称' dataIndex='name' align='center' width={150} />
             <Column title='规格' dataIndex='spec' align='center' width={80} />

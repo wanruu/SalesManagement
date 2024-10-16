@@ -102,7 +102,7 @@ const InvoiceForm = ({ type, invoice, onInvoiceChange, onFormChange, onCancel })
         message.error('表格不完整')
     }
 
-    useEffect(initForm, [invoice])
+    useEffect(initForm, [])
 
     return (
         <Form form={form} onKeyDown={handleKeyDown} 

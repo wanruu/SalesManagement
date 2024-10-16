@@ -1,5 +1,5 @@
-import React, { useEffect, useMemo, useRef, useState } from 'react'
-import { Layout, theme, Menu, Button } from 'antd'
+import React, { useMemo, useState } from 'react'
+import { Layout, theme, Menu } from 'antd'
 import { BrowserRouter, Link, Route, Routes } from 'react-router-dom'
 import {
     SettingOutlined,
@@ -10,23 +10,22 @@ import {
     DropboxOutlined,
     EditOutlined
 } from '@ant-design/icons'
-
-const { Header, Content, Footer, Sider } = Layout
-
-
 import SettingPage from './pages/SettingPage'
 import ProductPage from './pages/ProductPage'
 import PartnerPage from './pages/PartnerPage'
 import InvoicePage from './pages/InvoicePage'
 import StatisticPage from './pages/StatisticPage'
 import DraftPage from './pages/DraftPage'
-import { invoiceSettings } from './utils/config'
+import { useSelector } from 'react-redux'
 
+
+const { Header, Content, Footer, Sider } = Layout
 
 
 function App() {
     const [collapsed, setCollapsed] = useState(false)
     const { token: { colorBgContainer }, } = theme.useToken()
+    const ifShowRefund = useSelector(state => state.functionSetting.ifShowRefund.value)
 
     const siderWidth = useMemo(() => {
         return collapsed ? 80 : 200
@@ -50,7 +49,7 @@ function App() {
                             </Menu.Item>
                         </Menu.SubMenu>
                         {
-                            invoiceSettings.get('ifShowRefund') === 'true' ? 
+                            ifShowRefund ? 
                             <Menu.SubMenu key='refund' title='退货清单' icon={<MinusCircleOutlined />}>
                                 <Menu.Item key='salesRefund'>
                                     <Link to='/salesRefund'>销售退货</Link>

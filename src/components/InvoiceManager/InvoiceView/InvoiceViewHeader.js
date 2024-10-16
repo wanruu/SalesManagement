@@ -3,19 +3,21 @@ import { Col, Row, Space } from 'antd'
 // import _ from 'lodash'
 import dayjs from 'dayjs'
 import Decimal from 'decimal.js'
-import { invoiceSettings, DATE_FORMAT, INVOICE_BASICS } from '../../../utils/config'
+import { DATE_FORMAT, INVOICE_BASICS } from '../../../utils/config'
 // import PartnerPopoverView from '../partner/PartnerPopoverView'
+import { useSelector } from 'react-redux'
 
 
 
 /*
-    Required: type, invoice (refund的话items需要过滤quantity不为null)
-    Optional: allowEditPartner (false by default), refresh (required if allowEditPartner=true)
+    Required: type, invoice
+    Optional: allowEditPartner (false by default)
 */
 const InvoiceViewHeader = ({ type, invoice, allowEditPartner }) => {
+    const amountSign = useSelector(state => state.functionSetting.amountSign.value)
+    const ifShowPayment = useSelector(state => state.functionSetting.ifShowPayment.value)
+
     const isRefund = ['salesRefund', 'purchaseRefund'].includes(type)
-    const amountSign = invoiceSettings.get('ifShowAmountSign') === 'true' ? invoiceSettings.get('amountSign') : ''
-    const ifShowPayment = invoiceSettings.get('ifShowPayment') === 'true'
     const paidText = useMemo(() => {
         const paid = Decimal(invoice?.prepayment||0).plus(invoice?.payment||0).toNumber()
         const total = `${amountSign + paid.toLocaleString()}`

@@ -3,15 +3,16 @@ import { Table, Button, Tag } from 'antd'
 import { DeleteOutlined } from '@ant-design/icons'
 
 
-import { DEFAULT_PAGINATION, DELIVER_COLORS, invoiceSettings, INVOICE_BASICS } from '../../utils/config'
+import { DEFAULT_PAGINATION, DELIVER_COLORS, INVOICE_BASICS } from '../../utils/config'
 
 
 const InvoiceTable = ({ type, invoices, onSelect, onDelete }) => {
+    const ifShowDelivered = useSelector(state => state.functionSetting.ifShowDelivered.value)
+    const ifShowPayment = useSelector(state => state.functionSetting.ifShowPayment.value)
+    const ifShowRefund = useSelector(state => state.functionSetting.ifShowRefund.value)
+    const amountSign = useSelector(state => state.functionSetting.amountSign.value)
+    
     const columns = useMemo(() => {
-        const ifShowDelivered = invoiceSettings.get('ifShowDelivered') == 'true'
-        const amountSign = invoiceSettings.get('ifShowAmountSign') === 'true' ? invoiceSettings.get('amountSign') : ''
-        const ifShowPayment = invoiceSettings.get('ifShowPayment') === 'true'
-        const ifShowRefund = invoiceSettings.get('ifShowRefund') === 'true'
         return [
             {
                 title: '序号',

@@ -14,11 +14,12 @@ const typeOptions = Object.keys(INVOICE_BASICS).map(key => (
 const DraftPage = () => {
     const drafts = useSelector(state => state.draft.drafts)
     const activeKey = useSelector(state => state.draft.activeKey)
+    const defaultUnit = useSelector(state => state.functionSetting.defaultUnit.value)
     const dispatch = useDispatch()
 
     const handleTabEdit = (targetKey, action) => {
         if (action === 'add') {
-            dispatch({ type: 'draft/add', payload: { type: 'salesOrder' } })
+            dispatch({ type: 'draft/add', payload: { type: 'salesOrder', defaultUnit: defaultUnit } })
         } else {
             if (drafts.find(d => d.key === targetKey)?.invoice?.number) {
                 dispatch({ type: 'draft/remove', payload: { key: targetKey } })
@@ -40,7 +41,7 @@ const DraftPage = () => {
                     <Segmented options={typeOptions} style={{ margin: '15px' }}
                         value={type}
                         onChange={val => {
-                            dispatch({ type: 'draft/updateType', payload: { key: key, type: val } })
+                            dispatch({ type: 'draft/updateType', payload: { key: key, type: val, defaultUnit: defaultUnit } })
                         }} 
                     />
                 }

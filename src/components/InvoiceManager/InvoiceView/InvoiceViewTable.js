@@ -1,16 +1,18 @@
 import React from 'react'
 import { Table, Tag } from 'antd'
-import { invoiceSettings, DELIVER_COLORS } from '../../../utils/config'
+import { DELIVER_COLORS } from '../../../utils/config'
+import { useSelector } from 'react-redux'
 
 
 /*
     Required: type, invoice
 */
 const InvoiceViewTable = ({ type, invoice }) => {
-    const amountSign = invoiceSettings.get('ifShowAmountSign') === 'true' ? invoiceSettings.get('amountSign') : ''
-    const ifShowMaterial = invoiceSettings.get('ifShowMaterial') === 'true'
-    const ifShowDiscount = invoiceSettings.get('ifShowDiscount') === 'true'
-    const ifShowDelivered = invoiceSettings.get('ifShowDelivered') === 'true'
+    const amountSign = useSelector(state => state.functionSetting.amountSign.value)
+    const ifShowMaterial = useSelector(state => state.functionSetting.ifShowMaterial.value)
+    const ifShowDiscount = useSelector(state => state.functionSetting.ifShowDiscount.value)
+    const ifShowDelivered = useSelector(state => state.functionSetting.ifShowDelivered.value)
+
 
     const columns = [
         { title: '序号', fixed: 'left', render: (_, __, idx) => idx + 1 },

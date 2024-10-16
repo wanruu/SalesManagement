@@ -1,13 +1,13 @@
 import React from 'react'
 import { Table } from 'antd'
-import { invoiceSettings } from '../../utils/config'
 import { InvoiceTypeTag } from '../Tag'
+import { useSelector } from 'react-redux'
 
 
 const ProductTable = ({ product }) => {
-    const ifShowDiscount = invoiceSettings.get('ifShowDiscount') === 'true'
-    const amountSign = invoiceSettings.get('ifShowAmountSign') === 'true' ? invoiceSettings.get('amountSign') : ''
-    
+    const ifShowDiscount = useSelector(state => state.functionSetting.ifShowDiscount.value)
+    const amountSign = useSelector(state => state.functionSetting.amountSign.value)
+
     const columns = [
         { title: '序号', fixed: 'left', render: (_, __, idx) => idx + 1 },
         { title: '单号', dataIndex: ['invoice', 'number'],
