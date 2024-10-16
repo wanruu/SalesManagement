@@ -3,9 +3,9 @@ const router = express.Router()
 
 const { productController } = require('../controllers')
 const { validateProduct } = require('../middlewares/validate')
+const { filterProducts } = require('../middlewares/filter')
 
-
-router.get('/', productController.index)
+router.get('/', productController.index, filterProducts)
 router.get('/:id', productController.show)
 router.get('/:material?/:name/:spec', productController.show)
 router.post('/', validateProduct, productController.store)

@@ -2,9 +2,9 @@ import apiClient from './api'
 
 
 const productService = {
-    fetchMany: async () => {
+    fetchMany: async (params) => {
         try {
-            const response = await apiClient.get('/products')
+            const response = await apiClient.get('/products', { params: params })
             return response
         } catch (error) {
             throw error
