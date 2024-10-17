@@ -1,83 +1,8 @@
 const InvoiceController = require('./invoiceController')
-const { Invoice, InvoiceItem, Partner, Product, sequelize } = require('../models')
+const { Invoice, InvoiceItem, Partner, Product } = require('../models')
 
 
 class OrderController extends InvoiceController {
-    index = async (req, res, next) => {
-        try {
-            const options = {
-                where: { type: this.type },
-                include: [
-                    {
-                        model: InvoiceItem,
-                        as: 'invoiceItems',
-                        attributes: []
-                    },
-                    {
-                        model: Invoice,
-                        as: 'refund'
-                    }
-                ],
-                group: ['Invoice.id'],
-                attributes: [
-                    ...Object.keys(Invoice.attributes),
-                    [sequelize.fn('IFNULL', sequelize.fn('SUM', sequelize.col('invoiceItems.delivered')), 0), 'deliveredItemNum'],
-                    [sequelize.fn('COUNT', sequelize.col('invoiceItems.delivered')), 'totalItemNum']
-                ]
-            }
-            const invoices = await Invoice.findAll(options)
-            return res.send(invoices)
-        } catch (error) {
-            return this.handleError(res, error)
-        }
-    }
-
-    findById = async (id) => {
-        const options = {
-            include: [
-                {
-                    model: Partner,
-                    as: 'partner'
-                },
-                {
-                    model: InvoiceItem,
-                    as: 'invoiceItems',
-                    include: {
-                        model: Product,
-                        as: 'product'
-                    },
-                },
-                {
-                    model: Invoice,
-                    as: 'refund',
-                    include: {
-                        model: InvoiceItem,
-                        as: 'invoiceItems',
-                    }
-                }
-            ],
-            where: {
-                id: id,
-                type: this.type
-            },
-            order: [
-                [{ model: InvoiceItem, as: 'invoiceItems' }, 'id', 'ASC'],
-                [{ model: Invoice, as: 'refund' }, { model: InvoiceItem, as: 'invoiceItems' },'id', 'ASC']
-            ]
-        }
-        const invoice = await Invoice.findOne(options)
-        return invoice
-    }
-
-    show = async (req, res, next) => {
-        try {
-            const invoice = await this.findById(req.params.id)
-            return res.send(invoice)
-        } catch (error) {
-            return this.handleError(res, error)
-        }
-    }
-
     store = async (req, res, next) => {
         try {
             const data = req.body
