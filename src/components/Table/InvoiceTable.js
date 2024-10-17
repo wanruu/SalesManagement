@@ -3,7 +3,7 @@ import { Table, Button } from 'antd'
 import { DeleteOutlined } from '@ant-design/icons'
 import { DeliverTag } from '../Tag'
 import { useSelector } from 'react-redux'
-import { INVOICE_BASICS } from '../../utils/config'
+import { INVOICE_BASICS } from '../../utils/invoiceUtils'
 
 
 const InvoiceTable = ({ type, invoices, onSelect, onDelete }) => {

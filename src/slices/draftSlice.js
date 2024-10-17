@@ -1,7 +1,6 @@
 import { createSlice } from '@reduxjs/toolkit'
 import dayjs from 'dayjs'
-import { INVOICE_BASICS } from '../utils/config'
-import { emptyInvoice } from '../utils/invoiceUtils'
+import { emptyInvoice, INVOICE_BASICS } from '../utils/invoiceUtils'
 
 
 const draftSlice = createSlice({

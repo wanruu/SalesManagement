@@ -3,7 +3,6 @@ import Axios from 'axios'
 import { Button, Col, Space, QRCode, Skeleton, Result, Row } from 'antd'
 import { ExclamationCircleFilled } from '@ant-design/icons'
 
-import { baseURL } from '../../utils/config'
 
 
 export default function PhoneAccessView() {

@@ -1,7 +1,7 @@
 import React, { useEffect } from 'react'
 import { Form, Button, Space, Col, message, Divider } from 'antd'
 import dayjs from 'dayjs'
-import { DATE_FORMAT } from '../../../utils/config'
+import { DATE_FORMAT } from '../../../utils/invoiceUtils'
 import { invoiceService } from '../../../services'
 import InvoiceFormHeader from './InvoiceFormHeader'
 import OrderFormTable from './OrderFormTable'

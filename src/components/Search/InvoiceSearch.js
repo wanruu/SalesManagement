@@ -2,7 +2,7 @@ import React, { useEffect, useRef, useState } from 'react'
 import { Form, Select, DatePicker, Space, Input, Button, Tooltip, Row, Divider } from 'antd'
 import { ExclamationCircleOutlined, SwapOutlined } from '@ant-design/icons'
 import { useSelector, useDispatch } from 'react-redux'
-import { DATE_FORMAT, INVOICE_BASICS } from '../../utils/config'
+import { DATE_FORMAT, INVOICE_BASICS } from '../../utils/invoiceUtils'
 import { DeliverTag } from '../Tag'
 
 

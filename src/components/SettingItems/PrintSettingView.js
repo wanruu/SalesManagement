@@ -2,7 +2,7 @@ import { Input, InputNumber, Space, Select, Checkbox, Form, Radio, Divider, Card
 import React, { useState } from 'react'
 import dayjs from 'dayjs'
 import { useSelector, useDispatch } from 'react-redux'
-import { DATE_FORMAT, INVOICE_BASICS } from '../../utils/config'
+import { DATE_FORMAT, INVOICE_BASICS } from '../../utils/invoiceUtils'
 import { InvoicePrint } from '../InvoiceManager'
 import Title from 'antd/es/typography/Title'
 import { TipsView } from './utils'
