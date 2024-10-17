@@ -144,36 +144,15 @@ export default function SettingPage() {
     useEffect(() => window.scrollTo(0, scrollY), [])
     // ------------------------------------
 
-    return <div className='pageMainContent'>
-        <Row>
-            <Col span={19} style={{ paddingRight: '15px' }}>
-                {
-                    anchorItems.map(i => <div key={i.key}>{i.content}</div>)
-                }
-            </Col>
-            <Col span={5}>
-                <Anchor items={anchorItems} style={{ paddingTop: '15px' }} />
-            </Col>
-        </Row>
 
-        {/* <PhoneAccessView /> */}
-        {/* <Space direction='vertical' style={{ width: '100%' }}>
-            <Collapse>
-                { 
-                    collapseItems.map(item => (
-                        <Collapse.Panel header={item.header} key={item.header}>
-                            { item.content }
-                        </Collapse.Panel>
-                    ))
-                }
-            </Collapse>
-        </Space> */}
-
-        {/* <h2>导入</h2>
-        <Upload directory accept='.xlsx' customRequest={handleUpload}>
-            <Button>
-                选择.xlsx文件
-            </Button>
-        </Upload> */}
-    </div>
+    return (<div style={{ display: 'flex' }}>
+        <div style={{ width: '100%' }} className='pageMainContent' id='settingMainContent'>
+            {
+                anchorItems.map(i => <div key={i.key}>{i.content}</div>)
+            }
+        </div>
+        <div style={{ paddingRight: '20px', width: '180px' }}>
+            <Anchor items={anchorItems} offsetTop={20} targetOffset={40} />
+        </div>
+    </div>)
 }

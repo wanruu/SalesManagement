@@ -45,6 +45,7 @@ const FunctionSettingView = () => {
                 onUnitsChange={units => handleChange('units', units)}
                 onDefaultUnitChange={unit => handleChange('defaultUnit', unit)}
             />
+            <Divider />
 
             <Title id='function-amount' level={3}>金额</Title>
             { getSwitchItem('allowEditAmount', '允许手动修改', '若开关打开，则允许在自动计算金额的基础上输入自定义金额。') }
