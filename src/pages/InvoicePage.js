@@ -1,40 +1,33 @@
 import React, { useEffect, useState } from 'react'
-import { Modal, Button, Space, message, Affix, theme } from 'antd'
+import { Modal, Button, Space, message } from 'antd'
 import { Decimal } from 'decimal.js'
-import {
-    ExclamationCircleFilled, ExportOutlined,
-    DownOutlined, UpOutlined, PlusOutlined
-} from '@ant-design/icons'
+import { ExclamationCircleFilled, ExportOutlined } from '@ant-design/icons'
 import { useSelector, useDispatch } from 'react-redux'
+import { invoiceService } from '../services'
+import { INVOICE_BASICS } from '../utils/config'
+import { MyWorkBook, MyWorkSheet } from '../utils/export'
+import { InvoiceTable } from '../components/Table'
+import { SearchManager } from '../components/Search'
+
 
 const { confirm } = Modal
 
-import { invoiceService } from '../services'
 
-import { INVOICE_BASICS } from '../utils/config'
-import { MyWorkBook, MyWorkSheet } from '../utils/export'
-import { InvoiceSearch } from '../components/Search'
-import { emptyInvoice } from '../utils/invoiceUtils'
-import { InvoiceTable } from '../components/Table'
-
-
-export default function InvoicePage({ type }) {
+const InvoicePage = ({ type }) => {
     const [invoices, setInvoices] = useState([])
-    const [filteredInvoices, setFilteredInvoices] = useState([])
     const [selectedInvoiceId, setSelectedInvoiceId] = useState(undefined)
-    const [newInvoice, setNewInvoice] = useState(undefined)
-
     const [messageApi, contextHolder] = message.useMessage()
-    const { token: { colorBgContainer }, } = theme.useToken()
-    
-    const showSearchBox = useSelector(state => state.page[type]?.showSearchBox)
-    const dispatch = useDispatch()
-    const [affixed, setAffixed] = useState(false)
 
-    const isOrder = ['salesOrder', 'purchaseOrder'].includes(type)
+    // redux
+    const searchMode = useSelector(state => state.page[type].searchMode)
+    const keywords = useSelector(state => state.page[type].keywords)
+    const searchForm = useSelector(state => state.page[type].searchForm)
+    const dispatch = useDispatch()
 
     const load = () => {
-        invoiceService.fetchMany(type).then(response => {
+        const params = searchMode == 'simple' ? { keyword: keywords } : searchForm
+        console.log(params)
+        invoiceService.fetchMany(type, params).then(response => {
             const newInvoices = response.data.map(invoice => {
                 invoice.paid = Decimal(invoice.payment).plus(invoice.prepayment).toNumber()
                 invoice.unpaid = Decimal(invoice.amount).minus(invoice.paid).toNumber()
@@ -102,21 +95,10 @@ export default function InvoicePage({ type }) {
         ].filter(h => h != null)
         let wb = new MyWorkBook(INVOICE_BASICS[type].title ?? '错误')
         let ws = new MyWorkSheet('总览')
-        ws.writeJson(filteredInvoices, headers)
+        ws.writeJson(invoices, headers)
         wb.writeSheet(ws)
         wb.save()
     }
-
-    const handleCreate = () => {
-        setNewInvoice(emptyInvoice(isOrder ? 1 : 0))
-    }
-
-    const handleSearchToggle = () => {
-        dispatch({ type: 'page/toggleShowSearchBox', menuKey: type })
-    }
-
-    useEffect(load, [type])
-
 
     // scroll position listener & recover
     const scrollY = useSelector(state => state.page[type]?.scrollY)
@@ -135,39 +117,19 @@ export default function InvoicePage({ type }) {
     // ------------------------------------
 
 
-    return <Space direction='vertical' style={{ width: '100%' }}>
+    return <Space className='pageMainContent' direction='vertical' style={{ width: '100%' }}>
         {contextHolder}
 
-        {/* <InvoiceModal
-            open={selectedInvoiceId}
-            id={selectedInvoiceId?.id}
-            type={selectedInvoiceId?.type}
-            onCancel={_ => setSelectedInvoiceId(undefined)}
-            onChange={load}
-        />
+        <Space wrap>
+            <Button icon={<ExportOutlined />} onClick={handleExport}>导出</Button>
+        </Space>
+        <SearchManager pageKey={type} onSearch={load} />
 
-        <NewInvoiceModal open={newInvoice} onCancel={_ => setNewInvoice(undefined)}
-            type={type} invoice={newInvoice} setInvoice={setNewInvoice}
-            onSubmit={load} /> */}
-
-        <Affix offsetTop={0} onChange={setAffixed}>
-            <Space className={`toolBar-${affixed}`} direction='vertical' style={{ background: colorBgContainer }} size={0}>
-                <Space wrap>
-                    <Button icon={<PlusOutlined />} onClick={handleCreate}>新增</Button>
-                    <Button icon={<ExportOutlined />} onClick={handleExport}>导出</Button>
-                    <Button onClick={handleSearchToggle} icon={showSearchBox ? <UpOutlined /> : <DownOutlined />}>
-                        {showSearchBox ? '收起搜索' : '展开搜索'}
-                    </Button>
-                </Space>
-                {/* <InvoiceSearchBox data={invoices} setFilteredData={setFilteredInvoices} type={type} /> */}
-            </Space>
-        </Affix>
-
-        <div className='pageMainContent'>
-            <InvoiceTable type={type} invoices={invoices} 
-                onDelete={i => showDeleteConfirm([i])}
-                onSelect={setSelectedInvoiceId} />
-        </div>
-        {/* <MyFloatButton type={type} /> */}
+        <InvoiceTable type={type} invoices={invoices} 
+            onDelete={i => showDeleteConfirm([i])}
+            onSelect={setSelectedInvoiceId} />        
     </Space>
 }
+
+
+export default InvoicePage

@@ -1,5 +1,6 @@
 const BaseController = require('./baseController')
-const { Invoice, Partner, InvoiceItem, Product } = require('../models')
+const { Invoice, Partner, InvoiceItem, Product, sequelize } = require('../models')
+const { Op } = require('sequelize')
 
 
 class InvoiceController extends BaseController {
@@ -11,8 +12,24 @@ class InvoiceController extends BaseController {
 
     index = async (req, res, next) => {
         try {
+            const { startDate, endDate, sortBy='number', order='DESC' } = req.query
+
+            // construct filter
+            const conditions = {}
+            if (startDate) {
+                conditions.date = { [Op.gte]: startDate }
+            }
+            if (endDate) {
+                if (startDate) {
+                    conditions.date[Op.lte] = endDate
+                } else {
+                    conditions.date = { [Op.lte]: endDate }
+                }
+            }
+
+            // query
             const options = {
-                where: { type: this.type },
+                where: { type: this.type, ...conditions },
                 include: [
                     {
                         model: InvoiceItem,
@@ -29,10 +46,14 @@ class InvoiceController extends BaseController {
                     ...Object.keys(Invoice.attributes),
                     [sequelize.fn('IFNULL', sequelize.fn('SUM', sequelize.col('invoiceItems.delivered')), 0), 'deliveredItemNum'],
                     [sequelize.fn('COUNT', sequelize.col('invoiceItems.delivered')), 'totalItemNum']
-                ]
+                ],
+                order: [[sortBy, order]]
             }
             const invoices = await Invoice.findAll(options)
-            return res.send(invoices)
+            req.invoices = invoices
+
+            // complex filter in next
+            next()
         } catch (error) {
             return this.handleError(res, error)
         }

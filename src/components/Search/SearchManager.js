@@ -5,6 +5,7 @@ import { useSelector, useDispatch } from 'react-redux'
 import SimpleSearch from './SimpleSearch'
 import PartnerSearch from './PartnerSearch'
 import ProductSearch from './ProductSearch'
+import InvoiceSearch from './InvoiceSearch'
 
 
 const SearchManager = ({ pageKey, onSearch }) => {
@@ -14,7 +15,6 @@ const SearchManager = ({ pageKey, onSearch }) => {
     const dispatch = useDispatch()
 
     useEffect(onSearch, [])
-
 
     const handleModeChange = () => {
         dispatch({ type: 'page/setSearchMode', menuKey: pageKey, searchMode: mode === 'simple' ? 'complex' : 'simple' })
@@ -31,11 +31,19 @@ const SearchManager = ({ pageKey, onSearch }) => {
         dispatch({ type: 'page/resetSearchForm', menuKey: pageKey })
     }
 
+    const complexProps = {
+        initialValues: searchForm,
+        onSearch: onSearch,
+        onChange: handleFormValuesChange,
+        onReset: handleFormReset
+    }
     const complexDict = {
-        'partner': <PartnerSearch initialValues={searchForm} onSearch={onSearch} 
-            onChange={handleFormValuesChange} onReset={handleFormReset} />,
-        'product': <ProductSearch initialValues={searchForm} onSearch={onSearch}
-            onChange={handleFormValuesChange} onReset={handleFormReset} />,
+        'partner': <PartnerSearch {...complexProps} />,
+        'product': <ProductSearch {...complexProps} />,
+        'salesOrder': <InvoiceSearch {...complexProps} type={pageKey} />,
+        'salesRefund': <InvoiceSearch {...complexProps} type={pageKey} />,
+        'purchaseOrder': <InvoiceSearch {...complexProps} type={pageKey} />,
+        'purchaseRefund': <InvoiceSearch {...complexProps} type={pageKey} />,
     }
 
     return (
