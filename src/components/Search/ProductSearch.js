@@ -29,7 +29,7 @@ const ProductSearch = ({ initialValues, onSearch, onChange, onReset }) => {
     return (
         <Form form={form} onFinish={_ => onSearch?.()} onReset={resetForm}
             onValuesChange={onChange}
-            labelCol={{ span: 2 }} wrapperCol={{ span: 20 }}>
+            labelCol={{ span: 4 }} wrapperCol={{ span: 20 }}>
             {
                 ifShowMaterial ?
                     <Item label='材质' name='material' {...itemStyle}>
