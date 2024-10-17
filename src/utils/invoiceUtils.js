@@ -2,13 +2,6 @@ import dayjs from 'dayjs'
 import store from '../store'
 
 
-export const dcInvoice = (invoice) => {
-    const newInvoice = JSON.parse(JSON.stringify(invoice))
-    newInvoice.date = dayjs(newInvoice.date)
-    newInvoice.draftTime = dayjs(newInvoice.draftTime)
-    return newInvoice
-}
-
 export const emptyInvoiceItem = (unit=null) => {
     if (!unit) {
         unit = store.getState().functionSetting.defaultUnit.value
@@ -33,39 +26,6 @@ export const emptyInvoice = (itemsNum=0, defaultUnit=null) => {
         payment: '',
         invoiceItems:  [...Array(itemsNum).keys()].map(_ => emptyInvoiceItem(defaultUnit))
     }
-}
-
-
-export const isOrderItemEmpty = (item) => {
-    const ifShowMaterial = store.getState().functionSetting.ifShowMaterial.value
-    if (ifShowMaterial) 
-        return item.product.material === '' && item.product.name === '' && item.product.spec === '' && 
-            item.quantity === null && item.price === null && item.remark === '' && 
-            (item.discount === 100 || item.discount === null)
-    return item.product.name === '' && item.product.spec === '' && 
-        item.quantity === null && item.price === null && item.remark === '' && 
-        (item.discount === 100 || item.discount === null)
-}
-
-export const isOrderItemComplete = (item) => {
-    return item.name !== '' && item.spec !== '' && item.quantity !== null && 
-        item.unit !== '' && item.price !== null && item.discount !== null
-}
-
-export const isProductRepeat = (items) => {
-    const ifShowMaterial = store.getState().functionSetting.ifShowMaterial.value
-    const isSameProduct = (item1, item2) => {
-        if (ifShowMaterial) return item1.name === item2.name && item1.spec === item2.spec && item1.material === item2.material
-        return item1.name === item2.name && item1.spec === item2.spec
-    }
-    for (const item1 of items) {
-        for (const item2 of items) {
-            if (item1.id !== item2.id && isSameProduct(item1, item2)) {
-                return true
-            }
-        }
-    }
-    return false
 }
 
 
