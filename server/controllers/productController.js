@@ -40,12 +40,19 @@ class ProductController extends BaseController {
 
     show = async (req, res, next) => {
         try {
-            var params = req.params
-            if (params.hasOwnProperty('material') && params.material == undefined) {
-                params.material = ""
+            // find by id or (material, name, spec)
+            const where = {}
+            if (req.params.hasOwnProperty('id')) {
+                where.id = req.params.id
+            } else {
+                where.material = req.params.material ?? ''
+                where.name = req.params.name
+                where.spec = req.params.spec
             }
+
+            const { sortBy='id', order='DESC' } = req.query
             const options = {
-                where: params,
+                where: where,
                 include: {
                     model: InvoiceItem,
                     as: 'invoiceItems',
@@ -54,9 +61,9 @@ class ProductController extends BaseController {
                         as: 'invoice'
                     }
                 },
-                // order: [
-                //     [{ model: InvoiceItem, as: 'invoiceItems'}, 'id', 'DESC']
-                // ]
+                order: [
+                    [{ model: InvoiceItem, as: 'invoiceItems'}, sortBy, order]
+                ]
             }
             
             const product = await Product.findOne(options)
