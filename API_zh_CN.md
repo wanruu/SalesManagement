@@ -61,7 +61,16 @@
 ## 📦 产品
 ### 产品列表
 - **GET** `/products`
-- 不带参数
+- 参数`query`（可选）
+    ```js
+    {
+        "keyword": "xxx",
+        "material": "材质",
+        "name": "名称",
+        "spec": "规格",
+        "unit": ["只"],
+    }
+    ```
 - 返回值
     ```json
     [
@@ -256,9 +265,20 @@
 
 ### 清单列表
 - **GET** `/[invoiceType]s`
-- 不带参数
+- 参数`query`（可选）
+    ```js
+    {
+        "startDate": "2024-01-01",
+        "endDate": "2024-02-02",
+        "sortBy": "number",
+        "order": "DESC",
+        "keyword": "xxx",
+        "partnerName": "客户名称",
+        "delivered": ["全部配送", "未配送"],
+    }
+    ```
 - 返回值
-    ```json
+    ```js
     [
         {
             "id": 1,
@@ -270,8 +290,7 @@
             "prepayment": 1,
             "payment": 9,
             "orderId": null,  // or integer (if is refund)
-            "deliveredItemNum": 0,
-            "totalItemNum": 1,
+            "delivered": "全部配送",
             "refund": {  // or order (if is refund)
                 "id": 2,
                 "number": "202409290001",
