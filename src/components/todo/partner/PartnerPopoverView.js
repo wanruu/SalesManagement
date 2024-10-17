@@ -4,7 +4,6 @@ import Axios from 'axios'
 
 const { Item } = Form
 
-import { baseURL } from '../../../utils/config'
 // import './partnerPopoverView.css'
 
 const labelCol = { span: 6 }

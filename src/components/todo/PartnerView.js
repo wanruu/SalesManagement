@@ -5,7 +5,7 @@ import Decimal from 'decimal.js'
 import { TableOutlined, CloseOutlined, SearchOutlined } from '@ant-design/icons'
 
 
-import { baseURL, DATE_FORMAT } from '../../utils/config'
+import { DATE_FORMAT } from '../../utils/invoiceUtils'
 import { MyWorkBook, MyWorkSheet } from '../../utils/export'
 // import {InvoiceModal} from '../Modal'
 import { useSelector } from 'react-redux'

@@ -2,7 +2,7 @@ import React from 'react'
 import { Tabs, Segmented } from 'antd'
 import { useSelector, useDispatch } from 'react-redux'
 import { InvoiceManager } from '../components/InvoiceManager'
-import { INVOICE_BASICS } from '../utils/config'
+import { INVOICE_BASICS } from '../utils/invoiceUtils'
 import { DraftTable } from '../components/Table'
 
 
