@@ -81,7 +81,6 @@ class ProductController extends BaseController {
             }
             
             const newProduct = product.dataValues
-            newProduct.invoiceItemNum = invoiceItems.length
             newProduct.unitWeight = totalQuantity == 0 ? null : totalWeight / totalQuantity
             return res.send(newProduct)
         } catch (error) {
