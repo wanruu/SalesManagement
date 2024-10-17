@@ -1,10 +1,8 @@
 import React, { useMemo } from 'react'
 import { Col, Row, Space } from 'antd'
-// import _ from 'lodash'
 import dayjs from 'dayjs'
 import Decimal from 'decimal.js'
 import { DATE_FORMAT, INVOICE_BASICS } from '../../../utils/invoiceUtils'
-// import PartnerPopoverView from '../partner/PartnerPopoverView'
 import { useSelector } from 'react-redux'
 
 
