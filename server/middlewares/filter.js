@@ -19,32 +19,11 @@ const filterPartners = (req, res, next) => {
     let newPartners 
     if (!keywords) {
         newPartners = partners.filter(p => {
-            const pFolder = p.folder ?? ''
-            const pAddress = p.address ?? ''
-            const pPhone = p.phone ?? ''
             return (
-                !folder ||
-                pFolder.includes(folder) ||
-                pinyin(pFolder, { pattern: 'first', toneType: 'none', type: 'array' }).join('').includes(folder) ||
-                pinyin(pFolder, { toneType: 'none', type: 'array' }).join('').includes(folder)
-            ) &&
-            (
-                !name ||
-                p.name.includes(name) ||
-                pinyin(p.name, { pattern: 'first', toneType: 'none', type: 'array' }).join('').includes(name) ||
-                pinyin(p.name, { toneType: 'none', type: 'array' }).join('').includes(name)
-            ) &&
-            (
-                !address ||
-                pAddress.includes(address) ||
-                pinyin(pAddress, { pattern: 'first', toneType: 'none', type: 'array' }).join('').includes(address) ||
-                pinyin(pAddress, { toneType: 'none', type: 'array' }).join('').includes(address)
-            ) &&
-            (
-                !phone ||
-                pPhone.includes(phone) ||
-                pinyin(pPhone, { pattern: 'first', toneType: 'none', type: 'array' }).join('').includes(phone) ||
-                pinyin(pPhone, { toneType: 'none', type: 'array' }).join('').includes(phone)
+                fuzzyPinyinMatch(folder, p.folder ?? '') &&
+                fuzzyPinyinMatch(name, p.name) &&
+                fuzzyPinyinMatch(address, p.address ?? '') &&
+                fuzzyPinyinMatch(phone, p.phone ?? '')
             )
         })
     } else {
@@ -75,39 +54,22 @@ const filterPartners = (req, res, next) => {
 
 const filterProducts = (req, res, next) => {
     const products = req.products
-    const { keyword, material, name, spec, unit } = req.query
+    const { keyword, material, name, spec } = req.query
     const keywords = keyword?.split('\s+')
 
     let newProducts 
     if (!keywords) {
         newProducts = products.filter(p => {
             return (
-                !material ||
-                p.material.includes(material) ||
-                pinyin(p.material, { pattern: 'first', toneType: 'none', type: 'array' }).join('').includes(material) ||
-                pinyin(p.material, { toneType: 'none', type: 'array' }).join('').includes(material)
-            ) &&
-            (
-                !name ||
-                p.name.includes(name) ||
-                pinyin(p.name, { pattern: 'first', toneType: 'none', type: 'array' }).join('').includes(name) ||
-                pinyin(p.name, { toneType: 'none', type: 'array' }).join('').includes(name)
-            ) &&
-            (
-                !spec ||
-                p.spec.includes(spec) ||
-                pinyin(p.spec, { pattern: 'first', toneType: 'none', type: 'array' }).join('').includes(spec) ||
-                pinyin(p.spec, { toneType: 'none', type: 'array' }).join('').includes(spec)
-            ) &&
-            (
-                !unit ||
-                unit.includes(p.unit)
+                fuzzyPinyinMatch(material, p.material) &&
+                fuzzyPinyinMatch(name, p.name) &&
+                fuzzyPinyinMatch(spec, p.spec)
             )
         })
     } else {
         newProducts = products.filter(p => {
-            let textToVerify = [p.unit]
-            for (const key of ['material', 'name', 'spec']) {
+            let textToVerify = []
+            for (const key of ['material', 'name', 'spec', 'unit']) {
                 const value = p[key]
                 if (value != null && value !== '') {
                     textToVerify = [

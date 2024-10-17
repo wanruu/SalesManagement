@@ -1,10 +1,20 @@
 const BaseController = require('./baseController')
 const { Product, InvoiceItem, sequelize, Invoice } = require('../models')
+const { Op } = require('sequelize')
 
 
 class ProductController extends BaseController {
     index = async (req, res, next) => {
         try {
+            const { unit } = req.query
+
+            // construct filter
+            const conditions = {}            
+            if (unit) {
+                conditions.unit = { [Op.in]: unit }
+            }
+
+            // query
             const options = {
                 include: {
                     model: InvoiceItem,
@@ -15,10 +25,13 @@ class ProductController extends BaseController {
                 attributes: [
                     ...Object.keys(Product.attributes),
                     [sequelize.fn('COUNT', sequelize.col('invoiceItems.id')), 'invoiceItemNum']
-                ]
+                ],
+                where: { ...conditions }
             }
             const products = await Product.findAll(options)
             req.products = products
+
+            // complex filter
             next()
         } catch (error) {
             return this.handleError(res, error)
