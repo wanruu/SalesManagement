@@ -1,6 +1,16 @@
 const { pinyin } = require('pinyin-pro')
 
 
+const fuzzyPinyinMatch = (keyword, data) => {
+    return (
+        !keyword ||
+        data.includes(keyword) ||
+        pinyin(data, { pattern: 'first', toneType: 'none', type: 'array' }).join('').includes(keyword) ||
+        pinyin(data, { toneType: 'none', type: 'array' }).join('').includes(keyword)
+    )
+}
+
+
 const filterPartners = (req, res, next) => {
     const partners = req.partners
     const { keyword, name, address, folder, phone } = req.query
@@ -119,4 +129,41 @@ const filterProducts = (req, res, next) => {
     res.send(newProducts)
 }
 
-module.exports = { filterPartners, filterProducts }
+
+const filterInvoices = (req, res, next) => {
+    const invoices = req.invoices
+    const { keyword, partnerName } = req.query
+    const keywords = keyword?.split('\s+')
+
+    let newInvoices 
+    if (!keywords) {
+        newInvoices = invoices.filter(i => {
+            return fuzzyPinyinMatch(partnerName, i.partnerName)
+        })
+    } else {
+        newInvoices = invoices.filter(i => {
+            let textToVerify = [i.number, i.date]
+            for (const key of ['partnerName']) {
+                const value = i[key]
+                if (value != null && value !== '') {
+                    textToVerify = [
+                        ...textToVerify, value,
+                        pinyin(value, { pattern: 'first', toneType: 'none', type: 'array' }).join(''),
+                        pinyin(value, { toneType: 'none', type: 'array' }).join(''),
+                    ]
+                }
+            }
+            for (const keyword of keywords) {
+                const results = textToVerify.map(text => text.includes(keyword))
+                if (results.filter(r => r).length === 0) {
+                    return false
+                }
+            }
+            return true
+        })
+    }
+    res.send(newInvoices)
+}
+
+
+module.exports = { filterPartners, filterProducts, filterInvoices }

@@ -2,9 +2,9 @@ import apiClient from './api'
 
 
 const invoiceService = {
-    fetchMany: async (type) => {
+    fetchMany: async (type, params) => {
         try {
-            const response = await apiClient.get(`/${type}s`)
+            const response = await apiClient.get(`/${type}s`, { params: params })
             return response
         } catch (error) {
             throw error
