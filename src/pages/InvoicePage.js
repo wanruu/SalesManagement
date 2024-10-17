@@ -31,12 +31,6 @@ const InvoicePage = ({ type }) => {
             const newInvoices = response.data.map(invoice => {
                 invoice.paid = Decimal(invoice.payment).plus(invoice.prepayment).toNumber()
                 invoice.unpaid = Decimal(invoice.amount).minus(invoice.paid).toNumber()
-                if (invoice.deliveredItemNum == invoice.totalItemNum)
-                    invoice.delivered = '全部配送'
-                else if (invoice.deliveredItemNum == 0)
-                    invoice.delivered = '未配送'
-                else
-                    invoice.delivered = '部分配送'
                 return invoice
             })
             setInvoices(newInvoices)

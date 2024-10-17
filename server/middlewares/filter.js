@@ -132,13 +132,19 @@ const filterProducts = (req, res, next) => {
 
 const filterInvoices = (req, res, next) => {
     const invoices = req.invoices
-    const { keyword, partnerName } = req.query
+    const { keyword, partnerName, delivered } = req.query
     const keywords = keyword?.split('\s+')
 
-    let newInvoices 
+    let newInvoices
     if (!keywords) {
         newInvoices = invoices.filter(i => {
-            return fuzzyPinyinMatch(partnerName, i.partnerName)
+            return (
+                fuzzyPinyinMatch(partnerName, i.partnerName) &&
+                (
+                    !delivered ||
+                    delivered.includes(i.delivered)
+                )
+            )
         })
     } else {
         newInvoices = invoices.filter(i => {

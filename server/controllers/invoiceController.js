@@ -49,7 +49,18 @@ class InvoiceController extends BaseController {
                 ],
                 order: [[sortBy, order]]
             }
-            const invoices = await Invoice.findAll(options)
+            const invoices = (await Invoice.findAll(options)).map(i => i.toJSON())
+            invoices.forEach(invoice => {
+                if (invoice.deliveredItemNum === invoice.totalItemNum) {
+                    invoice.delivered = '全部配送'
+                } else if (invoice.deliveredItemNum === 0) {
+                    invoice.delivered = '未配送'
+                } else {
+                    invoice.delivered = '部分配送'
+                }
+                delete invoice.deliveredItemNum
+                delete invoice.totalItemNum
+            })
             req.invoices = invoices
 
             // complex filter in next
