@@ -103,8 +103,8 @@ const ProductForm = ({ product, onProductChange }) => {
             <Item label='规格' name='spec' rules={specRules}>
                 <Input allowClear />
             </Item>
-            <Item label='单位' name='unit' rules={unitRules}>
-                <Select options={unitOptions} defaultValue={defaultUnit} />
+            <Item label='单位' name='unit' rules={unitRules} initialValue={defaultUnit}>
+                <Select options={unitOptions} />
             </Item>
             <Col align='middle'>
                 <Space>
