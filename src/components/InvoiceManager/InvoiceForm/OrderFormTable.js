@@ -1,5 +1,5 @@
 import React, { useState } from 'react'
-import { Form, Input, Table, Button, InputNumber, Select, Space } from 'antd'
+import { Form, Input, Table, Button, InputNumber, Select, Space, Modal } from 'antd'
 import { LineChartOutlined } from '@ant-design/icons'
 import Decimal from 'decimal.js'
 import { emptyInvoiceItem } from '../../../utils/invoiceUtils'
@@ -7,6 +7,8 @@ import { ProductInput } from '../../Input'
 import { productService } from '../../../services'
 import { updateItemAmount, updateTotalAmount, updateQuantityByRemark, deliveredOptions } from './InvoiceFormTableUtils'
 import { useSelector } from 'react-redux'
+import { ProductManager } from '../../ProductManager'
+
 
 const { Item } = Form
 
@@ -16,8 +18,9 @@ const getPopupContainer = () => document.getElementById(tableId)
 
 
 // present all items in invoiceItems
-const OrderFormTable = () => {
+const OrderFormTable = ({ type }) => {
     const form = Form.useFormInstance()
+    const partnerName = Form.useWatch('partnerName', form)
     const [historyProduct, setHistoryProduct] = useState(undefined)  // TODO: history modal
 
     const ifShowDiscount = useSelector(state => state.functionSetting.ifShowDiscount.value)
@@ -168,18 +171,25 @@ const OrderFormTable = () => {
     .filter(i => i != null)
     .map(i => ({ ...i, align: 'center' }))
 
-    return <Form.List name='invoiceItems' rules={[{required: true}]}>
-        {(fields, { add, remove }) =>
-            <Table className='invoiceFormTable orderFormTable' id={tableId}
-                scroll={{ x: 'max-content', y: 'max-content' }} bordered
-                dataSource={fields} columns={columns(remove)}
-                footer={_ => 
-                    <Button onClick={_ => add(emptyInvoiceItem())} type='primary' ghost>
-                        新增一项
-                    </Button>}
-            />
-        }
-    </Form.List>
+    return <>
+        <Modal title='产品详情' open={historyProduct} onCancel={_ => setHistoryProduct(undefined)} width='90%'
+            footer={(_, { CancelBtn }) =>  <CancelBtn />}>
+            <ProductManager product={historyProduct} partnerName={partnerName}
+                display='line' field='price' invoiceType={type} />
+        </Modal>
+        <Form.List name='invoiceItems' rules={[{required: true}]}>
+            {(fields, { add, remove }) =>
+                <Table className='invoiceFormTable orderFormTable' id={tableId}
+                    scroll={{ x: 'max-content', y: 'max-content' }} bordered
+                    dataSource={fields} columns={columns(remove)}
+                    footer={_ => 
+                        <Button onClick={_ => add(emptyInvoiceItem())} type='primary' ghost>
+                            新增一项
+                        </Button>}
+                />
+            }
+        </Form.List>
+    </>
 }
 
 
