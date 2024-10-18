@@ -122,13 +122,13 @@ const InvoicePage = ({ type }) => {
 
     return <Space className='pageMainContent' direction='vertical' style={{ width: '100%' }}>
         {contextHolder}
-        <Modal title={`${INVOICE_BASICS[type].title} ${selectedInvoice?.number}`}
+        <Modal title={`${INVOICE_BASICS[selectedInvoice?.type]?.title} ${selectedInvoice?.number}`}
             open={selectedInvoice} onCancel={_ => {
                 setSelectedInvoice(undefined)
                 setMode('view')
             }}
             footer={null} width='90%'>
-            <InvoiceManager type={type} invoice={selectedInvoice} mode={mode}
+            <InvoiceManager type={selectedInvoice?.type} invoice={selectedInvoice} mode={mode}
                 onCancel={_ => setSelectedInvoice(undefined)}
                 onFormChange={_ => {}}
                 onInvoiceChange={_ => load()}
