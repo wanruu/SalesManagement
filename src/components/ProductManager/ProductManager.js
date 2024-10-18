@@ -98,7 +98,7 @@ const ProductManager = ({
     
 
     const load = () => {
-        productService.fetchById(initProduct.id).then(res => {
+        productService.fetchById(initProduct.id, { detail: true }).then(res => {
             setProduct(res.data)
         }).catch(err => {
             setProduct({})

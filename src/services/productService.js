@@ -11,21 +11,21 @@ const productService = {
         }
     },
 
-    fetchById: async (id) => {
+    fetchById: async (id, params) => {
         try {
-            const response = await apiClient.get(`/products/${id}`)
+            const response = await apiClient.get(`/products/${id}`, { params: params })
             return response
         } catch (error) {
             throw error
         }
     },
 
-    fetchByInfo: async ({ material, name, spec }) => {
+    fetchByInfo: async ({ material, name, spec }, params) => {
         try {
             if (!name || !spec)
                 return
             const url = material ? `/products/${material}/${name}/${spec}` : `/products/${name}/${spec}`
-            const response = await apiClient.get(url)
+            const response = await apiClient.get(url, { params: params })
             return response
         } catch (error) {
             throw error
