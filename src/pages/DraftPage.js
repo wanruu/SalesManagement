@@ -49,7 +49,7 @@ const DraftPage = () => {
                     onCancel={_ => {
                         dispatch({ type: 'draft/remove', payload: { key: key } })
                     }}
-                    onFormChange={(changedValues, values) => {
+                    onFormChange={values => {
                         dispatch({ type: 'draft/updateEditInvoice', payload: { key: key, values: values } })
                     }}
                     onInvoiceChange={invoice => {
