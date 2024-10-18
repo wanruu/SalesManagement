@@ -119,7 +119,7 @@ const InvoiceForm = ({ type, editInvoice, invoice, onInvoiceChange, onFormChange
         <Form form={form} onKeyDown={handleKeyDown} 
             onFinish={handleFinish} onFinishFailed={handleFinishFailed}>
             <InvoiceFormHeader type={type} />
-            { isOrder ? <OrderFormTable /> : <RefundTable /> }
+            { isOrder ? <OrderFormTable type={type} /> : <RefundTable /> }
             <Col align='end' style={{ marginTop: '10px' }}>
                 <Space>
                     <Button onClick={_ => onCancel?.()}>取消</Button>
