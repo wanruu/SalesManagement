@@ -4,17 +4,19 @@ import { productService } from '../../services'
 
 
 const ProductManager = ({ product: initProduct }) => {
-    const [product, setProduct] = useState(initProduct)
+    const [product, setProduct] = useState({})
+    
     const load = () => {
-        productService.fetchById(product.id).then(res => {
+        productService.fetchById(initProduct.id).then(res => {
             setProduct(res.data)
-            console.log(res.data)
         }).catch(err => {
-
+            setProduct({})
         })
     }
-    useEffect(load, [])
-    return <ProductTable product={product} />
+
+    useEffect(load, [initProduct.id])
+
+    return<ProductTable product={product} />
 }
 
 export default ProductManager
