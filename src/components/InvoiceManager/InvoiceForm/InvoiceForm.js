@@ -106,9 +106,16 @@ const InvoiceForm = ({ type, editInvoice, invoice, onInvoiceChange, onFormChange
     // type改变时会清空数据
     useEffect(initForm, [type])
 
+    // form的onValuesChange只监听注册的项目
+    // refund的partnerName, order, (partner), invoiceItems都是没有注册的
+    // order的invoiceItems通过(add, remove)注册了, 但是refund的(add, remove)不方便传递
+    const watchAll = Form.useWatch([], { form, preserve: true })
+    useEffect(() => {
+        onFormChange?.(watchAll)
+    }, [watchAll])
+
     return (
         <Form form={form} onKeyDown={handleKeyDown} 
-            onValuesChange={onFormChange}
             onFinish={handleFinish} onFinishFailed={handleFinishFailed}>
             <InvoiceFormHeader type={type} />
             { isOrder ? <OrderFormTable /> : <RefundTable /> }
@@ -122,7 +129,7 @@ const InvoiceForm = ({ type, editInvoice, invoice, onInvoiceChange, onFormChange
             { isOrder ? null : <>
                 <Divider />
                 <h2>所有产品</h2>
-                <AllRefundTable />
+                <AllRefundTable onFormChange={onFormChange} />
             </>}
         </Form>
     )
