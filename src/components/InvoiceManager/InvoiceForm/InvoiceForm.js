@@ -75,7 +75,7 @@ const InvoiceForm = ({ type, editInvoice, invoice, onInvoiceChange, onFormChange
         // Send request
         const messageKey = 'upload-invoice'
         message.open({ key: messageKey, type: 'loading', content: '提交中' })
-        if (invoice.id) {
+        if (invoice?.id) {
             invoiceService.update(type, invoice.id, newInvoice).then(res => {
                 message.open({ key: messageKey, type: 'success', content: '更新成功' })
                 onInvoiceChange?.(res.data)
