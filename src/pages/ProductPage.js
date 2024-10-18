@@ -112,7 +112,8 @@ const ProductPage = () => {
             }} />
         </Modal>
 
-        <Modal open={selectedProduct} onCancel={_ => setSelectedProduct(undefined)} title='产品详情' footer={null} width='90%'>
+        <Modal open={selectedProduct} onCancel={_ => setSelectedProduct(undefined)} title='产品详情' width='90%'
+            footer={(_, { CancelBtn }) => <CancelBtn />}>
             <ProductManager product={selectedProduct} />
         </Modal>
 

@@ -121,17 +121,18 @@ const InvoiceForm = ({ type, editInvoice, invoice, onInvoiceChange, onFormChange
     }, [watchAll])
 
     return (
-        <Form form={form} onKeyDown={handleKeyDown} 
+        <Form form={form} onKeyDown={handleKeyDown} layout='inline'
             onFinish={handleFinish} onFinishFailed={handleFinishFailed}>
-            <InvoiceFormHeader type={type} />
-            { isOrder ? <OrderFormTable type={type} /> : <RefundTable /> }
-            <Col align='end' style={{ marginTop: '10px' }}>
-                <Space>
-                    <Button onClick={_ => onCancel?.()}>取消</Button>
-                    <Button htmlType='submit' type='primary'>保存</Button>
-                </Space>
-            </Col>
-        
+            <Space direction='vertical' style={{ width: '100%' }} size={15}>
+                <InvoiceFormHeader type={type} />
+                { isOrder ? <OrderFormTable type={type} /> : <RefundTable /> }
+                <Col align='end'>
+                    <Space>
+                        <Button onClick={_ => onCancel?.()}>取消</Button>
+                        <Button htmlType='submit' type='primary'>保存</Button>
+                    </Space>
+                </Col>
+            </Space>
             { isOrder ? null : <>
                 <Divider />
                 <h2>所有产品</h2>

@@ -42,21 +42,19 @@ const InvoicePrint = ({ type, invoice, footer=true, onCancel }) => {
         </Col>
     )
     return (<>
-        <Space direction='vertical' size='middle' style={{ width: '100%', marginTop: '10px', marginBottom: '10px' }}>
-            <Col align='middle' style={{ overflowX: 'auto', overflowY: 'clip' }}>
-                <div ref={componentRef} >
-                    <div className='invoiceWrapper' style={wrapperStyle}>
-                        <div className='invoiceContent' style={contentStyle}>
-                            <Space direction='vertical' style={{ width: '100%' }} size={5}>
-                                <InvoicePrintHeader type={type} invoice={invoice} />
-                                <InvoicePrintTable invoice={invoice} />
-                                <InvoicePrintFooter />
-                            </Space>
-                        </div>
+        <Col align='middle' style={{ overflowX: 'auto', overflowY: 'clip', margin: '15px 0' }}>
+            <div ref={componentRef} >
+                <div className='invoiceWrapper' style={wrapperStyle}>
+                    <div className='invoiceContent' style={contentStyle}>
+                        <Space direction='vertical' style={{ width: '100%' }} size={5}>
+                            <InvoicePrintHeader type={type} invoice={invoice} />
+                            <InvoicePrintTable invoice={invoice} />
+                            <InvoicePrintFooter />
+                        </Space>
                     </div>
                 </div>
-            </Col>
-        </Space>
+            </div>
+        </Col>
         { footer ? defaultFooter : null }
     </>)
 }

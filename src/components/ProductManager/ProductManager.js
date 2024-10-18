@@ -128,10 +128,9 @@ const ProductManager = ({
         'line': <ProductLineChart product={filteredProduct} type={invoiceType} field={chartField} />,
     }
     
-    return <>
+    return <Space direction='vertical' style={{ width: '100%', marginTop: '10px' }}>
         <Header product={product} />
-        <Divider />
-        <Space wrap style={{ marginBottom: '15px', width: '100%', justifyContent: 'space-between' }}>
+        <Space wrap style={{ margin: '10px 0', width: '100%', justifyContent: 'space-between' }}>
             <Segmented options={displayOptions} value={display} onChange={setDisplay} />
             <Space.Compact>
                 <PartnerInput placeholder='交易对象名称' style={{ 'minWidth': '200px' }}
@@ -152,7 +151,7 @@ const ProductManager = ({
             }
         </Row>
         { displayDict[display] }
-    </>
+    </Space>
 }
 
 export default ProductManager
