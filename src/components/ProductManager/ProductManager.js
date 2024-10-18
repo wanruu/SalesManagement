@@ -74,9 +74,9 @@ const ProductManager = ({
     const [invoiceType, setInvoceType] = useState('salesOrder')
 
     
-    useEffect(() => setPartnerName(initPartnerName), initPartnerName)
-    useEffect(() => setDisplay(initDisplay), initDisplay)
-    useEffect(() => setChartField(initField), initField)
+    useEffect(() => setPartnerName(initPartnerName), [initPartnerName])
+    useEffect(() => setDisplay(initDisplay), [initDisplay])
+    useEffect(() => setChartField(initField), [initField])
 
     const allTypes = useMemo(() => [...new Set((filteredProduct.invoiceItems??[]).map(i => i.invoice.type))], [filteredProduct])
     const lineChartTypeOptions = useMemo(() => {
