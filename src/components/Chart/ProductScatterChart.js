@@ -27,12 +27,14 @@ const ProductScatterChart = ({ product, field='price' }) => {
         xAxis: {
             name: '日期',
             type: 'time',
+            minInterval: 24 * 3600 * 1000,
             axisLabel: {
-                formatter: (function(value){
-                    var newDate = new Date(value)
-                    return newDate.toLocaleDateString()
+                formatter: (function(value) {
+                    var date = new Date(value)
+                    const texts = [date.getFullYear(), (date.getMonth() + 1), date.getDate()]
+                    return texts.join('-')
                 })
-            }
+            },
         },
         yAxis: {
             type: 'value',
