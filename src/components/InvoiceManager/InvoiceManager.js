@@ -12,6 +12,7 @@ import { invoiceService } from '../../services'
         invoice
         editInvoice
         mode
+        onModeChange
         onInvoiceChange
         onFormChange
         onCancel
@@ -20,11 +21,10 @@ const InvoiceManager = ({
     type, 
     invoice: initInvoice,
     editInvoice,
-    mode: initMode='view', 
+    mode, onModeChange, 
     onInvoiceChange, onFormChange, onCancel 
 }) => {
     const [invoice, setInvoice] = useState(undefined)
-    const [mode, setMode] = useState(initMode)
     
     const load = () => {
         const id = initInvoice?.id
@@ -43,17 +43,17 @@ const InvoiceManager = ({
                 editInvoice={editInvoice}
                 invoice={invoice}
                 onCancel={_ => {
-                    invoice?.id ? setMode('view') : onCancel?.()
+                    invoice?.id ? onModeChange?.('view') : onCancel?.()
                 }}
                 onFormChange={onFormChange}
                 onInvoiceChange={invoice => {
                     onInvoiceChange?.(invoice)
                     setInvoice(invoice)
-                    setMode('view')
+                    onModeChange?.('view')
                 }} />
         ),
         'view': <InvoiceView type={type} invoice={invoice} />,
-        'print': <InvoicePrint type={type} invoice={invoice} onCancel={_ => setMode('view')} />
+        'print': <InvoicePrint type={type} invoice={invoice} onCancel={_ => onModeChange?.('view')} />
     }
 
     useEffect(load, [type, initInvoice])
@@ -66,8 +66,8 @@ const InvoiceManager = ({
                 <Col align='end'>
                     <Space>
                         <Button onClick={_ => onCancel?.()}>关闭</Button>
-                        <Button onClick={_ => setMode('print')}>打印预览</Button>
-                        <Button onClick={_ => setMode('edit')} type='primary'>编辑</Button>
+                        <Button onClick={_ => onModeChange?.('print')}>打印预览</Button>
+                        <Button onClick={_ => onModeChange?.('edit')} type='primary'>编辑</Button>
                     </Space>
                 </Col>
             }

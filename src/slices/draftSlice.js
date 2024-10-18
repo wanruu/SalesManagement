@@ -8,7 +8,7 @@ const draftSlice = createSlice({
     initialState: {
         newTabIndex: 1,
         activeKey: 'main',
-        drafts: [], // [{ invoice, editInvoice, type, key, label, createAt, open }]
+        drafts: [], // [{ invoice, editInvoice, type, key, label, createAt, open, mode }]
     },
     reducers: {
         add(state, action) {
@@ -21,6 +21,7 @@ const draftSlice = createSlice({
                 label: `新建 ${tabIndex}`,
                 createAt: dayjs(),
                 open: true,
+                mode: 'edit',
             }
             let newDrafts = state.drafts.slice()
             newDrafts.push(newDraft)
@@ -156,6 +157,18 @@ const draftSlice = createSlice({
                 drafts: newDrafts
             }
         },
+        updateMode(state, action) {
+            const { mode, key } = action.payload
+            return {
+                ...state,
+                drafts: state.drafts.map(d => {
+                    if (d.key === key) {
+                        return { ...d, mode: mode }
+                    }
+                    return d
+                })
+            }
+        }
     }
 })
 

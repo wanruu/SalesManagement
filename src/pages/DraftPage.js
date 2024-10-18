@@ -35,7 +35,7 @@ const DraftPage = () => {
 
     const getTabItems = () => {
         const tabs = drafts.filter(d => d.open).map((draft, idx) => {
-            const { invoice, editInvoice, type, key, label } = draft
+            const { invoice, editInvoice, type, key, label, mode } = draft
             const children = <>
                 { invoice?.number ? null : 
                     <Segmented options={typeOptions} style={{ margin: '15px' }}
@@ -45,7 +45,7 @@ const DraftPage = () => {
                         }} 
                     />
                 }
-                <InvoiceManager type={type} invoice={invoice} editInvoice={editInvoice} mode='edit' 
+                <InvoiceManager type={type} invoice={invoice} editInvoice={editInvoice} mode={mode}
                     onCancel={_ => {
                         dispatch({ type: 'draft/remove', payload: { key: key } })
                     }}
@@ -54,7 +54,11 @@ const DraftPage = () => {
                     }}
                     onInvoiceChange={invoice => {
                         dispatch({ type: 'draft/updateInvoice', payload: { key: key, invoice: invoice }})
-                    }} />
+                    }} 
+                    onModeChange={mode => {
+                        dispatch({ type: 'draft/updateMode', payload: { key: key, mode: mode }})
+                    }}
+                />
             </>
             return {
                 label: label,
