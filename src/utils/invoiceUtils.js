@@ -39,6 +39,7 @@ export const INVOICE_BASICS = {
         relatedInvoiceTitle: '关联退货单',
         addressTitle: '收货地址',
         refundType: 'salesRefund',
+        color: '#5470C6',
     },
     salesRefund: {
         title: '销售退货单',
@@ -46,7 +47,8 @@ export const INVOICE_BASICS = {
         label: '销售退货',
         relatedInvoiceTitle: '关联销售单',
         addressTitle: '发货地址',
-        orderType: 'salesOrder'
+        orderType: 'salesOrder',
+        color: '#fac858',
     },
     purchaseOrder: {
         title: '采购单',
@@ -55,6 +57,7 @@ export const INVOICE_BASICS = {
         relatedInvoiceTitle: '关联退货单',
         addressTitle: '发货地址',
         refundType: 'purchaseRefund',
+        color: '#91cc75',
     },
     purchaseRefund: {
         title: '采购退货单',
@@ -63,6 +66,7 @@ export const INVOICE_BASICS = {
         relatedInvoiceTitle: '关联采购单',
         addressTitle: '收货地址',
         orderType: 'purchaseOrder',
+        color: '#ee6666',
     },
 }
 

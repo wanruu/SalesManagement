@@ -1,26 +1,18 @@
 import React, { useMemo } from 'react'
 import ReactEcharts from 'echarts-for-react'
+import { INVOICE_BASICS } from '../../utils/invoiceUtils'
+import _ from 'lodash'
 
 
 const ProductScatterChart = ({ product, field='price' }) => {
-    const salesOrderScatters = useMemo(() => {
-        return (product?.invoiceItems ?? [])
-            .filter(item => item.invoice.type === 'salesOrder')
-            .map(item => [item.invoice.date, item[field]])
+    const scatters = useMemo(() => {
+        return _.groupBy((product?.invoiceItems ?? []), item => item.invoice.type)
     }, [product, field])
 
-    const purchaseOrderScatters = useMemo(() => {
-        return (product?.invoiceItems ?? [])
-            .filter(item => item.invoice.type === 'purchaseOrder')
-            .map(item => [item.invoice.date, item[field]])
-    }, [product, field])
+    const types = ['salesOrder', 'salesRefund', 'purchaseOrder', 'purchaseRefund']
+        .filter(t => scatters.hasOwnProperty(t))
 
     const option = {
-        title: {
-            text: salesOrderScatters.length + purchaseOrderScatters.length ? '' : '暂无数据',
-            left: 'center',
-            top: 'center'
-        },
         legend: {
             show: true,
         },
@@ -53,18 +45,12 @@ const ProductScatterChart = ({ product, field='price' }) => {
                 return [date, ...lines].join('')
             }
         },
-        series: [
-            {
-                type: 'scatter',
-                data: salesOrderScatters,
-                name: '销售单'
-            },
-            {
-                type: 'scatter',
-                data: purchaseOrderScatters,
-                name: '采购单'
-            },
-        ]
+        series: types.map(type => ({
+            type: 'scatter',
+            data: scatters[type].map(item => [item.invoice.date, item[field]]),
+            name: INVOICE_BASICS[type].title,
+            color: INVOICE_BASICS[type].color,
+        }))
     }
 
     return <ReactEcharts option={option} />

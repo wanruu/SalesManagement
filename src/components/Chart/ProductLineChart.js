@@ -4,18 +4,10 @@ import { useSelector } from 'react-redux'
 import { INVOICE_BASICS } from '../../utils/invoiceUtils'
 
 
-const colors = {
-    'salesOrder': '#5470C6',
-    'salesRefund': '#5470C6',
-    'purchaseOrder': '#91cc75',
-    'purchaseRefund': '#91cc75',
-}
-
-
 const ProductLineChart = ({ product, type='salesOrder', field='quantity' }) => {
     const ifShowDiscount = useSelector(state => state.functionSetting.ifShowDiscount.value)
 
-    const color = colors[type]
+    const color = INVOICE_BASICS[type].color
     const items = (product?.invoiceItems ?? [])
         .filter(item => item.invoice.type === type)
         .sort((a, b) => a.invoice.number.localeCompare(b.invoice.number))
@@ -24,11 +16,6 @@ const ProductLineChart = ({ product, type='salesOrder', field='quantity' }) => {
 
     const option = {
         color: color,
-        title: {
-            text: items.length ? '' : '暂无数据',
-            left: 'center',
-            top: 'center'
-        },
         xAxis: {
             name: '单号',
             type: 'category',
