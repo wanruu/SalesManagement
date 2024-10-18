@@ -1,27 +1,29 @@
 import React, { useEffect, useState } from 'react'
 import { Modal, Button, Space, message } from 'antd'
 import { Decimal } from 'decimal.js'
-import { ExclamationCircleFilled, ExportOutlined } from '@ant-design/icons'
+import { ExclamationCircleFilled, ExportOutlined, PlusOutlined } from '@ant-design/icons'
 import { useSelector, useDispatch } from 'react-redux'
 import { invoiceService } from '../services'
 import { INVOICE_BASICS, DATE_FORMAT } from '../utils/invoiceUtils'
 import { MyWorkBook, MyWorkSheet } from '../utils/export'
 import { InvoiceTable } from '../components/Table'
 import { SearchManager } from '../components/Search'
-
-
-const { confirm } = Modal
+import { useNavigate } from 'react-router-dom'
 
 
 const InvoicePage = ({ type }) => {
     const [invoices, setInvoices] = useState([])
     const [selectedInvoiceId, setSelectedInvoiceId] = useState(undefined)
     const [messageApi, contextHolder] = message.useMessage()
+    const navigate = useNavigate()
 
     // redux
     const searchMode = useSelector(state => state.page[type].searchMode)
     const keywords = useSelector(state => state.page[type].keywords)
     const searchForm = useSelector(state => state.page[type].searchForm)
+    const ifShowDelivered = useSelector(state => state.functionSetting.ifShowDelivered.value)
+    const ifShowPayment = useSelector(state => state.functionSetting.ifShowPayment.value)
+    const defaultUnit = useSelector(state => state.functionSetting.defaultUnit.value)
     const dispatch = useDispatch()
 
     const load = () => {
@@ -55,7 +57,7 @@ const InvoicePage = ({ type }) => {
         } else {
             title = `是否删除 ${invoices.length} 张清单?`
         }
-        confirm({
+        Modal.confirm({
             title: title, 
             icon: <ExclamationCircleFilled />,
             content: '确认删除后不可撤销，同时仓库中产品的库存会相应恢复。',
@@ -72,9 +74,6 @@ const InvoicePage = ({ type }) => {
             }
         })
     }
-
-    const ifShowDelivered = useSelector(state => state.functionSetting.ifShowDelivered.value)
-    const ifShowPayment = useSelector(state => state.functionSetting.ifShowPayment.value)
 
     // button handler
     const handleExport = () => {
@@ -95,6 +94,11 @@ const InvoicePage = ({ type }) => {
         ws.writeJson(invoices, headers)
         wb.writeSheet(ws)
         wb.save()
+    }
+
+    const handleCreate = () => {
+        dispatch({ type: 'draft/add', payload: { type: type, defaultUnit: defaultUnit } })
+        navigate('/')
     }
 
     // scroll position listener & recover
@@ -118,6 +122,7 @@ const InvoicePage = ({ type }) => {
         {contextHolder}
 
         <Space wrap>
+            <Button icon={<PlusOutlined />} onClick={handleCreate}>新增</Button>
             <Button icon={<ExportOutlined />} onClick={handleExport}>导出</Button>
         </Space>
         <SearchManager pageKey={type} onSearch={load} />
