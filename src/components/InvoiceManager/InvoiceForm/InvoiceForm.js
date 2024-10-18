@@ -30,6 +30,11 @@ const InvoiceForm = ({ type, editInvoice, invoice, onInvoiceChange, onFormChange
                 date: dayjs(editInvoice.date)
             }
             form.setFieldsValue(newInvoice)
+        } else {
+            form.setFieldsValue({
+                ...invoice,
+                date: dayjs(invoice.date)
+            })
         }
     }
 

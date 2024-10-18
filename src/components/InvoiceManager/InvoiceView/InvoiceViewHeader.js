@@ -44,7 +44,7 @@ const InvoiceViewHeader = ({ type, invoice, allowEditPartner }) => {
             </Col>
             <Col span={8}>
                 { INVOICE_BASICS[type].relatedInvoiceTitle }：
-                { isRefund ? (invoice?.refund?.number ?? '无') : (invoice?.order?.number ?? '无') }
+                { isRefund ? (invoice?.order?.number ?? '无') : (invoice?.refund?.number ?? '无') }
             </Col>
         </Row>
         <Row>
