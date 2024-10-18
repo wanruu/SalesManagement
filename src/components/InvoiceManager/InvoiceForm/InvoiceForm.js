@@ -23,6 +23,7 @@ const InvoiceForm = ({ type, editInvoice, invoice, onInvoiceChange, onFormChange
     const isOrder = type.includes('Order')
 
     const initForm = () => {
+        form.resetFields(['order'])  // 其他field会在setFieldsValue之后更新，唯独order可能不会更新（当从refund切回order时）
         if (editInvoice) {
             const newInvoice = {
                 ...editInvoice, 
