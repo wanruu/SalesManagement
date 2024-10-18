@@ -2,11 +2,11 @@ import React, { useEffect, useMemo, useState } from 'react'
 import ProductTable from './ProductTable'
 import { productService } from '../../services'
 import { useSelector } from 'react-redux'
-import { Col, Row, Segmented, Select, Radio, Divider } from 'antd'
+import { Col, Row, Segmented, Select, Radio, Divider, Space, Button } from 'antd'
 import { AppstoreOutlined, LineChartOutlined, DotChartOutlined } from '@ant-design/icons';
 import { ProductLineChart, ProductScatterChart } from '../Chart'
 import { INVOICE_BASICS } from '../../utils/invoiceUtils'
-
+import { PartnerInput } from '../Input'
 
 const displayOptions = [
     {
@@ -57,34 +57,46 @@ const Header = ({ product }) => {
 }
 
 
-const ProductManager = ({ product: initProduct }) => {
+// 这里的控制比较复杂，因为设置modal为destroyOnClose会有chart渲染的问题，所以要处理数据的变化
+const ProductManager = ({
+    product: initProduct,
+    partnerName: initPartnerName='',
+    display: initDisplay='scatter',
+    field: initField='price',
+    invoiceType: initInvoiceType='salesOrder'
+}) => {
     const [product, setProduct] = useState({})
-    
-    // control display
+    const [filteredProduct, setFilteredProduct] = useState({})
+
+    const [partnerName, setPartnerName] = useState('')
     const [display, setDisplay] = useState('scatter')
     const [chartField, setChartField] = useState('price')
     const [invoiceType, setInvoceType] = useState('salesOrder')
+
+    
+    useEffect(() => setPartnerName(initPartnerName), initPartnerName)
+    useEffect(() => setDisplay(initDisplay), initDisplay)
+    useEffect(() => setChartField(initField), initField)
+
+    const allTypes = useMemo(() => [...new Set((filteredProduct.invoiceItems??[]).map(i => i.invoice.type))], [filteredProduct])
     const lineChartTypeOptions = useMemo(() => {
-        const allTypes = [...new Set((product.invoiceItems??[]).map(i => i.invoice.type))]
         return ['salesOrder', 'salesRefund', 'purchaseOrder', 'purchaseRefund']
             .filter(key => allTypes.includes(key))
             .map(i => {
                 return { label: INVOICE_BASICS[i].title, value: i }
             })
-    }, [product])
+    }, [allTypes])
 
     useEffect(() => {
-        setInvoceType(lineChartTypeOptions?.[0]?.value)
-    }, [lineChartTypeOptions])
+        if (allTypes.includes(initInvoiceType)) {
+            setInvoceType(initInvoiceType)
+        } else {
+            setInvoceType(['salesOrder', 'salesRefund', 'purchaseOrder', 'purchaseRefund']
+                .find(t => allTypes.includes(t)))
+        }
+    }, [allTypes, initInvoiceType])
+    
 
-
-    const displayDict = {
-        'table': <ProductTable product={product} />,
-        'scatter': <ProductScatterChart product={product} field={chartField} />,
-        'line': <ProductLineChart product={product} type={invoiceType} field={chartField} />,
-    }
-
-    // load
     const load = () => {
         productService.fetchById(initProduct.id).then(res => {
             setProduct(res.data)
@@ -92,24 +104,53 @@ const ProductManager = ({ product: initProduct }) => {
             setProduct({})
         })
     }
+    useEffect(load, [initProduct])
 
-    useEffect(load, [initProduct.id])
+    const filter = () => {
+        if (partnerName && partnerName !== '') {
+            setFilteredProduct({
+                ...product,
+                invoiceItems: (product?.invoiceItems??[]).filter(i => i.invoice.partnerName.includes(partnerName))
+            })
+        } else {
+            setFilteredProduct(product)
+        }
+    }
+    useEffect(filter, [product])
+
+    const handleKeyDown = (event) => {
+        event.key === 'Enter' && filter()
+    }
+
+    const displayDict = {
+        'table': <ProductTable product={filteredProduct} />,
+        'scatter': <ProductScatterChart product={filteredProduct} field={chartField} />,
+        'line': <ProductLineChart product={filteredProduct} type={invoiceType} field={chartField} />,
+    }
     
     return <>
         <Header product={product} />
         <Divider />
-        <Row justify='space-between' style={{ marginBottom: '15px' }}>
+        <Space wrap style={{ marginBottom: '15px', width: '100%', justifyContent: 'space-between' }}>
             <Segmented options={displayOptions} value={display} onChange={setDisplay} />
+            <Space.Compact>
+                <PartnerInput placeholder='交易对象名称' style={{ 'minWidth': '200px' }}
+                    value={partnerName} onChange={setPartnerName} 
+                    onKeyDown={handleKeyDown} />
+                <Button onClick={filter}>筛选</Button>
+            </Space.Compact>
+        </Space>
+        <Row justify='space-between' align='middle'>
             {
                 display === 'table' ? null :
                 <Select options={chartFieldOptions} value={chartField} onChange={setChartField} />
             }
+            {
+                display === 'line' ?
+                <Radio.Group options={lineChartTypeOptions} value={invoiceType} 
+                    onChange={e => setInvoceType(e.target.value)} /> : null
+            }
         </Row>
-        {
-            display === 'line' ?
-            <Radio.Group options={lineChartTypeOptions} value={invoiceType} 
-                onChange={e => setInvoceType(e.target.value)} /> : null
-        }
         { displayDict[display] }
     </>
 }
