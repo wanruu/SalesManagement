@@ -12,7 +12,7 @@ class InvoiceController extends BaseController {
 
     index = async (req, res, next) => {
         try {
-            const { startDate, endDate, sortBy='number', order='DESC' } = req.query
+            const { startDate, endDate, number, sortBy='number', order='DESC' } = req.query
 
             // construct filter
             const conditions = {}
@@ -25,6 +25,9 @@ class InvoiceController extends BaseController {
                 } else {
                     conditions.date = { [Op.lte]: endDate }
                 }
+            }
+            if (number) {
+                conditions.number = { [Op.like]: `%${number}%` }
             }
 
             // query
