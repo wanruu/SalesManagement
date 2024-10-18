@@ -59,7 +59,7 @@ const InvoiceManager = ({
     useEffect(load, [type, initInvoice])
 
     return (
-        <div style={{ padding: '15px' }}>
+        <div style={{ marginTop: '15px' }}>
             { modeDict[mode] }
             {
                 mode != 'view' ? null :

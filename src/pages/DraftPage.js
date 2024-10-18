@@ -38,7 +38,7 @@ const DraftPage = () => {
             const { invoice, editInvoice, type, key, label, mode } = draft
             const children = <>
                 { invoice?.number ? null : 
-                    <Segmented options={typeOptions} style={{ margin: '15px' }}
+                    <Segmented options={typeOptions} style={{ margin: '5px 0 10px 0' }}
                         value={type}
                         onChange={val => {
                             dispatch({ type: 'draft/updateType', payload: { key: key, type: val, defaultUnit: defaultUnit } })

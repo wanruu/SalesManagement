@@ -24,7 +24,7 @@ const InvoiceFormHeader = ({ type }) => {
     const ifShowPayment = useSelector(state => state.functionSetting.ifShowPayment.value)
 
     // Layout
-    const colLayout = { xs: 24, sm: 11, md: 7 }
+    const colLayout = { xs: 24, sm: 12, md: 12, lg: 8 }
     const formItemLayout = { labelCol: { span: 8 } }
 
     const isRefund = ['salesRefund', 'purchaseRefund'].includes(type)
@@ -34,8 +34,8 @@ const InvoiceFormHeader = ({ type }) => {
         <Modal title={modalTitle} open={isSelectionModalOpen} onCancel={_ => setSelectionModalOpen(false)} width='90%' footer={null}>
             <OrderSelection type={type} onCancel={_ => setSelectionModalOpen(false)} />
         </Modal>
-        {/* PartnerName, Date, ProductSelection? */}
-        <Row style={{ justifyContent: 'space-between' }} wrap>
+        <Row style={{ justifyContent: 'space-between' }} gutter={[8,8]}>
+            {/* PartnerName, Date, ProductSelection? */}
             <Col {...colLayout}>
                 {
                     isRefund ? (
@@ -73,9 +73,7 @@ const InvoiceFormHeader = ({ type }) => {
                     </Item>
                 </Col>
             }
-        </Row>
-        {/* Amount, Prepayment?, (Payment + PaymentCalculation)? */}
-        <Row style={{ justifyContent: 'space-between' }} wrap>
+            {/* Amount, Prepayment?, (Payment + PaymentCalculation)? */}
             <Col {...colLayout}>
                 {
                     allowEditAmount ?

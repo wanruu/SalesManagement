@@ -32,34 +32,30 @@ const InvoiceViewHeader = ({ type, invoice, allowEditPartner }) => {
         </span>
     }, [invoice])
 
-    return <Space direction='vertical' style={{ width: '100%', marginTop: '10px', marginBottom: '15px' }}>
-        <Row>
-            <Col span={8}>
-                { INVOICE_BASICS[type].partnerTitle }：
-                { invoice?.partner?.name }
-            </Col>
-            <Col span={8}>
-                日期：
-                { dayjs(invoice?.date).format(DATE_FORMAT) }
-            </Col>
-            <Col span={8}>
-                { INVOICE_BASICS[type].relatedInvoiceTitle }：
-                { isRefund ? (invoice?.order?.number ?? '无') : (invoice?.refund?.number ?? '无') }
-            </Col>
-        </Row>
-        <Row>
-            <Col span={8}>
-                总金额：
-                { amountSign + (invoice?.amount||0).toLocaleString() }
-            </Col>
-            {
-                !ifShowPayment ? null : <>
-                    <Col span={8}>已付：{ paidText }</Col>
-                    <Col span={8}>未付：{ unpaidText }</Col>
-                </>
-            }
-        </Row>
-    </Space>
+    return <Row justify='start' gutter={[8,8]}>
+        <Col xs={12} sm={12} md={8}>
+            { INVOICE_BASICS[type].partnerTitle }：
+            { invoice?.partner?.name }
+        </Col>
+        <Col xs={12} sm={12} md={8}>
+            日期：
+            { dayjs(invoice?.date).format(DATE_FORMAT) }
+        </Col>
+        <Col xs={24} sm={12} md={8}>
+            { INVOICE_BASICS[type].relatedInvoiceTitle }：
+            { isRefund ? (invoice?.order?.number ?? '无') : (invoice?.refund?.number ?? '无') }
+        </Col>
+        <Col xs={8} sm={12} md={8}>
+            总金额：
+            { amountSign + (invoice?.amount||0).toLocaleString() }
+        </Col>
+        {
+            !ifShowPayment ? null : <>
+                <Col xs={8} sm={12} md={8}>已付：{ paidText }</Col>
+                <Col xs={8} sm={12} md={8}>未付：{ unpaidText }</Col>
+            </>
+        }
+    </Row>
 }
 
 {/* {TODO
