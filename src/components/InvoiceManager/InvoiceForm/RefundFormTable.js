@@ -35,7 +35,7 @@ const AllRefundTable = () => {
             remark: null,
             delivered: false,
         }
-        const items = form.getFieldValue('invoiceItems') ?? []
+        const items = [...form.getFieldValue('invoiceItems') ?? []]
         items.push(newItem)
         form.setFieldValue('invoiceItems', items)
     }
@@ -205,7 +205,7 @@ const RefundTable = () => {
     }
 
     const removeItem = (rowIndex) => {
-        const items = form.getFieldValue('invoiceItems')
+        const items = [...form.getFieldValue('invoiceItems')]
         items.splice(rowIndex, 1)
         form.setFieldValue('invoiceItems', items)
         updateTotalAmount(form)
