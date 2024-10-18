@@ -87,7 +87,14 @@
 
 ### 产品详情
 - **GET** `/products/:id`, `/products/:material?/:name/:spec`
-- 不带参数
+- 参数`query`（可选）
+    ```js
+    {
+        "sortBy": "id",
+        "order": "DESC",
+        "detail": false,  // return invoiceItems & unitWeight or not
+    }
+    ```
 - 返回值
     ```json
     {
