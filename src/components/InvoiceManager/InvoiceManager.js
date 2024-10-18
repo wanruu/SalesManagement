@@ -32,7 +32,7 @@ const InvoiceManager = ({
             invoiceService.fetch(type, id).then(res => {
                 setInvoice(res.data)
             }).catch(err => {
-
+                setInvoice({})
             })
         }
     }

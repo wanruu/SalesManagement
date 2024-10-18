@@ -94,6 +94,10 @@ class InvoiceController extends BaseController {
                     include: {
                         model: InvoiceItem,
                         as: 'invoiceItems',
+                        include: {
+                            model: Product,
+                            as: 'product',
+                        }
                     }
                 }
             ],

@@ -9,11 +9,13 @@ import { MyWorkBook, MyWorkSheet } from '../utils/export'
 import { InvoiceTable } from '../components/Table'
 import { SearchManager } from '../components/Search'
 import { useNavigate } from 'react-router-dom'
+import { InvoiceManager } from '../components/InvoiceManager'
 
 
 const InvoicePage = ({ type }) => {
     const [invoices, setInvoices] = useState([])
-    const [selectedInvoiceId, setSelectedInvoiceId] = useState(undefined)
+    const [selectedInvoice, setSelectedInvoice] = useState(undefined)
+    const [mode, setMode] = useState('view')
     const [messageApi, contextHolder] = message.useMessage()
     const navigate = useNavigate()
 
@@ -120,6 +122,19 @@ const InvoicePage = ({ type }) => {
 
     return <Space className='pageMainContent' direction='vertical' style={{ width: '100%' }}>
         {contextHolder}
+        <Modal title={`${INVOICE_BASICS[type].title} ${selectedInvoice?.number}`}
+            open={selectedInvoice} onCancel={_ => {
+                setSelectedInvoice(undefined)
+                setMode('view')
+            }}
+            footer={null} width='90%'>
+            <InvoiceManager type={type} invoice={selectedInvoice} mode={mode}
+                onCancel={_ => setSelectedInvoice(undefined)}
+                onFormChange={_ => {}}
+                onInvoiceChange={_ => load()}
+                onModeChange={setMode}
+            />
+        </Modal>
 
         <Space wrap>
             <Button icon={<PlusOutlined />} onClick={handleCreate}>新增</Button>
@@ -129,7 +144,7 @@ const InvoicePage = ({ type }) => {
 
         <InvoiceTable type={type} invoices={invoices} 
             onDelete={i => showDeleteConfirm([i])}
-            onSelect={setSelectedInvoiceId} />        
+            onSelect={setSelectedInvoice} />        
     </Space>
 }
 
