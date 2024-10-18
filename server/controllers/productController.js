@@ -50,39 +50,48 @@ class ProductController extends BaseController {
                 where.spec = req.params.spec
             }
 
-            const { sortBy='id', order='DESC' } = req.query
-            const options = {
-                where: where,
-                include: {
-                    model: InvoiceItem,
-                    as: 'invoiceItems',
-                    include: {
-                        model: Invoice,
-                        as: 'invoice'
-                    }
-                },
-                order: [
-                    [{ model: InvoiceItem, as: 'invoiceItems'}, sortBy, order]
-                ]
-            }
-            
-            const product = await Product.findOne(options)
-            if (!product) {
-                return this.handleNotFound(res)
-            }
-            const invoiceItems = product.dataValues.invoiceItems
-            var totalWeight = 0
-            var totalQuantity = 0
-            for (const invoiceItem of invoiceItems) {
-                if (invoiceItem.weight != null) {
-                    totalQuantity += invoiceItem.quantity
-                    totalWeight += invoiceItem.weight
+            const { sortBy='id', order='DESC', detail=false } = req.query
+
+            if (detail) {
+                const options = {
+                    where: where,
+                    include: [{
+                        model: InvoiceItem,
+                        as: 'invoiceItems',
+                        include: {
+                            model: Invoice,
+                            as: 'invoice'
+                        }
+                    }],
+                    order: [
+                        [{ model: InvoiceItem, as: 'invoiceItems'}, sortBy, order]
+                    ]
                 }
+                
+                const product = await Product.findOne(options)
+                if (!product) {
+                    return this.handleNotFound(res)
+                }
+                const invoiceItems = product.dataValues.invoiceItems
+                var totalWeight = 0
+                var totalQuantity = 0
+                for (const invoiceItem of invoiceItems) {
+                    if (invoiceItem.weight != null) {
+                        totalQuantity += invoiceItem.quantity
+                        totalWeight += invoiceItem.weight
+                    }
+                }
+                
+                const newProduct = product.dataValues
+                newProduct.unitWeight = totalQuantity == 0 ? null : totalWeight / totalQuantity
+                return res.send(newProduct)
+            } else {
+                const product = await Product.findOne({ where: where })
+                if (!product) {
+                    return this.handleNotFound(res)
+                }
+                return res.send(product)
             }
-            
-            const newProduct = product.dataValues
-            newProduct.unitWeight = totalQuantity == 0 ? null : totalWeight / totalQuantity
-            return res.send(newProduct)
         } catch (error) {
             return this.handleError(res, error)
         }
