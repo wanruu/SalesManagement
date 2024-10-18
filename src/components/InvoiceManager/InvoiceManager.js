@@ -39,7 +39,9 @@ const InvoiceManager = ({
 
     const modeDict = {
         'edit': (
-            <InvoiceForm type={type} invoice={editInvoice}
+            <InvoiceForm type={type}
+                editInvoice={editInvoice}
+                invoice={invoice}
                 onCancel={_ => {
                     invoice?.id ? setMode('view') : onCancel?.()
                 }}

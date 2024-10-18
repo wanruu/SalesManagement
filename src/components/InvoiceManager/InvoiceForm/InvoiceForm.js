@@ -18,15 +18,15 @@ import './InvoiceForm.scss'
         onFormChange: called when form is changed
         onInvoiceChange: called then form is successfully submitted and response is received
  */
-const InvoiceForm = ({ type, invoice, onInvoiceChange, onFormChange, onCancel }) => {
+const InvoiceForm = ({ type, editInvoice, invoice, onInvoiceChange, onFormChange, onCancel }) => {
     const [form] = Form.useForm()
     const isOrder = type.includes('Order')
 
     const initForm = () => {
-        if (invoice) {
+        if (editInvoice) {
             const newInvoice = {
-                ...invoice, 
-                date: dayjs(invoice.date)
+                ...editInvoice, 
+                date: dayjs(editInvoice.date)
             }
             form.setFieldsValue(newInvoice)
         }
@@ -77,7 +77,7 @@ const InvoiceForm = ({ type, invoice, onInvoiceChange, onFormChange, onCancel })
         message.open({ key: messageKey, type: 'loading', content: '提交中' })
         if (invoice.id) {
             invoiceService.update(type, invoice.id, newInvoice).then(res => {
-                message.open({ key: messageKey, type: 'success', content: '保存成功' })
+                message.open({ key: messageKey, type: 'success', content: '更新成功' })
                 onInvoiceChange?.(res.data)
             }).catch(err => {
                 message.open({ 
@@ -87,7 +87,7 @@ const InvoiceForm = ({ type, invoice, onInvoiceChange, onFormChange, onCancel })
             })
         } else {
             invoiceService.create(type, newInvoice).then(res => {
-                message.open({ key: messageKey, type: 'success', content: '保存成功' })
+                message.open({ key: messageKey, type: 'success', content: '新建成功' })
                 onInvoiceChange?.(res.data)
             }).catch(err => {
                 message.open({ 
