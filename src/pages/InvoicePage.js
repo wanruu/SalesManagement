@@ -4,7 +4,7 @@ import { Decimal } from 'decimal.js'
 import { ExclamationCircleFilled, ExportOutlined } from '@ant-design/icons'
 import { useSelector, useDispatch } from 'react-redux'
 import { invoiceService } from '../services'
-import { INVOICE_BASICS } from '../utils/invoiceUtils'
+import { INVOICE_BASICS, DATE_FORMAT } from '../utils/invoiceUtils'
 import { MyWorkBook, MyWorkSheet } from '../utils/export'
 import { InvoiceTable } from '../components/Table'
 import { SearchManager } from '../components/Search'
@@ -25,8 +25,11 @@ const InvoicePage = ({ type }) => {
     const dispatch = useDispatch()
 
     const load = () => {
-        const params = searchMode == 'simple' ? { keyword: keywords } : searchForm
-        console.log(params)
+        const params = searchMode == 'simple' ? { keyword: keywords } : {
+            ...searchForm,
+            startDate: searchForm.date?.[0]?.format(DATE_FORMAT),
+            endDate: searchForm.date?.[1]?.format(DATE_FORMAT),
+        }
         invoiceService.fetchMany(type, params).then(response => {
             const newInvoices = response.data.map(invoice => {
                 invoice.paid = Decimal(invoice.payment).plus(invoice.prepayment).toNumber()
@@ -35,7 +38,7 @@ const InvoicePage = ({ type }) => {
             })
             setInvoices(newInvoices)
         }).catch(err => {
-            // TODO
+            setInvoices([])
         })
     }
 
