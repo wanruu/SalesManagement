@@ -40,7 +40,7 @@
 
 ### 错误
 返回格式：
-```json
+```js
 { "error": "xxx" }
 ```
 - `400 INVALID REQUEST`
@@ -72,7 +72,7 @@
     }
     ```
 - 返回值
-    ```json
+    ```js
     [
         {
             "id": 1,
@@ -96,7 +96,7 @@
     }
     ```
 - 返回值
-    ```json
+    ```js
     {
         "id": 1,
         "material": "材质1",
@@ -125,7 +125,7 @@
 ### 创建产品
 - **POST** `/products`
 - 参数`body`
-    ```json
+    ```js
     {
         "material": "材质1",
         "name": "名称1",
@@ -136,7 +136,7 @@
     - `(material, name, spec)`必须唯一，如果重复会返回SequelizeUniqueConstraintError
     - `material`可以为空字符串但不能是`null`，其余项不可以为空
 - 返回值
-    ```json
+    ```js
     {
         "id": 1,
         "material": "材质1",
@@ -176,7 +176,7 @@
     }
     ```
 - 返回值
-    ```json
+    ```js
     [
         {
             "name": "交易对象1",
@@ -193,7 +193,7 @@
 - **GET** `/partners/:name`
 - 不带参数
 - 返回值
-    ```json
+    ```js
     {
         "name": "交易对象1",
         "phone": "电话1", // or null
@@ -229,7 +229,7 @@
 ### 创建交易对象
 - **POST** `/partners`
 - 参数`body`
-    ```json
+    ```js
     {
         "name": "交易对象1",
         "phone": "电话1",  // optional
@@ -240,7 +240,7 @@
     - `name`必须唯一，否则返回SequelizeUniqueConstraintError
     - `phone`/`address`/`folder`可以不包含在参数里，也可以指定为`null`
 - 返回值
-    ```json
+    ```js
     {
         "name": "交易对象1",
         "phone": "电话1",  // or null / not include
@@ -319,7 +319,7 @@
 - **GET** `/[invoiceType]s/:id`
 - 不带参数
 - 返回值
-    ```json
+    ```js
     {
         "id": 1,
         "number": "202409290001",
@@ -394,7 +394,7 @@
 - **POST** `/[invoiceType]s`
 - 参数`body`
     - 如果`invoiceType`是order
-        ```json
+        ```js
         {
             "partnerName": "交易对象1",
             "date": "2024-09-29",
@@ -420,7 +420,7 @@
         }
         ```
     - 如果`invoiceType`是refund
-        ```json
+        ```js
         {
             "partnerName": "交易对象1",
             "date": "2024-09-30",
@@ -467,7 +467,7 @@
 ### 交易对象提示
 - **GET** `/suggestions/partners/names`
 - 参数`query`
-    ```json
+    ```js
     {
         "keyword": "keyword"
     }
@@ -481,7 +481,7 @@
     - `/suggestions/products/names`
     - `/suggestions/products/specs`
 - 参数`query`
-    ```json
+    ```js
     {
         "keyword": "keyword"
     }
@@ -495,14 +495,14 @@
 - **GET** `/statistics`
 TODO
 <!-- - 参数`query`
-    ```json
+    ```js
     {
         "startDate": "YYYY-MM-DD", 
         "endDate": "YYYY-MM-DD"
     }
     ```
 - 返回值
-    ```json
+    ```js
     {
         "grossIncome": 0.00,
         "income": 0.00,
