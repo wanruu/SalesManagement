@@ -7,9 +7,15 @@
         "test": "test"
     },
     "scripts": {
+        "commit": "git-cz",
         "test": "python test/main.py",
         "react-start": "set NODE_OPTIONS=--openssl-legacy-provider && react-scripts start",
         "electron-start": "APP_DEV=true electron public/electron.js"
+    },
+    "config": {
+        "commitizen": {
+            "path": "./node_modules/cz-emoji-conventional"
+        }
     },
     "repository": {
         "type": "git",
@@ -56,6 +62,9 @@
         ]
     },
     "devDependencies": {
+        "commitizen": "^4.3.1",
+        "cz-conventional-changelog": "^3.3.0",
+        "cz-emoji-conventional": "^1.1.0",
         "electron-react-devtools": "^0.5.3",
         "sass": "^1.79.4",
         "sass-loader": "^16.0.2"
