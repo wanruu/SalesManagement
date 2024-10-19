@@ -151,6 +151,7 @@ const PrintPreview = () => {
             amount: '0',
             invoiceItems: [...Array(itemNum).keys()].map((_, idx) => {
                 return {
+                    id: idx,
                     product: {
                         material: `材质${idx + 1}`, name: `名称${idx + 1}`, spec: `规格${idx + 1}`,
                         unit: '只',
