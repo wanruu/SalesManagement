@@ -3,13 +3,10 @@ import { Button, Space, message, Modal } from 'antd'
 import { ExclamationCircleFilled, ClearOutlined, ExportOutlined } from '@ant-design/icons'
 import { useSelector, useDispatch } from 'react-redux'
 import { partnerService } from '../services'
-import { PartnerForm } from '../components/PartnerManager'
+import { PartnerForm, PartnerManager } from '../components/PartnerManager'
 import { MyWorkBook, MyWorkSheet } from '../utils/export'
 import { PartnerTable } from '../components/Table'
 import SearchManager from '../components/Search/SearchManager'
-
-
-const { confirm } = Modal
 
 
 const PartnerPage = () => {
@@ -36,7 +33,7 @@ const PartnerPage = () => {
 
     const showDeleteConfirm = (partners) => {
         const title = partners.length === 1 ? `是否删除交易对象 “${partners[0].name}” ?` : `是否删除 ${partners.length} 个交易对象?`
-        confirm({
+        Modal.confirm({
             title: title, icon: <ExclamationCircleFilled />,
             content: '确认删除后不可撤销',
             okText: '删除', okType: 'danger', cancelText: '取消',
@@ -98,8 +95,9 @@ const PartnerPage = () => {
             }} />
         </Modal>
 
-        <Modal open={selectedPartner} onCancel={_ => setSelectedPartner(undefined)} title='交易对象详情' footer={null} width='90%'>
-            
+        <Modal open={selectedPartner} onCancel={_ => setSelectedPartner(undefined)} title='交易对象' width='90%'
+            footer={null}>
+            <PartnerManager partner={selectedPartner} />
         </Modal>
 
         <Space wrap>
