@@ -50,6 +50,6 @@ export const CircleLabel = (props) => {
 export const QuestionTooltip = (props) => {
     const { title } = props
     return <Tooltip title={title}>
-        <QuestionCircleOutlined style={{ color: 'gray', marginLeft: '3px' }} />
+        <QuestionCircleOutlined style={{ color: 'gray' }} />
     </Tooltip>
 }
