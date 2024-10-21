@@ -1,6 +1,6 @@
 const { Op } = require('sequelize')
 const BaseController = require('./baseController')
-const { Partner, Invoice } = require('../models')
+const { Partner, Invoice, InvoiceItem, Product } = require('../models')
 
 
 class PartnerController extends BaseController {
@@ -43,10 +43,28 @@ class PartnerController extends BaseController {
                         ]
                     },
                     required: false,  // left join
-                    include: {
-                        model: Invoice,
-                        as: 'refund'
-                    }
+                    include: [
+                        {
+                            model: InvoiceItem,
+                            as: 'invoiceItems',
+                            include: {
+                                model: Product,
+                                as: 'product',
+                            }
+                        },
+                        {
+                            model: Invoice,
+                            as: 'refund',
+                            include: {
+                                model: InvoiceItem,
+                                as: 'invoiceItems',
+                                include: {
+                                    model: Product,
+                                    as: 'product',
+                                }
+                            },
+                        },
+                    ]
                 }
             }
             const partner = await Partner.findByPk(req.params.name, options)
