@@ -49,28 +49,28 @@ const PartnerProductTable = (props) => {
                 const quantity = order.type === 'salesOrder' ? -item.quantity : item.quantity
                 const amount = order.type === 'salesOrder' ? item.amount : -item.amount
                 if (acc.hasOwnProperty(item.product.id)) {
-                    acc[item.product.id].quantity += quantity
-                    acc[item.product.id].amount += amount
+                    acc[item.product.id].quantity = acc[item.product.id].quantity.plus(quantity)
+                    acc[item.product.id].amount = acc[item.product.id].amount.plus(amount)
                 } else {
                     acc[item.product.id] = {
                         ...item.product,
-                        quantity: quantity,
-                        amount: amount
+                        quantity: new Decimal(quantity),
+                        amount: new Decimal(amount),
                     }
                 }
             })
             const refundItems = order.refund?.invoiceItems ?? []
             refundItems.forEach(item => {
-                const quantity = order.type === 'salesRefund' ? item.quantity : -item.quantity
-                const amount = order.type === 'salesRefund' ? -item.amount : item.amount
+                const quantity = order.type === 'salesOrder' ? item.quantity : -item.quantity
+                const amount = order.type === 'salesOrder' ? -item.amount : item.amount
                 if (acc.hasOwnProperty(item.product.id)) {
-                    acc[item.product.id].quantity += quantity
-                    acc[item.product.id].amount += amount
+                    acc[item.product.id].quantity = acc[item.product.id].quantity.plus(quantity)
+                    acc[item.product.id].amount = acc[item.product.id].amount.plus(amount)
                 } else {
                     acc[item.product.id] = {
                         ...item.product,
-                        quantity: quantity,
-                        amount: amount
+                        quantity: new Decimal(quantity),
+                        amount: new Decimal(amount),
                     }
                 }
             })
@@ -86,12 +86,12 @@ const PartnerProductTable = (props) => {
             { title: '名称', dataIndex: 'name' },
             { title: '规格', dataIndex: 'spec' },
             { title: '单位', dataIndex: 'unit' },
+            { title: '库存变化', dataIndex: 'quantity', render: q => q.toLocaleString() },
             {
-                title: <Space>数量<QuestionTooltip title='对库存的影响' /></Space>,
-                dataIndex: 'quantity',
-                render: q => q.toLocaleString(),
+                title: <Space>营业额<QuestionTooltip title='正数代表收入' /></Space>,
+                dataIndex: 'amount',
+                render: a => a.toCurrencyString(amountSign)
             },
-            { title: <Space>金额<QuestionTooltip title='正数代表收入' /></Space>, dataIndex: 'amount', render: a => Decimal(a).toCurrencyString(amountSign) },
         ]
             .filter(c => c)
             .map(c => ({ ...c, align: 'center' }))
