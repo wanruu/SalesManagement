@@ -157,17 +157,38 @@ const PartnerInvoiceItemTable = (props) => {
         {
             title: '数量',
             dataIndex: ['orderItem', 'quantity'],
-            render: q => (q ?? '-').toLocaleString()
+            render: (q, record) => {
+                const orderQ = q?.toLocaleString()
+                if (!record.refundItem.quantity) return orderQ
+                const refundQ = record.refundItem?.quantity?.toLocaleString()
+                return <>{orderQ} <span style={{ color: 'gray' }}>(-{refundQ})</span></>
+            }
         },
         ifShowDiscount ? {
             title: '金额',
             dataIndex: ['orderItem', 'originalAmount'],
-            render: a => a == undefined ? '-' : Decimal(a).toCurrencyString(amountSign),
+            render: (a, record) => {
+                const orderA = Decimal(a ?? 0).toCurrencyString(amountSign)
+                const refundA = <span style={{ color: 'gray' }}>
+                    (-{Decimal(record.refundItem?.originalAmount ?? 0).toCurrencyString(amountSign)})
+                </span>
+                if (a == undefined) return refundA
+                if (record.refundItem?.originalAmount == undefined) return orderA
+                return <>{orderA} {refundA}</>
+            }
         } : null,
         {
             title: ifShowDiscount ? '折后价' : '金额',
             dataIndex: ['orderItem', 'amount'],
-            render: a => a == undefined ? '-' : Decimal(a).toCurrencyString(amountSign),
+            render: (a, record) => {
+                const orderA = Decimal(a ?? 0).toCurrencyString(amountSign)
+                const refundA = <span style={{ color: 'gray' }}>
+                    (-{Decimal(record.refundItem?.amount ?? 0).toCurrencyString(amountSign)})
+                </span>
+                if (a == undefined) return refundA
+                if (record.refundItem?.amount == undefined) return orderA
+                return <>{orderA} {refundA}</>
+            }
         },
         ifShowRefund ? {
             title: '关联退货单',
@@ -178,21 +199,14 @@ const PartnerInvoiceItemTable = (props) => {
                     {number}
                 </a> : '-'
         } : null,
-        ifShowRefund ? {
-            title: '数量',
-            dataIndex: ['refundItem', 'quantity'],
-            render: q => (q ?? '-').toLocaleString()
-        } : null,
-        ifShowDiscount ? {
-            title: '金额',
-            dataIndex: ['refundItem', 'originalAmount'],
-            render: a => a == undefined ? '-' : Decimal(a).toCurrencyString(amountSign),
-        } : null,
-        ifShowRefund ? {
-            title: ifShowDiscount ? '折后价' : '金额',
-            dataIndex: ['refundItem', 'amount'],
-            render: a => a == undefined ? '-' : Decimal(a).toCurrencyString(amountSign),
-        } : null,
+        {
+            title: '净营业额',
+            render: (_, record) => {
+                const amount = new Decimal(record.orderItem.amount??0).minus(record.refundItem?.amount??0)
+                const net = record.orderItem.orderType == 'salesOrder' ? amount : amount.neg()
+                return net.toCurrencyString(amountSign)
+            }
+        },
         {
             title: '类型',
             fixed: 'right',
@@ -205,36 +219,22 @@ const PartnerInvoiceItemTable = (props) => {
 
     const summary = useMemo(() => {
         const refundsNum = orders.reduce((acc, cur) => acc + (cur.refund ? 1 : 0), 0)
-        const orderOriginalAmount = items.reduce((acc, cur) => acc.plus(cur.orderItem?.originalAmount ?? 0), new Decimal(0))
-        const orderAmount = items.reduce((acc, cur) => acc.plus(cur.orderItem?.amount ?? 0), new Decimal(0))
-        const refundOriginalAmount = items.reduce((acc, cur) => acc.plus(cur.refundItem?.originalAmount ?? 0), new Decimal(0))
-        const refundAmount = items.reduce((acc, cur) => acc.plus(cur.refundItem?.amount ?? 0), new Decimal(0))
-
         const productSpan = columns.find(c => c.title == '产品信息').children.length
-        const lastCellIndex = columns.length + productSpan - 2
-        const discountOffset = ifShowDiscount ? 1 : 0
+        const net = items.reduce((acc, record) => {
+            const amount = new Decimal(record.orderItem.amount??0).minus(record.refundItem?.amount??0)
+            const net = record.orderItem.orderType == 'salesOrder' ? amount : amount.neg()
+            return acc.plus(net)
+        }, new Decimal(0)).toCurrencyString(amountSign)
 
         return <Summary fixed>
             <Summary.Row className='my-summary-row'>
                 <Cell index={0} className='my-summary-cell-title'>总计</Cell>
                 <Cell index={1} align='center'>{orders.length} 单</Cell>
                 <Cell index={2} align='center' colSpan={productSpan}>{items.length} 项</Cell>
-                <Cell index={2 + productSpan} />
-                {ifShowDiscount ?
-                    <Cell index={3 + productSpan}>{orderOriginalAmount.toCurrencyString(amountSign)}</Cell> : null
-                }
-                <Cell index={2 + productSpan + discountOffset}>{orderAmount.toCurrencyString(amountSign)}</Cell>
-                {!ifShowRefund ? null :
-                    <>
-                        <Cell index={3 + productSpan + discountOffset} align='center'>{refundsNum} 单</Cell>
-                        <Cell index={4 + productSpan + discountOffset} />
-                        {ifShowDiscount ?
-                            <Cell index={5 + productSpan + discountOffset}>{refundOriginalAmount.toCurrencyString(amountSign)}</Cell> : null
-                        }
-                        <Cell index={4 + productSpan + discountOffset * 2}>{refundAmount.toCurrencyString(amountSign)}</Cell>
-                    </>
-                }
-                <Cell index={lastCellIndex} />
+                <Cell index={2 + productSpan} colSpan={ifShowDiscount + 1 + ifShowRefund} />
+                <Cell index={3 + productSpan + ifShowDiscount + ifShowRefund} align='center'>{refundsNum} 单</Cell>
+                <Cell index={4 + productSpan + ifShowDiscount + ifShowRefund} align='center'>{net}</Cell>
+                <Cell index={5 + productSpan + ifShowDiscount + ifShowRefund} />
             </Summary.Row>
         </Summary>
     }, [items, ifShowDiscount, amountSign, ifShowRefund])
