@@ -53,6 +53,7 @@ const PartnerInvoiceItemTable = (props) => {
     const amountSign = useSelector(state => state.functionSetting.amountSign.value)
     const ifShowDiscount = useSelector(state => state.functionSetting.ifShowDiscount.value)
     const ifShowRefund = useSelector(state => state.functionSetting.ifShowRefund.value)
+    const ifShowMaterial = useSelector(state => state.functionSetting.ifShowMaterial.value)
     useEffect(() => setCurPage(1), [orders])
 
     const items = useMemo(() => {
@@ -73,7 +74,7 @@ const PartnerInvoiceItemTable = (props) => {
                 }
                 return {
                     orderItem: { ...orderItem, ...orderBasic },
-                    refundItem: { ...refundItems[refundItemIndex] ?? {}, ...refundBasic },
+                    refundItem: { ...(refundItems[refundItemIndex] ?? {}), ...refundBasic },
                 }
             })
             const missingRefundItems = refundItems
@@ -121,11 +122,11 @@ const PartnerInvoiceItemTable = (props) => {
         {
             title: '产品信息',
             children: [
-                {
+                ifShowMaterial ? {
                     title: '材质',
                     dataIndex: ['orderItem', 'product', 'material'],
                     render: (material, record) => material ?? record.refundItem?.product?.material
-                },
+                } : null,
                 {
                     title: '名称',
                     dataIndex: ['orderItem', 'product', 'name'],
@@ -156,7 +157,7 @@ const PartnerInvoiceItemTable = (props) => {
         {
             title: '数量',
             dataIndex: ['orderItem', 'quantity'],
-            render: q => q ?? '-'.toLocaleString()
+            render: q => (q ?? '-').toLocaleString()
         },
         ifShowDiscount ? {
             title: '金额',
@@ -180,7 +181,7 @@ const PartnerInvoiceItemTable = (props) => {
         ifShowRefund ? {
             title: '数量',
             dataIndex: ['refundItem', 'quantity'],
-            render: q => q ?? '-'.toLocaleString()
+            render: q => (q ?? '-').toLocaleString()
         } : null,
         ifShowDiscount ? {
             title: '金额',
