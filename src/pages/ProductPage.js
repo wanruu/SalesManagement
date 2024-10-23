@@ -102,7 +102,7 @@ const ProductPage = () => {
     useEffect(() => window.scrollTo(0, scrollY), [products])
     // ------------------------------------
 
-    return <Space direction='vertical' style={{ width: '100%' }} className='pageMainContent'>
+    return <Space direction='vertical' style={{ width: '100%' }} className='page-main-content'>
         {contextHolder}
 
         <Modal open={editProduct} onCancel={_ => setEditProduct(undefined)} title={editProduct && editProduct.id ? '编辑产品' : '新增产品'} footer={null} destroyOnClose>

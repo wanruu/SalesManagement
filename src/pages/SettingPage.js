@@ -146,7 +146,7 @@ export default function SettingPage() {
 
 
     return (<div style={{ display: 'flex' }}>
-        <div style={{ width: '100%' }} className='pageMainContent' id='settingMainContent'>
+        <div style={{ width: '100%' }} className='page-main-content' id='setting-main-content'>
             {
                 anchorItems.map(i => <div key={i.key}>{i.content}</div>)
             }

@@ -84,7 +84,7 @@ const PartnerPage = () => {
     useEffect(() => window.scrollTo(0, scrollY), [partners])
     // ------------------------------------
 
-    return <Space direction='vertical' style={{ width: '100%' }} className='pageMainContent'>
+    return <Space direction='vertical' style={{ width: '100%' }} className='page-main-content'>
         {contextHolder}
 
         <Modal title={editPartner?.name ? '编辑交易对象' : '新增交易对象'} open={editPartner} destroyOnClose

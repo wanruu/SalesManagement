@@ -118,7 +118,7 @@ const AllRefundTable = () => {
     return <Form.List name={['order', 'invoiceItems']}>
         {(fields) =>
             <Table dataSource={fields} columns={columns} 
-                className='invoiceFormTable' bordered
+                className='invoice-form-table' bordered
                 scroll={{ x: 'max-content' }} 
                 footer={_ => (
                     <Col>
@@ -240,7 +240,7 @@ const RefundTable = () => {
 
     return <Form.List name='invoiceItems' rules={[{required: true}]}>
         {(fields) =>
-            <Table id={tableId} className='invoiceFormTable refundFormTable'
+            <Table id={tableId} className='invoice-form-table refundFormTable'
                 scroll={{ x: 'max-content' }} bordered
                 dataSource={fields} columns={columns}
                 footer={_ => (

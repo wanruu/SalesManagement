@@ -5,7 +5,7 @@ import { ConfigProvider } from 'antd'
 import zhCN from 'antd/locale/zh_CN'
 import store from './store'
 import { Provider } from 'react-redux'
-import './index.scss'
+import './index.style.scss'
 // import reportWebVitals from './reportWebVitals'
 
 const root = ReactDOM.createRoot(document.getElementById('root'))

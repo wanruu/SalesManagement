@@ -1,4 +1,4 @@
-.invoiceFormTable {
+.invoice-form-table {
     tbody tr:not(.ant-table-measure-row) td {
         // decrease gap between cell & input
         padding: 5px 4px !important;
@@ -22,7 +22,7 @@
     }
 }
 
-.orderFormTable {
+.order-form-table {
     .ant-table-container {
         // fix table height
         height: 480px;  // 10 rows
