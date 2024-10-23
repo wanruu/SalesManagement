@@ -11,13 +11,18 @@ const pageSize = 10
 
 
 /**
+ * @typedef {Object} Product
+ * @property {number} id
+ * @property {string} [material]
+ * @property {string} name
+ * @property {string} spec
+ * @property {string} unit
+ */
+
+
+/**
  * @typedef {Object} InvoiceItem
- * @property {Object} product
- * @property {number} product.id
- * @property {string} [product.material]
- * @property {string} product.name
- * @property {string} product.spec
- * @property {string} product.unit
+ * @property {Product} product
  * @property {number} quantity
  * @property {number} amount
  */
@@ -43,6 +48,10 @@ const PartnerProductTable = (props) => {
     const amountSign = useSelector(state => state.functionSetting.amountSign.value)
     const [curPage, setCurPage] = useState(1)
 
+
+    /**
+     * @type {Object.<string, {quantity: string, amount: string} & Product>}
+     */
     const products = useMemo(() => {
         const pDict = orders.reduce((acc, order) => {
             order.invoiceItems.forEach(item => {
@@ -110,6 +119,7 @@ const PartnerProductTable = (props) => {
     }, [products, ifShowMaterial, amountSign])
 
     return <Table columns={columns} dataSource={products}
+        rowKey={product => product.id}
         scroll={{ x: 'max-content' }}
         summary={_ => summary}
         pagination={{
