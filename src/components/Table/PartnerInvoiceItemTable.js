@@ -1,6 +1,5 @@
 import React, { useEffect, useMemo, useState } from 'react'
 import { Table } from 'antd'
-import _ from 'lodash'
 import { InvoiceTypeTag } from '../Tag'
 import { useSelector } from 'react-redux'
 import Decimal from 'decimal.js'
@@ -14,6 +13,7 @@ const pageSize = 10
 
 /**
  * @typedef {Object} InvoiceItem
+ * @property {number} id
  * @property {number} invoiceId
  * @property {Object} product
  * @property {number} product.id
@@ -56,6 +56,29 @@ const PartnerInvoiceItemTable = (props) => {
     const ifShowMaterial = useSelector(state => state.functionSetting.ifShowMaterial.value)
     useEffect(() => setCurPage(1), [orders])
 
+
+    /**
+     * @typedef {Object} OptionalItem
+     * @property {number} [id] 
+     * @property {number} [invoiceId]
+     * @property {Object} [product]
+     * @property {number} product.id
+     * @property {string} [product.material]
+     * @property {string} product.name
+     * @property {string} product.spec
+     * @property {string} product.unit
+     * @property {number} [price]
+     * @property {number} [quantity]
+     * @property {number} [originalAmount]
+     * @property {number} [discount]
+     * @property {number} [amount]
+     */
+    /**
+     * @type {{
+     *  orderItem: OptionalItem & {orderNumber: string, orderType: 'salesOrder'|'purchaseOrder'}, 
+     *  refundItem: OptionalItem & {refundNumber: string, refundType: 'salesRefund'|'purchaseRefund'},
+     * }[]}
+     */
     const items = useMemo(() => {
         const combinedItems = orders.map(invoice => {
             const { number: orderNumber, type: orderType, invoiceItems: orderItems = [], refund } = invoice
@@ -202,7 +225,7 @@ const PartnerInvoiceItemTable = (props) => {
         {
             title: '净营业额',
             render: (_, record) => {
-                const amount = new Decimal(record.orderItem.amount??0).minus(record.refundItem?.amount??0)
+                const amount = new Decimal(record.orderItem.amount ?? 0).minus(record.refundItem?.amount ?? 0)
                 const net = record.orderItem.orderType == 'salesOrder' ? amount : amount.neg()
                 return net.toCurrencyString(amountSign)
             }
@@ -221,7 +244,7 @@ const PartnerInvoiceItemTable = (props) => {
         const refundsNum = orders.reduce((acc, cur) => acc + (cur.refund ? 1 : 0), 0)
         const productSpan = columns.find(c => c.title == '产品信息').children.length
         const net = items.reduce((acc, record) => {
-            const amount = new Decimal(record.orderItem.amount??0).minus(record.refundItem?.amount??0)
+            const amount = new Decimal(record.orderItem.amount ?? 0).minus(record.refundItem?.amount ?? 0)
             const net = record.orderItem.orderType == 'salesOrder' ? amount : amount.neg()
             return acc.plus(net)
         }, new Decimal(0)).toCurrencyString(amountSign)
@@ -241,6 +264,7 @@ const PartnerInvoiceItemTable = (props) => {
 
     return <Table dataSource={items} columns={columns}
         scroll={{ x: 'max-content' }} bordered
+        rowKey={item => `${item.orderItem.id}-${item.refundItem.id}`}
         pagination={{
             current: curPage,
             pageSize: pageSize,
