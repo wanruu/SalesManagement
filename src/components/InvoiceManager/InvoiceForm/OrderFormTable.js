@@ -179,7 +179,7 @@ const OrderFormTable = ({ type }) => {
         </Modal>
         <Form.List name='invoiceItems' rules={[{required: true}]}>
             {(fields, { add, remove }) =>
-                <Table className='invoiceFormTable orderFormTable' id={tableId}
+                <Table className='invoice-form-table order-form-table' id={tableId}
                     scroll={{ x: 'max-content', y: 'max-content' }} bordered
                     dataSource={fields} columns={columns(remove)}
                     footer={_ => 

@@ -16,7 +16,7 @@ export default function StatisticPage() {
     const [dateRange, setDateRange] = useState([null, null])
 
     return (
-        <div className='pageMainContent'>
+        <div className='page-main-content'>
             {/* <RangeSelectView dateRange={dateRange} setDateRange={setDateRange} /> */}
 
             {/* <AbstractView /> */}

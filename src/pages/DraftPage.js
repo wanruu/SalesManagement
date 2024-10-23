@@ -82,7 +82,7 @@ const DraftPage = () => {
         closable: false
     }
 
-    return (<div className='pageMainContent'>
+    return (<div className='page-main-content'>
         <Tabs type="editable-card"
             onChange={handleTabChange}
             activeKey={activeKey}

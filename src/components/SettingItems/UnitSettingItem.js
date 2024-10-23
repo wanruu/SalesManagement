@@ -9,7 +9,7 @@ import {
     verticalListSortingStrategy,
 } from '@dnd-kit/sortable'
 import { CSS } from '@dnd-kit/utilities'
-import './UnitSettingItem.scss'
+import './unitSettingItem.style.scss'
 
 
 const EditableContext = React.createContext(null)
