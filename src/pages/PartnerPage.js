@@ -1,21 +1,52 @@
-import React, { useState, useEffect } from 'react'
+import React, { useState, useEffect, useMemo } from 'react'
 import { Button, Space, message, Modal } from 'antd'
-import { ExclamationCircleFilled, ClearOutlined, ExportOutlined } from '@ant-design/icons'
+import { ClearOutlined, PlusOutlined, ReloadOutlined } from '@ant-design/icons'
 import { useSelector, useDispatch } from 'react-redux'
 import { partnerService } from '../services'
 import { PartnerForm, PartnerManager } from '../components/PartnerManager'
-import { MyWorkBook, MyWorkSheet } from '../utils/export'
 import { PartnerTable } from '../components/Table'
 import SearchManager from '../components/Search/SearchManager'
+import { DeleteConfirm } from '../components/Modal'
 
 
+/**
+ * @typedef Partner
+ * @property {string} name
+ * @property {string} [address]
+ * @property {string} [phone]
+ * @property {string} [folder]
+ */
+
+
+/**
+ * @component
+ */
 const PartnerPage = () => {
+    /** 
+     * @type {[(Partner & {salesNum: number, purchaseNum: number})[], Function]}
+     */
     const [partners, setPartners] = useState([])
+    /** 
+     * @type {[Partner?, Function]} 
+     */
+    const [partnerToEdit, setPartnerToEdit] = useState(undefined)
+    /** 
+     * @type {[Partner?, Function]} 
+     */
+    const [partnerToView, setPartnerToView] = useState(undefined)
+    /** 
+     * @type {[Partner[], Function]}
+     */
+    const [partnersToDelete, setPartnersToDelete] = useState([])
+    
+
+    const emptyPartners = useMemo(() => {
+        return partners.filter(p => p.salesNum + p.purchaseNum == 0)
+    }, [partners])
+
 
     const [messageApi, contextHolder] = message.useMessage()
-    const [editPartner, setEditPartner] = useState(undefined)
-    const [selectedPartner, setSelectedPartner] = useState(undefined)
-    
+
     // redux
     const searchMode = useSelector(state => state.page.partner.searchMode)
     const keywords = useSelector(state => state.page.partner.keywords)
@@ -28,44 +59,48 @@ const PartnerPage = () => {
             setPartners(res.data)
         }).catch(err => {
             setPartners([])
+            messageApi.open({
+                type: 'error', duration: 5,
+                content: `加载失败：${err.message}. ${err.response?.data?.error}`,
+            })
         })
     }
 
-    const showDeleteConfirm = (partners) => {
-        const title = partners.length === 1 ? `是否删除交易对象 “${partners[0].name}” ?` : `是否删除 ${partners.length} 个交易对象?`
-        Modal.confirm({
-            title: title, icon: <ExclamationCircleFilled />,
-            content: '确认删除后不可撤销',
-            okText: '删除', okType: 'danger', cancelText: '取消',
-            onOk() {
-                partnerService.deleteMany(partners).then(res => {
-                    messageApi.open({ type: 'success', content: '删除成功' })
-                    load()
-                }).catch(err => {
-                    messageApi.open({ type: 'error', content: '删除失败' })
-                })
-            }
+
+    const handlePartnerDelete = () => {
+        const messageKey = 'delete-partner'
+        messageApi.open({ key: messageKey, type: 'loading', content: '删除中', duration: 86400 })
+        partnerService.deleteMany(partnersToDelete).then(res => {
+            messageApi.open({ key: messageKey, type: 'success', content: '删除成功' })
+            const names = partnersToDelete.map(p => p.name)
+            setPartners(partners.filter(p => !names.includes(p.name)))
+            setPartnersToDelete([])
+        }).catch(err => {
+            messageApi.open({
+                key: messageKey, type: 'error', duration: 5,
+                content: `删除失败：${err.message}. ${err.response?.data?.error}`,
+            })
+            setPartnersToDelete([])
         })
     }
 
-    const handleExport = () => {
-        const headers = [
-            { title: '姓名', dataIndex: 'name' },
-            { title: '文件位置', dataIndex: 'folder' },
-            { title: '电话', dataIndex: 'phone' },
-            { title: '地址', dataIndex: 'address' },
-            { title: '客户', dataIndex: 'isCustomer' },
-            { title: '供应商', dataIndex: 'isProvider' }
-        ]
-        let wb = new MyWorkBook('交易对象')
-        let ws = new MyWorkSheet('总览')
-        ws.writeJson(partners.map(p => {
-            p.isCustomer = p.isCustomer ? '是' : ''
-            p.isProvider = p.isProvider ? '是' : ''
-            return p
-        }), headers)
-        wb.writeSheet(ws)
-        wb.save()
+    /**
+     * Handle partner edit/create submission.
+     * @param {Partner} partner
+     */
+    const handlePartnerChange = (partner, name) => {
+        // prevent reloading from server
+        const idx = partners.findIndex(p => p.name === name)
+        const newPartners = [...partners]
+        if (idx === -1) {
+            newPartners.unshift(partner)
+        } else {
+            ['name', 'phone', 'address', 'folder'].forEach(field => {
+                newPartners[idx][field] = partner[field]
+            })
+        }
+        setPartnerToEdit(undefined)
+        setPartners(newPartners)
     }
 
     // scroll position listener & recover
@@ -84,34 +119,39 @@ const PartnerPage = () => {
     useEffect(() => window.scrollTo(0, scrollY), [partners])
     // ------------------------------------
 
+    
     return <Space direction='vertical' style={{ width: '100%' }} className='page-main-content'>
         {contextHolder}
 
-        <Modal title={editPartner?.name ? '编辑交易对象' : '新增交易对象'} open={editPartner} destroyOnClose
-            onCancel={_ => setEditPartner(undefined)} footer={null}>
-            <PartnerForm partner={editPartner} onPartnerChange={_ => {
-                setEditPartner(undefined)
-                load()
-            }} />
+        {/* Must be destroyOnClose, or the form can't be reset. */}
+        <Modal title={partnerToEdit?.name ? '编辑交易对象' : '新增交易对象'} open={partnerToEdit} destroyOnClose
+            onCancel={_ => setPartnerToEdit(undefined)} footer={null}>
+            <PartnerForm partner={partnerToEdit} onPartnerChange={p => handlePartnerChange(p, partnerToEdit?.name)} />
         </Modal>
 
-        <Modal open={selectedPartner} onCancel={_ => setSelectedPartner(undefined)} title='交易对象' width='90%'
-            footer={null}>
-            <PartnerManager partner={selectedPartner} />
+        <Modal open={partnerToView} title='交易对象' width='90%'
+            onCancel={_ => setPartnerToView(undefined)} footer={null}>
+            <PartnerManager partner={partnerToView} onPartnerChange={p => handlePartnerChange(p, partnerToView?.name)} />
         </Modal>
+
+        <DeleteConfirm open={partnersToDelete.length > 0} onCancel={_ => setPartnersToDelete([])}
+            title={partnersToDelete.length === 1 ? `是否删除交易对象 “${partnersToDelete[0].name}” ?` : `是否删除 ${partnersToDelete.length} 个交易对象?`}
+            onOk={handlePartnerDelete} />
 
         <Space wrap>
-            <Button icon={<ExportOutlined />} onClick={handleExport} disabled={partners.length === 0}>导出</Button>
-            <Button icon={<ClearOutlined />} type='dashed' danger disabled={partners.filter(p => p.salesNum==0 && p.purchaseNum==0).length === 0}
-                onClick={_ => showDeleteConfirm(partners.filter(p => p.salesNum==0 && p.purchaseNum==0))}>清理</Button>
+            <Button icon={<PlusOutlined />} type='primary' ghost onClick={_ => setPartnerToEdit({})}>新增</Button>
+            <Button icon={<ClearOutlined />} type='dashed' danger disabled={emptyPartners.length === 0}
+                onClick={_ => setPartnersToDelete(emptyPartners)}>一键清理</Button>
+            <Button icon={<ReloadOutlined />} onClick={_ => {
+                setPartners([])
+                load()
+            }}>刷新</Button>
         </Space>
         <SearchManager pageKey='partner' onSearch={load} />
-        <PartnerTable partners={partners} 
-            onEdit={p => setEditPartner(p)} 
-            onSelect={p => setSelectedPartner(p)}
-            onDelete={p => showDeleteConfirm([p])}
+        <PartnerTable partners={partners}
+            onEdit={setPartnerToEdit} onSelect={setPartnerToView}
+            onDelete={p => setPartnersToDelete([p])}
         />
-        
     </Space>
 }
 

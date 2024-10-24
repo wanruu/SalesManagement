@@ -1,0 +1,26 @@
+.my-confirm-container {
+    display: flex;
+    align-items: flex-start;
+    flex-wrap: nowrap;
+
+    .my-icon {
+        font-size: 22px;
+        color: #faad14;
+        margin-top: 1px;
+        margin-right: 12px;
+    }
+
+    .my-main-container {
+        display: flex;
+        flex-direction: column;
+        flex: auto;
+        row-gap: 8px;
+        word-wrap: break-word;
+
+        .my-title {
+            font-weight: 600;
+            font-size: 16px;
+            line-height: 1.5;
+        }
+    }
+}

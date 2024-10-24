@@ -138,7 +138,11 @@ const PartnerInvoiceItemTable = (props) => {
             dataIndex: ['orderItem', 'orderNumber'],
             onCell: (_, idx) => ({ rowSpan: rowSpans[idx] ?? 1 }),
             render: (number, record) =>
-                <a onClick={_ => onSelectInvoice?.({ id: record.orderItem.invoiceId, type: record.orderItem.invoiceType })}>
+                <a onClick={_ => onSelectInvoice?.({ 
+                    id: record.orderItem.invoiceId, 
+                    number: record.orderItem.orderNumber,
+                    type: record.orderItem.orderType,
+                })}>
                     {number}
                 </a>
         },

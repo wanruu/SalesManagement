@@ -61,6 +61,7 @@ const PartnerInvoiceTable = (props) => {
             render: (number, order) =>
                 <a onClick={_ => onSelectInvoice?.({
                     id: order.id,
+                    number: order.number,
                     type: order.type,
                 })}>{number}</a>
         },
