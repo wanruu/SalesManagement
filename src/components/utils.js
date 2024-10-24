@@ -11,7 +11,7 @@ import Decimal from 'decimal.js'
  * @param {string} [currencySymbol] - `$`, `¥`, `HK$`, etc.
  * @returns {string}
  */
-Decimal.prototype.toCurrencyString = function (currencySymbol='') {
+Decimal.prototype.toCurrencyString = function (currencySymbol = '') {
     if (this.isNeg()) {
         return `-${currencySymbol}${this.abs().toLocaleString()}`
     }
@@ -29,10 +29,10 @@ Decimal.prototype.toCurrencyString = function (currencySymbol='') {
  * @returns {React.JSX.Element}
  */
 export const CircleLabel = (props) => {
-    const { radius=5, color, label } = props
+    const { radius = 5, color, label } = props
     return <Row align='middle'>
         <Space>
-            <svg width={radius*2} height={radius*2}>
+            <svg width={radius * 2} height={radius * 2}>
                 <circle cx={radius} cy={radius} r={radius} fill={color} />
             </svg>
             {label}
@@ -50,6 +50,6 @@ export const CircleLabel = (props) => {
 export const QuestionTooltip = (props) => {
     const { title } = props
     return <Tooltip title={title}>
-        <QuestionCircleOutlined style={{ color: 'gray' }} />
+        <QuestionCircleOutlined style={{ color: 'gray', cursor: 'help' }} />
     </Tooltip>
 }
