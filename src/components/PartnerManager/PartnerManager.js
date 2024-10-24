@@ -1,9 +1,11 @@
-import { Col, message, Row, Space, Tabs } from 'antd'
+import { Col, message, Modal, Row, Space, Tabs } from 'antd'
 import React, { useEffect, useState } from 'react'
 import { partnerService } from '../../services'
 import { PartnerInvoiceItemTable, PartnerInvoiceTable, PartnerProductTable } from '../Table'
 import { EditableItem } from '../Input'
 import { pick, isEqual } from 'lodash'
+import { InvoiceManager } from '../InvoiceManager'
+import { INVOICE_BASICS } from '../../utils/invoiceUtils'
 
 
 
@@ -20,6 +22,9 @@ const PartnerManager = (props) => {
 
     const [partner, setPartner] = useState({})
     const [tabKey, setTabKey] = useState(0)
+    const [selectedInvoice, setSelectedInvoice] = useState(undefined)
+    const [mode, setMode] = useState('view')
+
 
     const load = () => {
         if (partnerName) {
@@ -42,12 +47,12 @@ const PartnerManager = (props) => {
         {
             label: '总览',
             key: 0,
-            children: <PartnerInvoiceTable partner={partner} />,
+            children: <PartnerInvoiceTable partner={partner} onSelectInvoice={setSelectedInvoice} />,
         },
         {
             label: '明细',
             key: 1,
-            children: <PartnerInvoiceItemTable partner={partner} />,
+            children: <PartnerInvoiceItemTable partner={partner} onSelectInvoice={setSelectedInvoice} />,
         },
         {
             label: '产品',
@@ -56,7 +61,16 @@ const PartnerManager = (props) => {
         },
     ]
 
+    const invoiceModalTitle = `${INVOICE_BASICS[selectedInvoice?.type]?.title} ${selectedInvoice?.number}`
     return <Space direction='vertical' style={{ width: '100%', paddingTop: '5px' }} size={15}>
+        <Modal open={selectedInvoice} onCancel={() => setSelectedInvoice(undefined)} width='90%'
+            footer={null} title={invoiceModalTitle}>
+            <InvoiceManager type={selectedInvoice?.type} invoice={selectedInvoice}
+                mode={mode} onCancel={_ => setSelectedInvoice(undefined)}
+                setMode={setMode}
+                onInvoiceChange={load} />
+        </Modal>
+
         <PartnerInfo partner={partner} onPartnerChange={handlePartnerChange} />
         <Tabs defaultActiveKey='1'
             onChange={setTabKey}
