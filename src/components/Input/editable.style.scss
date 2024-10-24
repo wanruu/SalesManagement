@@ -1,0 +1,12 @@
+.editable-item-value-wrap {
+    padding: 5px 12px;
+    line-height: 20px;
+    cursor: pointer;
+    height: 20px;
+
+    &:hover {
+        padding: 4.5px 11.5px;
+        border: 1px solid #d9d9d9;
+        border-radius: 5px;
+    }
+}
