@@ -88,9 +88,9 @@ const PartnerPage = () => {
      * Handle partner edit/create submission.
      * @param {Partner} partner
      */
-    const handlePartnerChange = (partner) => {
+    const handlePartnerChange = (partner, name) => {
         // prevent reloading from server
-        const idx = partners.findIndex(p => p.name === partnerToEdit.name)
+        const idx = partners.findIndex(p => p.name === name)
         const newPartners = [...partners]
         if (idx === -1) {
             newPartners.unshift(partner)
@@ -126,12 +126,12 @@ const PartnerPage = () => {
         {/* Must be destroyOnClose, or the form can't be reset. */}
         <Modal title={partnerToEdit?.name ? '编辑交易对象' : '新增交易对象'} open={partnerToEdit} destroyOnClose
             onCancel={_ => setPartnerToEdit(undefined)} footer={null}>
-            <PartnerForm partner={partnerToEdit} onPartnerChange={handlePartnerChange} />
+            <PartnerForm partner={partnerToEdit} onPartnerChange={p => handlePartnerChange(p, partnerToEdit?.name)} />
         </Modal>
 
         <Modal open={partnerToView} title='交易对象' width='90%'
             onCancel={_ => setPartnerToView(undefined)} footer={null}>
-            <PartnerManager partner={partnerToView} onPartnerChange={handlePartnerChange} />
+            <PartnerManager partner={partnerToView} onPartnerChange={p => handlePartnerChange(p, partnerToView?.name)} />
         </Modal>
 
         <DeleteConfirm open={partnersToDelete.length > 0} onCancel={_ => setPartnersToDelete([])}
