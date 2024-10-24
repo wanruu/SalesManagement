@@ -142,6 +142,7 @@ const PrintPreview = () => {
     const initInvoiceForPreview = (itemNum) => {
         return {
             number: `${dayjs().format('YYYYMMDD')}0001`,
+            type: previewType,
             partner: {
                 name: '交易对象', 
                 phone: '12345678901',
@@ -180,7 +181,7 @@ const PrintPreview = () => {
             {
                 previewType ?
                     <div style={{ overflowX: 'auto', overflowY: 'clip' }}>
-                        <InvoicePrint footer={false} type={previewType} 
+                        <InvoicePrint footer={false} 
                             invoice={initInvoiceForPreview(Math.round(previewItemNum))} />
                     </div> : null
             }

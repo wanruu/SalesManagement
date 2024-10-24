@@ -4,12 +4,23 @@ import { Row, Col, Space } from 'antd'
 import { FieldNumberOutlined } from '@ant-design/icons'
 import { INVOICE_BASICS, DATE_FORMAT } from '../../../utils/invoiceUtils'
 import { useSelector } from 'react-redux'
+import { Partner, InvoiceType } from '../../../types'
 
 
-/* 
-    Required: invoice, type 
-*/
-const InvoicePrintHeader = ({ type, invoice }) => {
+
+/**
+ * @component
+ * @param {Object} props 
+ * @param {Object} props.invoice
+ * @param {InvoiceType} props.invoice.type
+ * @param {string} props.invoice.number
+ * @param {string} props.invoice.date
+ * @param {Partner} props.invoice.partner
+ */
+const InvoicePrintHeader = (props) => {
+    const { invoice } = props
+    const { type, number, date, partner={} } = invoice ?? {}
+
     const settings = useSelector(state => state.printSetting)
     const getSetting = (key) => {
         return settings[key]?.value || settings[key]?.defaultValue
@@ -21,8 +32,8 @@ const InvoicePrintHeader = ({ type, invoice }) => {
     const subtitleFontSize = { fontSize: getSetting('subtitleFontSize') + 'px' }    
 
     // Display condition
-    const ifShowAddress = settings.ifShowAddress.value && invoice?.partner?.address
-    const ifShowPhone = settings.ifShowPhone.value && invoice?.partner?.phone
+    const ifShowAddress = settings.ifShowAddress.value && partner.address
+    const ifShowPhone = settings.ifShowPhone.value && partner.phone
     const ifInline = settings.subtitleStyle.value === 'inline'
 
     // Content
@@ -35,35 +46,37 @@ const InvoicePrintHeader = ({ type, invoice }) => {
     }[type].replace(/ /g, '\xa0') || '错误'
 
     // Return
-    return <Space style={{ width: '100%' }} direction='vertical' size='10px'>
-        <Space direction='vertical' style={{ width: '100%' }} align='center' size={0}>
-            {ifInline ?
-                <span style={{ ...titleFontSize }}>{title}&nbsp;&nbsp;&nbsp;{subtitle}</span> :
-                <span style={{ ...titleFontSize }}>{title}</span>
+    return (
+        <Space style={{ width: '100%' }} direction='vertical' size='10px'>
+            <Space direction='vertical' style={{ width: '100%' }} align='center' size={0}>
+                {ifInline ?
+                    <span style={{ ...titleFontSize }}>{title}&nbsp;&nbsp;&nbsp;{subtitle}</span> :
+                    <span style={{ ...titleFontSize }}>{title}</span>
+                }
+                {ifInline ? null : <span style={{ ...subtitleFontSize }}>{subtitle}</span>}
+            </Space>
+            <Row>
+                <Col span={8} style={{ ...fontSize }} align='left'>
+                    {INVOICE_BASICS[type].partnerTitle}：
+                    {partner.name}
+                </Col>
+                <Col span={8} style={{ ...fontSize }} align='center'>
+                    日期：{dayjs(date).format(DATE_FORMAT)}
+                </Col>
+                <Col span={8} style={{ ...fontSize }} align='right'>
+                    <FieldNumberOutlined style={{ marginRight: '4px' }} />
+                    {number}
+                </Col>
+            </Row>
+            {!ifShowPhone ? null : <Col align='left' style={{ ...fontSize }}>电话：{partner.phone}</Col>}
+            {!ifShowAddress ? null :
+                <Col align='left' style={{ ...fontSize }}>
+                    {INVOICE_BASICS[type].addressTitle}：
+                    {partner.address}
+                </Col>
             }
-            {ifInline ? null : <span style={{ ...subtitleFontSize }}>{subtitle}</span>}
         </Space>
-        <Row>
-            <Col span={8} style={{ ...fontSize }} align='left'>
-                {INVOICE_BASICS[type].partnerTitle}：
-                {invoice?.partner?.name}
-            </Col>
-            <Col span={8} style={{ ...fontSize }} align='center'>
-                日期：{dayjs(invoice?.date).format(DATE_FORMAT)}
-            </Col>
-            <Col span={8} style={{ ...fontSize }} align='right'>
-                <FieldNumberOutlined style={{ marginRight: '4px' }} />
-                {invoice?.number}
-            </Col>
-        </Row>
-        {!ifShowPhone ? null : <Col align='left' style={{ ...fontSize }}>电话：{invoice?.partner?.phone}</Col>}
-        {!ifShowAddress ? null :
-            <Col align='left' style={{ ...fontSize }}>
-                {INVOICE_BASICS[type].addressTitle}：
-                {invoice?.partner?.address}
-            </Col>
-        }
-    </Space>
+    )
 }
 
 

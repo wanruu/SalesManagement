@@ -5,22 +5,25 @@ import { useSelector } from 'react-redux'
 import InvoicePrintTable from './InvoicePrintTable'
 import InvoicePrintHeader from './InvoicePrintHeader'
 import InvoicePrintFooter from './InvoicePrintFooter'
-import './index.scss'
+import './invoice-print.style.scss'
+import { BaseInvoice, Partner, BaseInvoiceItem, Product } from '../../../types';
 
 
-/*
-    Required: 
-        invoice
-        type
-    Optional: 
-        footer: true/false
-        onCancel: called when 'cancel' button is clicked
-*/
-const InvoicePrint = ({ type, invoice, footer=true, onCancel }) => {
+
+/**
+ * @component
+ * @param {Object} props 
+ * @param {BaseInvoice & {partner: Partner, invoiceItems: BaseInvoiceItem & {product: Product}}} props.invoice
+ * @param {boolean} [props.footer]
+ * @param {function} [props.onCancel]
+ */
+const InvoicePrint = (props) => {
+    const { invoice, footer = true, onCancel } = props
+
     const width = useSelector(state => state.printSetting.width)
     const height = useSelector(state => state.printSetting.height)
     const wrapperStyle = {
-        width: width.value || width.defaultValue + 'px', 
+        width: width.value || width.defaultValue + 'px',
         height: height.value || height.defaultValue + 'px'
     }
     const vPadding = useSelector(state => state.printSetting.vPadding)
@@ -44,10 +47,10 @@ const InvoicePrint = ({ type, invoice, footer=true, onCancel }) => {
     return (<>
         <Col align='middle' style={{ overflowX: 'auto', overflowY: 'clip', margin: '15px 0' }}>
             <div ref={componentRef} >
-                <div className='invoiceWrapper' style={wrapperStyle}>
-                    <div className='invoiceContent' style={contentStyle}>
+                <div className='invoice-wrapper' style={wrapperStyle}>
+                    <div className='invoice-content' style={contentStyle}>
                         <Space direction='vertical' style={{ width: '100%' }} size={5}>
-                            <InvoicePrintHeader type={type} invoice={invoice} />
+                            <InvoicePrintHeader invoice={invoice} />
                             <InvoicePrintTable invoice={invoice} />
                             <InvoicePrintFooter />
                         </Space>
@@ -55,7 +58,7 @@ const InvoicePrint = ({ type, invoice, footer=true, onCancel }) => {
                 </div>
             </div>
         </Col>
-        { footer ? defaultFooter : null }
+        {footer ? defaultFooter : null}
     </>)
 }
 

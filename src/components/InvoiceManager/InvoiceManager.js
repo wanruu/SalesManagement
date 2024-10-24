@@ -53,7 +53,7 @@ const InvoiceManager = ({
                 }} />
         ),
         'view': <InvoiceView type={type} invoice={invoice} />,
-        'print': <InvoicePrint type={type} invoice={invoice} onCancel={_ => onModeChange?.('view')} />
+        'print': <InvoicePrint invoice={invoice} onCancel={_ => onModeChange?.('view')} />
     }
 
     useEffect(load, [type, initInvoice])

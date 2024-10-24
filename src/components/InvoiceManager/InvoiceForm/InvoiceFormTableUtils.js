@@ -3,14 +3,14 @@ import Decimal from 'decimal.js'
 import store from '../../../store'
 
 
-const calcEquation = (equation) => {
+export const calcEquation = (equation) => {
     try {
         const newEquation = equation.replace(/）/g, ')').replace(/（/g, '(').match(/[0-9\+\-\*\/()\.]+/)[0]
         return parseFloat(evaluate(newEquation).toFixed(5))
     } catch (err) { }
 }
 
-const calcItemAmount = (item) => {
+export const calcItemAmount = (item) => {
     const itemAmountDigitNum = store.getState().functionSetting.itemAmountDigitNum.value
     const quantity = Decimal(item.quantity || 0)
     const price = Decimal(item.price || 0)
@@ -20,7 +20,7 @@ const calcItemAmount = (item) => {
     return { originalAmount, amount }
 }
 
-const calcTotalAmount = (items) => {
+export const calcTotalAmount = (items) => {
     const invoiceAmountDigitNum = store.getState().functionSetting.invoiceAmountDigitNum.value
     const amount = items.reduce((previous, current) => {
         return previous.plus(current.amount || 0)
@@ -28,7 +28,7 @@ const calcTotalAmount = (items) => {
     return amount
 }
 
-const updateQuantityByRemark = (form, rowIndex) => {
+export const updateQuantityByRemark = (form, rowIndex) => {
     const remark = form.getFieldValue(['invoiceItems', rowIndex, 'remark'])
     const quantity = calcEquation(remark)
     if (quantity) {
@@ -37,13 +37,13 @@ const updateQuantityByRemark = (form, rowIndex) => {
     }
 }
 
-const updateTotalAmount = (form) => {
+export const updateTotalAmount = (form) => {
     const items = (form.getFieldValue('invoiceItems') ?? [])
     const amount = calcTotalAmount(items)
     form.setFieldValue('amount', amount)
 }
 
-const updateItemAmount = (form, rowIndex) => {
+export const updateItemAmount = (form, rowIndex) => {
     const item = form.getFieldValue(['invoiceItems', rowIndex])
     const { originalAmount, amount } = calcItemAmount(item)
     form.setFieldValue(['invoiceItems', rowIndex, 'originalAmount'], originalAmount)
@@ -51,11 +51,4 @@ const updateItemAmount = (form, rowIndex) => {
     updateTotalAmount(form)
 }
 
-const deliveredOptions = [{ label: '未配送', value: false }, { label: '已配送', value: true }]
-
-
-export { 
-    calcEquation, calcItemAmount, calcTotalAmount, 
-    updateQuantityByRemark, updateTotalAmount, updateItemAmount,
-    deliveredOptions
-}
+export const deliveredOptions = [{ label: '未配送', value: false }, { label: '已配送', value: true }]
