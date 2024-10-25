@@ -241,7 +241,6 @@ const PartnerInvoiceItemTable = (props) => {
         },
         {
             title: '类型',
-            fixed: 'right',
             dataIndex: ['orderItem', 'orderType'],
             render: (type) => <InvoiceTypeTag type={type} />,
             onCell: (_, idx) => ({ rowSpan: rowSpans[idx] ?? 1 }),

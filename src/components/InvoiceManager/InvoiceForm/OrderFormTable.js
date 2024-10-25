@@ -162,7 +162,7 @@ const OrderFormTable = ({ type }) => {
         { title: '备注', width: 180, render: renders.remarkRender },
         !ifShowDelivered ? null :
         { title: '配送', width: 80, render: renders.deliveredRender },
-        { title: '操作', width: 70, fixed: 'right', render: (_, field, idx) => (
+        { title: '操作', width: 70, render: (_, field, idx) => (
             <Button danger onClick={_ => remove(field.name)}>
                 删除
             </Button>

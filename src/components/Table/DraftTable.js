@@ -1,7 +1,7 @@
 import React, { useState } from 'react'
 import { Table, Button, Space } from 'antd'
 import { InvoiceTypeTag } from '../Tag'
-
+import { DeleteOutlined, EditOutlined } from '@ant-design/icons'
 
 
 const DraftTable = ({ drafts, onEdit, onDelete }) => {
@@ -19,10 +19,10 @@ const DraftTable = ({ drafts, onEdit, onDelete }) => {
         { title: '交易对象', dataIndex: ['editInvoice', 'partnerName'] },
         { title: '创建时间', dataIndex: ['createAt'], render: d => d?.format('HH:mm:ss') },
         { title: '产品数', dataIndex: ['editInvoice', 'invoiceItems'], render: i => i?.length },
-        { title: '操作', fixed: 'right', render: (_, draft, index) => (
+        { title: '操作', render: (_, draft) => (
             <Space>
-                <Button onClick={_ => onEdit?.(draft)} type='primary' ghost>编辑</Button>
-                <Button onClick={_ => onDelete?.(draft)} danger>删除</Button>
+                <Button onClick={_ => onEdit?.(draft)} type='primary' ghost icon={<EditOutlined />} />
+                <Button onClick={_ => onDelete?.(draft)} danger icon={<DeleteOutlined />} />
             </Space>
         )}
     ].map(i => ({ ...i, align: 'center' }))

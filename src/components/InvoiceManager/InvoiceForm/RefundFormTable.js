@@ -110,7 +110,7 @@ const AllRefundTable = () => {
         { title: '备注', width: 180, render: render(['remark']) },
         !ifShowDelivered ? null :
         { title: '配送', width: 80, render: deliveredRender },
-        { title: '操作', width: 70, fixed: 'right', render: operRender },
+        { title: '操作', width: 70, render: operRender },
     ]
     .filter(i => i != null)
     .map(i => ({ ...i, align: 'center' }))
@@ -233,7 +233,7 @@ const RefundTable = () => {
         { title: '备注', width: 180, render: renders.remarkRender },
         !ifShowDelivered ? null :
         { title: '配送', width: 80, render: renders.deliveredRender },
-        { title: '操作', width: 70, fixed: 'right', render: renders.operRender },
+        { title: '操作', width: 70, render: renders.operRender },
     ]
     .filter(i => i != null)
     .map(i => ({ ...i, align: 'center' }))

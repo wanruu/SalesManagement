@@ -1,6 +1,7 @@
 import React, { useState } from 'react'
 import { Button, Table, Space } from 'antd'
 import { useSelector } from 'react-redux'
+import { DeleteOutlined, EditOutlined, EyeOutlined } from '@ant-design/icons'
 
 
 const ProductTable = ({ products, onSelect, onEdit, onDelete }) => {
@@ -23,12 +24,12 @@ const ProductTable = ({ products, onSelect, onEdit, onDelete }) => {
         { title: '单位', dataIndex: 'unit' },
         // { title: '预估重量', dataIndex: 'estimatedWeight', render: w => w == null ? null : w.toLocaleString() },
         {
-            title: '操作', fixed: 'right', render: (_, product) =>
+            title: '操作', render: (_, product) =>
                 <Space>
-                    <Button type='primary' ghost onClick={_ => onEdit?.(product)}>编辑</Button>
+                    <Button type='primary' ghost onClick={_ => onEdit?.(product)} icon={<EditOutlined />} />
                     {product.invoiceItemNum > 0 ?
-                        <Button onClick={_ => onSelect?.(product)}>查看</Button> :
-                        <Button danger onClick={_ => onDelete?.(product)}>删除</Button>
+                        <Button onClick={_ => onSelect?.(product)} icon={<EyeOutlined />} /> :
+                        <Button danger onClick={_ => onDelete?.(product)} icon={<DeleteOutlined />} />
                     }
                 </Space>
         }

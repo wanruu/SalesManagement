@@ -45,7 +45,7 @@ const InvoiceTable = ({ type, invoices, onSelect, onDelete }) => {
                     relatedInvoice ? <a onClick={_ => onSelect(relatedInvoice)}>{relatedInvoice.number}</a> : null
                 )
             },
-            { title: '操作', fixed: 'right', render: (_, invoice) => (
+            { title: '操作', render: (_, invoice) => (
                 <Button onClick={_ => onDelete(invoice)} danger icon={<DeleteOutlined />} />
             )}
         ]

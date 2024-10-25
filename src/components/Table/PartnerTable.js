@@ -1,5 +1,6 @@
 import React, { useMemo, useState } from 'react'
 import { Button, Table, Space } from 'antd'
+import { DeleteOutlined, EditOutlined, EyeOutlined } from '@ant-design/icons'
 import { PartnerTypeTag } from '../Tag'
 
 
@@ -31,12 +32,12 @@ const PartnerTable = (props) => {
             { title: '地址', dataIndex: 'address' },
             { title: '身份', render: (_, partner) => <PartnerTypeTag {...partner} /> },
             {
-                title: '操作', fixed: 'right', render: (_, partner) =>
+                title: '操作', render: (_, partner) =>
                     <Space>
-                        <Button type='primary' ghost onClick={_ => onEdit?.(partner)}>编辑</Button>
+                        <Button type='primary' ghost onClick={_ => onEdit?.(partner)} icon={<EditOutlined />} />
                         {partner.salesNum + partner.purchaseNum > 0 ?
-                            <Button onClick={_ => onSelect?.(partner)}>查看</Button> :
-                            <Button danger onClick={_ => onDelete?.(partner)}>删除</Button>
+                            <Button onClick={_ => onSelect?.(partner)} icon={<EyeOutlined />} /> :
+                            <Button danger onClick={_ => onDelete?.(partner)} icon={<DeleteOutlined />} />
                         }
                     </Space>
             }

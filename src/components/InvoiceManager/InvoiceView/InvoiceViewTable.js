@@ -52,7 +52,7 @@ const InvoiceViewTable = (props) => {
             },
             { title: '备注', dataIndex: 'remark', width: 200 },
             !ifShowDelivered ? null : {
-                title: '配送', dataIndex: 'delivered', fixed: 'right', render: d =>
+                title: '配送', dataIndex: 'delivered', render: d =>
                     <DeliverTag value={d ? '已配送' : '未配送'} />
             }
         ]
