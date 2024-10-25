@@ -4,8 +4,7 @@ import axios from 'axios'
 const baseURL = () => {
     const ip = window.electronAPI?.queryServerIp() ?? '192.168.2.100'
     const port = window.electronAPI?.queryServerPort() ?? '8888'
-    const apiVersion = 'v1'
-    return `http://${ip}:${port}/${apiVersion}`
+    return `http://${ip}:${port}`
 }
 
 

@@ -1,7 +1,7 @@
 import requests
 
 
-URL_PREFIX = "http://localhost:8888/v1"
+URL_PREFIX = "http://localhost:8888"
 
 
 def _validate(data, expected_data):

@@ -10,15 +10,15 @@ const testRouter = require('./testRoute')
 
 
 const routes = (app) => {
-    app.use('/v1/products', productRouter)
-    app.use('/v1/partners', partnerRouter)
-    app.use('/v1/salesOrders', salesOrderRouter)
-    app.use('/v1/salesRefunds', salesRefundRouter)
-    app.use('/v1/purchaseOrders', purchaseOrderRouter)
-    app.use('/v1/purchaseRefunds', purchaseRefundRouter)
-    app.use('/v1/suggestions', suggestionRouter)
-    app.use('/v1/statistics', statisticRouter)
-    app.use('/v1/tests', testRouter)
+    app.use('/products', productRouter)
+    app.use('/partners', partnerRouter)
+    app.use('/salesOrders', salesOrderRouter)
+    app.use('/salesRefunds', salesRefundRouter)
+    app.use('/purchaseOrders', purchaseOrderRouter)
+    app.use('/purchaseRefunds', purchaseRefundRouter)
+    app.use('/suggestions', suggestionRouter)
+    app.use('/statistics', statisticRouter)
+    app.use('/tests', testRouter)
 }
 
 module.exports = routes
