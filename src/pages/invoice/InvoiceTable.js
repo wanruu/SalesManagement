@@ -1,7 +1,7 @@
 import React, { useMemo, useState } from 'react'
 import { Table, Button } from 'antd'
 import { DeleteOutlined } from '@ant-design/icons'
-import { DeliverTag } from '../Tag'
+import { DeliverTag } from '../../components/Tag'
 import { useSelector } from 'react-redux'
 import { INVOICE_BASICS } from '../../utils/invoiceUtils'
 

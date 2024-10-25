@@ -6,8 +6,8 @@ import { useSelector, useDispatch } from 'react-redux'
 
 
 // import PhoneAccessView from '../components/common/PhoneAccessView'
-import PrintSettingView from '../components/SettingItems/PrintSettingView'
-import FunctionSettingView from '../components/SettingItems/FunctionSettingView'
+import PrintSetting from './PrintSetting'
+import FunctionSetting from './FunctionSetting'
 
 
 
@@ -102,7 +102,7 @@ export default function SettingPage() {
 
     const anchorItems = [
         {
-            key: 'function', href: '#function', title: '功能设置', content: <FunctionSettingView />,
+            key: 'function', href: '#function', title: '功能设置', content: <FunctionSetting />,
             children: [
                 { key: 'function-material', href: '#function-material', title: '材质' },
                 { key: 'function-unit', href: '#function-unit', title: '单位' },
@@ -115,7 +115,7 @@ export default function SettingPage() {
             ]
         },
         {
-            key: 'print', href: '#print', title: '打印设置', content: <PrintSettingView />,
+            key: 'print', href: '#print', title: '打印设置', content: <PrintSetting />,
             children: [
                 { key: 'print-overall', href: '#print-overall', title: '清单整体' },
                 { key: 'print-title', href: '#print-title', title: '标题 & 副标题' },

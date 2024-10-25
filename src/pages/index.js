@@ -1,0 +1,6 @@
+export { default as DraftPage } from './draft'
+export { default as InvoicePage } from './invoice'
+export { default as PartnerPage } from './partner'
+export { default as ProductPage } from './product'
+export { default as SettingPage } from './setting'
+export { default as StatisticPage } from './statistic'

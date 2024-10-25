@@ -9,7 +9,7 @@ import {
     verticalListSortingStrategy,
 } from '@dnd-kit/sortable'
 import { CSS } from '@dnd-kit/utilities'
-import './unitSettingItem.style.scss'
+import './unit-setting-table.style.scss'
 
 
 const EditableContext = React.createContext(null)
@@ -34,7 +34,7 @@ const TableRow = (props) => {
     </Form>
 }
 
-const UnitSettingItem = ({ units, defaultUnit, onUnitsChange, onDefaultUnitChange }) => {    
+const UnitSettingTable = ({ units, defaultUnit, onUnitsChange, onDefaultUnitChange }) => {    
     const unitOptions = useMemo(() => {
         return units.map(u => ({ key: u, value: u }))
     }, [units]) 
@@ -191,4 +191,4 @@ const UnitSettingItem = ({ units, defaultUnit, onUnitsChange, onDefaultUnitChang
 }
 
 
-export default UnitSettingItem
+export default UnitSettingTable

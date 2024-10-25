@@ -3,7 +3,7 @@ import React, { useState } from 'react'
 import dayjs from 'dayjs'
 import { useSelector, useDispatch } from 'react-redux'
 import { DATE_FORMAT, INVOICE_BASICS } from '../../utils/invoiceUtils'
-import { InvoicePrint } from '../InvoiceManager'
+import { InvoicePrint } from '../../components/InvoiceManager'
 import Title from 'antd/es/typography/Title'
 import { TipsView } from './utils'
 
@@ -17,7 +17,7 @@ const subtitleStyleOptions = [
 ]
 
 
-const PrintSettingView = () => {
+const PrintSetting = () => {
     const settings = useSelector(state => state.printSetting)
     const dispatch = useDispatch()
 
@@ -189,4 +189,4 @@ const PrintPreview = () => {
     )
 }
 
-export default PrintSettingView
+export default PrintSetting

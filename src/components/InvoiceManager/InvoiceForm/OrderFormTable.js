@@ -7,7 +7,7 @@ import { ProductInput } from '../../Input'
 import { productService } from '../../../services'
 import { updateItemAmount, updateTotalAmount, updateQuantityByRemark, deliveredOptions } from './utils'
 import { useSelector } from 'react-redux'
-import { ProductManager } from '../../ProductManager'
+import ProductManager from '../../ProductManager'
 
 
 const { Item } = Form

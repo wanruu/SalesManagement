@@ -4,14 +4,13 @@ import {
     ExclamationCircleFilled, PlusOutlined, ClearOutlined,
     ExportOutlined
 } from '@ant-design/icons'
-import _ from 'lodash'
 import { useDispatch, useSelector } from 'react-redux'
-import { MyWorkBook, MyWorkSheet } from '../utils/export'
-import { ProductForm } from '../components/ProductManager'
-import { productService } from '../services'
-import { ProductManager } from '../components/ProductManager'
-import { ProductTable } from '../components/Table'
-import SearchManager from '../components/Search/SearchManager'
+import { MyWorkBook, MyWorkSheet } from '../../utils/export'
+import { productService } from '../../services'
+import ProductManager from '../../components/ProductManager'
+import SearchManager from '../../components/Search/SearchManager'
+import ProductTable from './ProductTable'
+import ProductForm from './ProductForm'
 
 
 const { confirm } = Modal

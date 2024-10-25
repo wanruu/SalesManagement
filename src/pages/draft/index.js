@@ -1,9 +1,9 @@
 import React from 'react'
 import { Tabs, Segmented } from 'antd'
 import { useSelector, useDispatch } from 'react-redux'
-import InvoiceManager from '../components/InvoiceManager'
-import { INVOICE_BASICS } from '../utils/invoiceUtils'
-import { DraftTable } from '../components/Table'
+import InvoiceManager from '../../components/InvoiceManager'
+import { INVOICE_BASICS } from '../../utils/invoiceUtils'
+import DraftTable from './DraftTable'
 
 
 const typeOptions = Object.keys(INVOICE_BASICS).map(key => (

@@ -2,11 +2,12 @@ import React, { useState, useEffect, useMemo } from 'react'
 import { Button, Space, message, Modal } from 'antd'
 import { ClearOutlined, PlusOutlined, ReloadOutlined } from '@ant-design/icons'
 import { useSelector, useDispatch } from 'react-redux'
-import { partnerService } from '../services'
-import PartnerManager, { PartnerForm } from '../components/PartnerManager'
-import { PartnerTable } from '../components/Table'
-import SearchManager from '../components/Search/SearchManager'
-import { DeleteConfirm } from '../components/Modal'
+import { partnerService } from '../../services'
+import PartnerTable from './PartnerTable'
+import PartnerManager from '../../components/PartnerManager'
+import SearchManager from '../../components/Search/SearchManager'
+import { DeleteConfirm } from '../../components/Modal'
+import PartnerForm from './PartnerForm'
 
 
 /**

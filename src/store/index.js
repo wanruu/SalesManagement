@@ -1,9 +1,9 @@
 import { configureStore } from '@reduxjs/toolkit'
 
-import draftSlice from './slices/draftSlice'
-import pageSlice from './slices/pageSlice'
-import functionSettingSlice from './slices/functionSettingSlice'
-import printSettingSlice from './slices/printSettingSlice'
+import draftSlice from './draftSlice'
+import pageSlice from './pageSlice'
+import functionSettingSlice from './functionSettingSlice'
+import printSettingSlice from './printSettingSlice'
 
 
 export default configureStore({

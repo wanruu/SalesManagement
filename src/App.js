@@ -10,12 +10,7 @@ import {
     DropboxOutlined,
     EditOutlined
 } from '@ant-design/icons'
-import SettingPage from './pages/SettingPage'
-import ProductPage from './pages/ProductPage'
-import PartnerPage from './pages/PartnerPage'
-import InvoicePage from './pages/InvoicePage'
-import StatisticPage from './pages/StatisticPage'
-import DraftPage from './pages/DraftPage'
+import { DraftPage, InvoicePage, ProductPage, PartnerPage, StatisticPage, SettingPage } from './pages'
 import { useSelector } from 'react-redux'
 
 

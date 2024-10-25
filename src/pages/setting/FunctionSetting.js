@@ -3,7 +3,7 @@ import { Form, Divider, Card, Segmented, Input } from 'antd'
 import Title from 'antd/es/typography/Title'
 import { TipsView, SwitchItem } from './utils'
 import { useSelector, useDispatch } from 'react-redux'
-import UnitSettingItem from './UnitSettingItem'
+import UnitSettingTable from './UnitSettingTable'
 
 
 const { Item } = Form
@@ -16,7 +16,7 @@ const DIGIT_NUM_OPTIONS = [
 ]
 
 
-const FunctionSettingView = () => {
+const FunctionSetting = () => {
     const settings = useSelector(state => state.functionSetting)
     const dispatch = useDispatch()
 
@@ -41,7 +41,7 @@ const FunctionSettingView = () => {
             <Divider />
 
             <Title id='function-unit' level={3}>单位</Title>
-            <UnitSettingItem units={settings.units.value} defaultUnit={settings.defaultUnit.value}
+            <UnitSettingTable units={settings.units.value} defaultUnit={settings.defaultUnit.value}
                 onUnitsChange={units => handleChange('units', units)}
                 onDefaultUnitChange={unit => handleChange('defaultUnit', unit)}
             />
@@ -91,4 +91,4 @@ const FunctionSettingView = () => {
 }
 
 
-export default FunctionSettingView
+export default FunctionSetting
