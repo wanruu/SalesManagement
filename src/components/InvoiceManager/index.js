@@ -3,3 +3,4 @@ export default InvoiceManager
 export { default as InvoicePrint } from './InvoicePrint'
 export { default as InvoiceView } from './InvoiceView'
 export { default as InvoiceForm } from './InvoiceForm'
+export { default as ExistingInvoiceManager } from './ExistingInvoiceManager'
