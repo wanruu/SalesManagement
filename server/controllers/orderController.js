@@ -1,32 +1,37 @@
 const InvoiceController = require('./invoiceController')
-const { Invoice, InvoiceItem, Partner, Product } = require('../models')
+const { Invoice, InvoiceItem, Partner, Product, sequelize } = require('../models')
 
 
 class OrderController extends InvoiceController {
     store = async (req, res, next) => {
+        const t = await sequelize.transaction()
         try {
             const data = req.body
             // Partner
-            await Partner.findOrCreate({ where: { name: data.partnerName } })
+            await Partner.findOrCreate({ where: { name: data.partnerName }, transaction: t })
             // Invoice
             const invoiceNumber = await Invoice.getNextNumber(this.type, data.date)
             const delivered = this.getDeliveredStr(data.invoiceItems)
-            const invoice = await Invoice.create({ ...data, number: invoiceNumber, type: this.type, delivered: delivered })
+            const invoice = await Invoice.create({ ...data, number: invoiceNumber, type: this.type, delivered: delivered }, { transaction: t })
             // Product
-            var invoiceItemData = await Product.findOrCreateByInfo(data.invoiceItems)
+            const products = await Product.bulkFindOrCreateByInfo(data.invoiceItems, true, { transaction: t })
             // InvoiceItems
-            invoiceItemData = invoiceItemData.map((item) => {
-                item.invoiceId = invoice.id
-                return item
+            const invoiceItems = data.invoiceItems.map((item) => {
+                const p = products.find(p => p.material == item.material && p.name == item.name && p.spec == item.spec)
+                return { ...item, productId: p.id, invoiceId: invoice.id }
             })
-            await InvoiceItem.bulkCreate(invoiceItemData)
+            await InvoiceItem.bulkCreate(invoiceItems, { transaction: t })
+            // Return
+            await t.commit()
             return this.handleCreated(res, await this.findById(invoice.id))
         } catch (error) {
+            await t.rollback()
             return this.handleError(res, error)
         }
     }
 
     update = async (req, res, next) => {
+        const t = await sequelize.transaction()
         try {
             const invoiceId = req.params.id
             const data = req.body
@@ -42,22 +47,25 @@ class OrderController extends InvoiceController {
             }
 
             // Partner
-            await Partner.findOrCreate({ where: { name: data.partnerName } })
+            await Partner.findOrCreate({ where: { name: data.partnerName }, transaction: t })
             // Invoice
             const delivered = this.getDeliveredStr(data.invoiceItems)
-            await Invoice.update({ ...data, delivered: delivered }, invoiceOptions)
-            await Invoice.update({ partnerName: data.partnerName }, { where: { orderId: invoiceId } })  // update refund if any
+            await Invoice.update({ ...data, delivered: delivered }, { ...invoiceOptions, transaction: t })
+            await Invoice.update({ partnerName: data.partnerName }, { where: { orderId: invoiceId }, transaction: t })  // update refund if any
             // Product
-            var invoiceItemData = await Product.findOrCreateByInfo(data.invoiceItems)
+            const products = await Product.bulkFindOrCreateByInfo(data.invoiceItems, true, { transaction: t })
             // InvoiceItems
-            await InvoiceItem.destroy({ where: { invoiceId: invoiceId } })
-            invoiceItemData = invoiceItemData.map((item) => {
-                item.invoiceId = invoiceId
-                return item
+            await InvoiceItem.destroy({ where: { invoiceId: invoiceId }, transaction: t })
+            const invoiceItems = data.invoiceItems.map((item) => {
+                const p = products.find(p => p.material == item.material && p.name == item.name && p.spec == item.spec)
+                return { ...item, productId: p.id, invoiceId: invoice.id }
             })
-            await InvoiceItem.bulkCreate(invoiceItemData)
+            await InvoiceItem.bulkCreate(invoiceItems, { transaction: t })
+            // Return
+            await t.commit()
             return this.handleCreated(res, await this.findById(invoiceId))
         } catch (error) {
+            await t.rollback()
             return this.handleError(res, error)
         }
     }

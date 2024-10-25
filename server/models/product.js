@@ -26,33 +26,17 @@ class Product extends Model {
             allowNull: false,
         }
     }
-    static async findOrCreateByInfo(productList, returnOriginWithProductId=true) {
-        // Find or Build
+    static async bulkFindOrCreateByInfo(productList, options = {}) {
         const productPairs = await Promise.all(
             productList.map((item) => {
-                return Product.findOrBuild({
+                return Product.findOrCreate({
                     where: { material: item.material, name: item.name, spec: item.spec },
-                    defaults: { unit: item.unit }
+                    defaults: { unit: item.unit },
+                    ...options,
                 })
             })
         )
-        // Save
-        for (const [product, created] of productPairs) {
-            if (created) {
-                await product.save()
-            }
-        }
-        const products = productPairs.map(([product, _]) => product.get())
-        // Update Origin
-        if (returnOriginWithProductId) {
-            const invoiceItems = productList.map((item) => {
-                const product = products.find((p) => p.material==item.material && p.name==item.name && p.spec==item.spec)
-                item.productId = product.id
-                return item
-            })
-            return invoiceItems
-        }
-        return products
+        return productPairs.map(([product, _]) => product.get({ plain: true }))        
     }
 }
 
