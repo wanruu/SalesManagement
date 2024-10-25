@@ -3,6 +3,8 @@ import React, { useEffect, useRef, useState } from 'react'
 import './editable.style.scss'
 
 
+const defaultRules = [{ whitespace: true }]
+
 /**
  * @component
  * @param {Object} props 
@@ -12,7 +14,7 @@ import './editable.style.scss'
  * @param {Function} props.handleSave
  */
 const EditableItem = (props) => {
-    const { dataIndex, record, handleSave, rules = [], ...restProps } = props
+    const { dataIndex, record, handleSave, rules = defaultRules, label, ...restProps } = props
 
     const [form] = Form.useForm()
     const [editing, setEditing] = useState(false);
@@ -41,18 +43,26 @@ const EditableItem = (props) => {
         }
     }
 
+    const itemConfig = {
+        style: { margin: 0, width: '100%' },
+        labelCol: {
+            span: 6 
+        },
+        wrapperCol: {
+            span: 18
+        },
+    }
     return (
-        <Form form={form}>
+        <Form form={form} layout='inline' >
             {editing ?
-                <Form.Item name={dataIndex} rules={rules} {...restProps}>
-                    <Input ref={inputRef} onPressEnter={save} onBlur={save} />
+                <Form.Item name={dataIndex} label={label} rules={rules} {...itemConfig}  {...restProps}>
+                    <Input ref={inputRef} onPressEnter={save} onBlur={save}
+                        placeholder={`请输入${label}`} />
                 </Form.Item> :
-                <Form.Item {...restProps} shouldUpdate>
-                    {() =>
-                        <div onClick={toggleEdit} className='editable-item-value-wrap'>
-                            {record[dataIndex]}
-                        </div>
-                    }
+                <Form.Item label={label} {...itemConfig} {...restProps}>
+                    <div onClick={toggleEdit} className='editable-item-value-wrap'>
+                        {record[dataIndex] || <span style={{ color: 'lightgray' }}>暂无数据</span>}
+                    </div>
                 </Form.Item>
             }
         </Form>

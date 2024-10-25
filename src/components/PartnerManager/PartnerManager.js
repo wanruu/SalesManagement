@@ -112,12 +112,11 @@ const PartnerInfo = (props) => {
     }
 
     return (
-        <Row gutter={[8, 8]} justify='start'>
+        <Row gutter={[8, 2]} justify='start'>
             {items.map(item => (
                 <Col xs={24} sm={12} md={8} lg={6} key={item.key}>
                     <EditableItem record={partner} dataIndex={item.name} label={item.label}
-                        handleSave={handleSave} rules={item.rules}
-                        style={{ margin: 0 }} />
+                        handleSave={handleSave} rules={item.rules} />
                 </Col>
             ))}
         </Row>
