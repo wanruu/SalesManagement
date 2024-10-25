@@ -52,7 +52,7 @@ const InvoiceManager = ({
                     onModeChange?.('view')
                 }} />
         ),
-        'view': <InvoiceView type={type} invoice={invoice} />,
+        'view': <InvoiceView invoice={invoice} />,
         'print': <InvoicePrint invoice={invoice} onCancel={_ => onModeChange?.('view')} />
     }
 

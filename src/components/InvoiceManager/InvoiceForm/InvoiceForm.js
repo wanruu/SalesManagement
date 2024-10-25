@@ -6,7 +6,7 @@ import { invoiceService } from '../../../services'
 import InvoiceFormHeader from './InvoiceFormHeader'
 import OrderFormTable from './OrderFormTable'
 import { RefundTable, AllRefundTable } from './RefundFormTable'
-import './invoiceForm.style.scss'
+import './invoice-form.style.scss'
 
 
 /*

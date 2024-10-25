@@ -5,7 +5,7 @@ import Decimal from 'decimal.js'
 import { emptyInvoiceItem } from '../../../utils/invoiceUtils'
 import { ProductInput } from '../../Input'
 import { productService } from '../../../services'
-import { updateItemAmount, updateTotalAmount, updateQuantityByRemark, deliveredOptions } from './InvoiceFormTableUtils'
+import { updateItemAmount, updateTotalAmount, updateQuantityByRemark, deliveredOptions } from './utils'
 import { useSelector } from 'react-redux'
 import { ProductManager } from '../../ProductManager'
 

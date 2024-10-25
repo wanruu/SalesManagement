@@ -2,7 +2,7 @@ import React from 'react'
 import { Form, Input, Table, Button, InputNumber, Select, Space, Col } from 'antd'
 import { EditOutlined } from '@ant-design/icons'
 import Decimal from 'decimal.js'
-import { updateItemAmount, updateTotalAmount, updateQuantityByRemark, deliveredOptions } from './InvoiceFormTableUtils'
+import { updateItemAmount, updateTotalAmount, updateQuantityByRemark, deliveredOptions } from './utils'
 import { useSelector } from 'react-redux'
 
 
