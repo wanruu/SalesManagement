@@ -1,1 +1,2 @@
-export { default as InvoicePrint } from './InvoicePrint'
+import InvoicePrint from './InvoicePrint'
+export default InvoicePrint

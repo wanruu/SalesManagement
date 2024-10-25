@@ -9,7 +9,7 @@ import { MyWorkBook, MyWorkSheet } from '../utils/export'
 import { InvoiceTable } from '../components/Table'
 import { SearchManager } from '../components/Search'
 import { useNavigate } from 'react-router-dom'
-import { InvoiceManager } from '../components/InvoiceManager'
+import InvoiceManager from '../components/InvoiceManager'
 
 
 const InvoicePage = ({ type }) => {

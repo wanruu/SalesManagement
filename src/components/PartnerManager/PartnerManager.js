@@ -4,7 +4,7 @@ import { partnerService } from '../../services'
 import { PartnerInvoiceItemTable, PartnerInvoiceTable, PartnerProductTable } from '../Table'
 import { EditableItem } from '../Input'
 import { pick, isEqual } from 'lodash'
-import { InvoiceManager } from '../InvoiceManager'
+import InvoiceManager from '../InvoiceManager'
 import { INVOICE_BASICS } from '../../utils/invoiceUtils'
 
 

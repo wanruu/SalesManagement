@@ -1,1 +1,2 @@
-export { default as InvoiceView } from './InvoiceView'
+import InvoiceView from './InvoiceView'
+export default InvoiceView
