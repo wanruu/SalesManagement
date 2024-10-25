@@ -42,6 +42,9 @@ class Invoice extends Model {
         },
         orderId: {
             type: DataTypes.INTEGER
+        },
+        delivered: {
+            type: DataTypes.TEXT,
         }
     }
 

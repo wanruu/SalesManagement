@@ -12,7 +12,7 @@ class InvoiceController extends BaseController {
 
     index = async (req, res, next) => {
         try {
-            const { startDate, endDate, number, sortBy='number', order='DESC' } = req.query
+            const { startDate, endDate, number, sortBy = 'number', order = 'DESC' } = req.query
 
             // construct filter
             const conditions = {}
@@ -52,18 +52,7 @@ class InvoiceController extends BaseController {
                 ],
                 order: [[sortBy, order]]
             }
-            const invoices = (await Invoice.findAll(options)).map(i => i.toJSON())
-            invoices.forEach(invoice => {
-                if (invoice.deliveredItemNum === invoice.totalItemNum) {
-                    invoice.delivered = '全部配送'
-                } else if (invoice.deliveredItemNum === 0) {
-                    invoice.delivered = '未配送'
-                } else {
-                    invoice.delivered = '部分配送'
-                }
-                delete invoice.deliveredItemNum
-                delete invoice.totalItemNum
-            })
+            const invoices = await Invoice.findAll(options)
             req.invoices = invoices
 
             // complex filter in next
@@ -107,7 +96,7 @@ class InvoiceController extends BaseController {
             },
             order: [
                 [{ model: InvoiceItem, as: 'invoiceItems' }, 'id', 'ASC'],
-                [{ model: Invoice, as: this.isOrder ? 'refund' : 'order' }, { model: InvoiceItem, as: 'invoiceItems' },'id', 'ASC']
+                [{ model: Invoice, as: this.isOrder ? 'refund' : 'order' }, { model: InvoiceItem, as: 'invoiceItems' }, 'id', 'ASC']
             ]
         }
         const invoice = await Invoice.findOne(options)
@@ -135,6 +124,18 @@ class InvoiceController extends BaseController {
         } catch (error) {
             return this.handleError(res, error)
         }
+    }
+
+    getDeliveredStr = (invoiceItems) => {
+        const deliveredNum = invoiceItems.filter(i => i.delivered).length
+        const totalNum = invoiceItems.length
+        if (deliveredNum === totalNum) {
+            return '全部配送'
+        }
+        if (deliveredNum === 0) {
+            return '未配送'
+        }
+        return '部分配送'
     }
 }
 

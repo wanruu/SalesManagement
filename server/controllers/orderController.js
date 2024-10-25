@@ -10,7 +10,8 @@ class OrderController extends InvoiceController {
             await Partner.findOrCreate({ where: { name: data.partnerName } })
             // Invoice
             const invoiceNumber = await Invoice.getNextNumber(this.type, data.date)
-            const invoice = await Invoice.create({ ...data, number: invoiceNumber, type: this.type })
+            const delivered = this.getDeliveredStr(data.invoiceItems)
+            const invoice = await Invoice.create({ ...data, number: invoiceNumber, type: this.type, delivered: delivered })
             // Product
             var invoiceItemData = await Product.findOrCreateByInfo(data.invoiceItems)
             // InvoiceItems
@@ -43,7 +44,8 @@ class OrderController extends InvoiceController {
             // Partner
             await Partner.findOrCreate({ where: { name: data.partnerName } })
             // Invoice
-            await Invoice.update(data, invoiceOptions)
+            const delivered = this.getDeliveredStr(data.invoiceItems)
+            await Invoice.update({ ...data, delivered: delivered }, invoiceOptions)
             await Invoice.update({ partnerName: data.partnerName }, { where: { orderId: invoiceId } })  // update refund if any
             // Product
             var invoiceItemData = await Product.findOrCreateByInfo(data.invoiceItems)
@@ -55,7 +57,7 @@ class OrderController extends InvoiceController {
             })
             await InvoiceItem.bulkCreate(invoiceItemData)
             return this.handleCreated(res, await this.findById(invoiceId))
-        } catch(error) {
+        } catch (error) {
             return this.handleError(res, error)
         }
     }

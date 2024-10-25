@@ -8,7 +8,8 @@ class RefundController extends InvoiceController {
             const data = req.body
             // Invoice
             const invoiceNumber = await Invoice.getNextNumber(this.type, data.date)
-            const invoice = await Invoice.create({ ...data, number: invoiceNumber, type: this.type })
+            const delivered = this.getDeliveredStr(data.invoiceItems)
+            const invoice = await Invoice.create({ ...data, number: invoiceNumber, type: this.type, delivered: delivered })
             // InvoiceItems
             const invoiceItemData = data.invoiceItems.map((item) => {
                 item.invoiceId = invoice.id
@@ -38,7 +39,8 @@ class RefundController extends InvoiceController {
             }
 
             // Invoice
-            await Invoice.update(data, invoiceOptions)
+            const delivered = this.getDeliveredStr(data.invoiceItems)
+            await Invoice.update({ ...data, delivered: delivered }, invoiceOptions)
             // InvoiceItems
             await InvoiceItem.destroy({ where: { invoiceId: invoiceId } })
             const invoiceItemData = data.invoiceItems.map((item) => {
@@ -47,7 +49,7 @@ class RefundController extends InvoiceController {
             })
             await InvoiceItem.bulkCreate(invoiceItemData)
             return this.handleCreated(res, await this.findById(invoiceId))
-        } catch(error) {
+        } catch (error) {
             return this.handleError(res, error)
         }
     }
