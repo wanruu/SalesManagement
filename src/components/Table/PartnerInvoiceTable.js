@@ -80,10 +80,11 @@ const PartnerInvoiceTable = (props) => {
         ifShowRefund ?
             {
                 title: '关联退货单', dataIndex: ['refund', 'number'],
-                render: (number, refund) =>
+                render: (number, order) =>
                     number ? <a onClick={_ => onSelectInvoice?.({
-                        id: refund.id,
-                        type: refund.type
+                        id: order.refund.id,
+                        number: order.refund.number,
+                        type: order.refund.type
                     })}>{number}</a> : '-'
             } : null,
         {

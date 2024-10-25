@@ -66,6 +66,7 @@ const InvoiceViewTable = (props) => {
             pageSize: pageSize,
             current: curPage,
             onChange: setCurPage,
+            total: invoiceItems.length,
             showQuickJumper: true,
         }} />
 }

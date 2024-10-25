@@ -4,7 +4,7 @@ import { partnerService } from '../../services'
 import { PartnerInvoiceItemTable, PartnerInvoiceTable, PartnerProductTable } from '../Table'
 import { EditableItem } from '../Input'
 import { pick, isEqual } from 'lodash'
-import InvoiceManager from '../InvoiceManager'
+import { ExistingInvoiceManager } from '../InvoiceManager'
 import { INVOICE_BASICS } from '../../utils/invoiceUtils'
 
 
@@ -23,7 +23,6 @@ const PartnerManager = (props) => {
     const [partner, setPartner] = useState({})
     const [tabKey, setTabKey] = useState(0)
     const [selectedInvoice, setSelectedInvoice] = useState(undefined)
-    const [mode, setMode] = useState('view')
 
 
     const load = () => {
@@ -64,10 +63,9 @@ const PartnerManager = (props) => {
     const invoiceModalTitle = `${INVOICE_BASICS[selectedInvoice?.type]?.title} ${selectedInvoice?.number}`
     return <Space direction='vertical' style={{ width: '100%', paddingTop: '5px' }} size={15}>
         <Modal open={selectedInvoice} onCancel={() => setSelectedInvoice(undefined)} width='90%'
-            footer={null} title={invoiceModalTitle}>
-            <InvoiceManager type={selectedInvoice?.type} invoice={selectedInvoice}
-                mode={mode} onCancel={_ => setSelectedInvoice(undefined)}
-                setMode={setMode}
+            footer={null} title={invoiceModalTitle} destroyOnClose>
+            <ExistingInvoiceManager invoice={selectedInvoice}
+                onCancel={_ => setSelectedInvoice(undefined)}
                 onInvoiceChange={load} />
         </Modal>
 
@@ -114,9 +112,9 @@ const PartnerInfo = (props) => {
     return (
         <Row gutter={[8, 8]} justify='start'>
             {items.map(item => (
-                <Col xs={24} sm={12} md={8} lg={6}>
+                <Col xs={24} sm={12} md={8} lg={6} key={item.key}>
                     <EditableItem record={partner} dataIndex={item.name} label={item.label}
-                        handleSave={handleSave} key={item.key} rules={item.rules}
+                        handleSave={handleSave} rules={item.rules}
                         style={{ margin: 0 }} />
                 </Col>
             ))}

@@ -46,14 +46,14 @@ const InvoiceViewHeader = (props) => {
         <Row justify='start' gutter={[8, 8]}>
             <Col {...colSpan}>
                 {INVOICE_BASICS[type]?.partnerTitle}：
-                {invoice.partnerName}
+                {invoice?.partnerName}
             </Col>
             <Col {...colSpan}>
-                日期：{dayjs(invoice.date).format(DATE_FORMAT)}
+                日期：{dayjs(invoice?.date).format(DATE_FORMAT)}
             </Col>
             <Col {...colSpan}>
                 {INVOICE_BASICS[type]?.relatedInvoiceTitle}：
-                {type?.includes('Refund') ? (invoice.order?.number ?? '无') : (invoice.refund?.number ?? '无')}
+                {type?.includes('Refund') ? (invoice?.order?.number ?? '无') : (invoice?.refund?.number ?? '无')}
             </Col>
             <Col {...colSpan}>
                 总金额：{Decimal(amount).toCurrencyString(amountSign)}

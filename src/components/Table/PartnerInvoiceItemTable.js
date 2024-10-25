@@ -36,6 +36,7 @@ const pageSize = 10
  * @param {Object} props
  * @param {Object} props.partner
  * @param {Object[]} props.partner.invoices
+ * @param {number} props.partner.invoices[].id
  * @param {'salesOrder'|'purchaseOrder'} props.partner.invoices[].type
  * @param {string} props.partner.invoices[].number
  * @param {InvoiceItem[]} props.partner.invoices[].invoiceItems
@@ -75,16 +76,16 @@ const PartnerInvoiceItemTable = (props) => {
      */
     /**
      * @type {{
-     *  orderItem: OptionalItem & {orderNumber: string, orderType: 'salesOrder'|'purchaseOrder'}, 
-     *  refundItem: OptionalItem & {refundNumber: string, refundType: 'salesRefund'|'purchaseRefund'},
+     *  orderItem: OptionalItem & {orderId: number,orderNumber: string, orderType: 'salesOrder'|'purchaseOrder'}, 
+     *  refundItem: OptionalItem & {refundId: number, refundNumber: string, refundType: 'salesRefund'|'purchaseRefund'},
      * }[]}
      */
     const items = useMemo(() => {
         const combinedItems = orders.map(invoice => {
-            const { number: orderNumber, type: orderType, invoiceItems: orderItems = [], refund } = invoice
-            const { number: refundNumber, type: refundType, invoiceItems: refundItems = [] } = refund ?? {}
-            const orderBasic = { orderNumber: orderNumber, orderType: orderType }
-            const refundBasic = { refundNumber: refundNumber, refundType: refundType }
+            const { id: orderId, number: orderNumber, type: orderType, invoiceItems: orderItems = [], refund } = invoice
+            const { id: refundId, number: refundNumber, type: refundType, invoiceItems: refundItems = [] } = refund ?? {}
+            const orderBasic = { orderId: orderId, orderNumber: orderNumber, orderType: orderType }
+            const refundBasic = { refundId: refundId, refundNumber: refundNumber, refundType: refundType }
             // merge
             const refundItemFlags = {}
             const leftJoinItems = orderItems.map(orderItem => {
@@ -138,8 +139,8 @@ const PartnerInvoiceItemTable = (props) => {
             dataIndex: ['orderItem', 'orderNumber'],
             onCell: (_, idx) => ({ rowSpan: rowSpans[idx] ?? 1 }),
             render: (number, record) =>
-                <a onClick={_ => onSelectInvoice?.({ 
-                    id: record.orderItem.invoiceId, 
+                <a onClick={_ => onSelectInvoice?.({
+                    id: record.orderItem.orderId,
                     number: record.orderItem.orderNumber,
                     type: record.orderItem.orderType,
                 })}>
@@ -222,7 +223,11 @@ const PartnerInvoiceItemTable = (props) => {
             dataIndex: ['refundItem', 'refundNumber'],
             onCell: (_, idx) => ({ rowSpan: rowSpans[idx] ?? 1 }),
             render: (number, record) => number ?
-                <a onClick={_ => onSelectInvoice?.({ id: record.refundItem.invoiceId, type: record.refundItem.invoiceType })}>
+                <a onClick={_ => onSelectInvoice?.({
+                    id: record.refundItem.refundId,
+                    number: record.refundItem.refundNumber,
+                    type: record.refundItem.refundType,
+                })}>
                     {number}
                 </a> : '-'
         } : null,
