@@ -150,7 +150,7 @@ const PartnerInvoiceTable = (props) => {
     }, [orders, ifShowRefund, amountSign, ifShowPayment])
 
     return <Table dataSource={orders} columns={columns} bordered
-        scroll={{ x: 'max-content' }} rowKey={invoice => invoice.id}
+        scroll={{ x: 'max-content' }} rowKey='id'
         pagination={{
             current: currentPage,
             pageSize: pageSize,

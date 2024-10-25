@@ -44,7 +44,7 @@ const PartnerTable = (props) => {
         ].map(i => ({ ...i, align: 'center' }))
     }, [curPage])
 
-    return <Table dataSource={partners} bordered rowKey={record => record.name}
+    return <Table dataSource={partners} bordered rowKey='name'
         columns={columns} scroll={{ x: 'max-content' }}
         pagination={{
             current: curPage,

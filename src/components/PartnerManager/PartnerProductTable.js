@@ -119,8 +119,7 @@ const PartnerProductTable = (props) => {
     }, [products, ifShowMaterial, amountSign])
 
     return <Table columns={columns} dataSource={products}
-        rowKey={product => product.id}
-        scroll={{ x: 'max-content' }}
+        rowKey='id' scroll={{ x: 'max-content' }}
         summary={_ => summary}
         pagination={{
             current: curPage,

@@ -28,7 +28,7 @@ const DraftTable = ({ drafts, onEdit, onDelete }) => {
     ].map(i => ({ ...i, align: 'center' }))
 
     return (
-        <Table dataSource={drafts.filter(d => !d.invoice)} rowKey={r => r.createAt}
+        <Table dataSource={drafts.filter(d => !d.invoice)} rowKey='createAt'
             columns={columns} scroll={{ x: 'max-content' }}
             pagination={{
                 current: currentPage,

@@ -47,7 +47,7 @@ const ProductTable = ({ product }) => {
     .map(i => ({ ...i, align: 'center' }))
     
     return <Table dataSource={product?.invoiceItems} columns={columns}
-        scroll={{ x: 'max-content' }} rowKey={r => r.id} bordered
+        scroll={{ x: 'max-content' }} rowKey='id' bordered
     />
 }
 

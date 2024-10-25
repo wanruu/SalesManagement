@@ -38,7 +38,7 @@ const ProductTable = ({ products, onSelect, onEdit, onDelete }) => {
     .map(i => ({ ...i, align: 'center' }))
     
 
-    return <Table dataSource={products??[]} bordered rowKey={product => product.id} 
+    return <Table dataSource={products??[]} bordered rowKey='id'
         columns={columns} scroll={{ x: 'max-content' }}
         pagination={{
             current: currentPage,

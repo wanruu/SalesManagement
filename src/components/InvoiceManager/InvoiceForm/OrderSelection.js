@@ -76,6 +76,7 @@ const OrderSelection = ({ type, onCancel }) => {
                 </Space.Compact>
             </Form>
             <Table dataSource={orders} size='small' columns={getOrderColumns()}
+                rowKey='id'
                 pagination={{ showSizeChanger: false, showQuickJumper: true }}
             /> 
         </Space>

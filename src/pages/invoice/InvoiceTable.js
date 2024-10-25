@@ -53,7 +53,7 @@ const InvoiceTable = ({ type, invoices, onSelect, onDelete }) => {
         .map(col => ({ ...col, align: 'center' }))
     }, [type, onSelect, onDelete])
 
-    return <Table dataSource={invoices} bordered rowKey={record => record.id}
+    return <Table dataSource={invoices} bordered rowKey='id'
         columns={columns} scroll={{ x: 'max-content' }} 
         pagination={{
             current: currentPage,

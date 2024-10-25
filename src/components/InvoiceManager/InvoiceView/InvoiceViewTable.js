@@ -61,7 +61,7 @@ const InvoiceViewTable = (props) => {
     }, [curPage, ifShowDiscount])
 
     return <Table dataSource={invoiceItems} columns={columns}
-        bordered scroll={{ x: 'max-content' }}
+        rowKey='id' bordered scroll={{ x: 'max-content' }}
         pagination={{
             pageSize: pageSize,
             current: curPage,
