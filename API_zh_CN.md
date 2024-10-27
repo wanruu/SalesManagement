@@ -166,13 +166,13 @@
 - 参数`query`（可选）
     ```js
     {
-        keyword: "xx", 
-        name: "xx",
-        address: "xx",
-        folder: "xx",
-        phone: "xx",
-        sortBy: "name",
-        order: "ASC",
+        "keyword": "xx", 
+        "name": "xx",
+        "address": "xx",
+        "folder": "xx",
+        "phone": "xx",
+        "sortBy": "name",
+        "order": "ASC",
     }
     ```
 - 返回值
@@ -297,7 +297,7 @@
             "prepayment": 1,
             "payment": 9,
             "orderId": null,  // or integer (if is refund)
-            "delivered": "全部配送",
+            "delivered": "全部配送",  // "全部配送" or "部分配送" or "未配送"
             "refund": {  // or order (if is refund)
                 "id": 2,
                 "number": "202409290001",
@@ -330,6 +330,7 @@
         "prepayment": 1,
         "payment": 9,
         "orderId": null,  // or integer (if is refund)
+        "delivered": "部分配送",  // "全部配送" or "部分配送" or "未配送"
         "refund": {  // or order (if is refund)
             "id": 2,
             "number": "202409290001",
@@ -340,6 +341,7 @@
             "prepayment": 1,
             "payment": 9,
             "orderId": 1,
+            "delivered": "部分配送",  // "全部配送" or "部分配送" or "未配送"
             "invoiceItems": [
                 {
                     "id": 2,
@@ -468,9 +470,7 @@
 - **GET** `/suggestions/partners/names`
 - 参数`query`
     ```js
-    {
-        "keyword": "keyword"
-    }
+    { "keyword": "keyword" }
     ```
 - 返回值
 
@@ -482,9 +482,7 @@
     - `/suggestions/products/specs`
 - 参数`query`
     ```js
-    {
-        "keyword": "keyword"
-    }
+    { "keyword": "keyword" }
     ```
 - 返回值
 
