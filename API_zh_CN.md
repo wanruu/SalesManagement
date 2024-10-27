@@ -1,8 +1,8 @@
 # API
 
-- [💡 规格](#💡-规格)
-    - [成功](#成功)
-    - [错误](#错误)
+- [💡 规范](#💡-规范)
+    - [参数](#参数)
+    - [返回值](#返回值)
 - [📦 产品](#📦-产品)
     - [产品列表](#产品列表)
     - [产品详情](#产品详情)
@@ -29,39 +29,40 @@
 
 ---
 
-## 💡 规格
-### 成功
-- `200 OK`
-    - GET
-- `201 CREATED`
-    - POST, PUT
-- `204 NO CONTENT`
-    - DELETE
-
-### 错误
-返回格式：
-```js
-{ "error": "xxx" }
-```
-- `400 INVALID REQUEST`
-    - "xxx is required"
-    - "xxx is not allowed"
-    - "xxx is not allowed to be empty"
-    - "xxx must be a(n) string/number/integer/boolean/valid date"
-    - "xxx must be greater/less than or equal to [number]"
-    - "xxx with value xxx fails to match the required pattern: /^\\d{4}-\\d{2}-\\d{2}$/"
-- `404 NOT FOUND`
-    - "Not Found"
-- `500 INTERNAL SERVER ERROR`
-    - "SequelizeUniqueConstraintError"
-        - 违反唯一性约束，比如交易对象名称，产品信息
-    - "SequelizeForeignKeyConstraintError"
-        - 违反外键约束，比如删除已创建了清单的产品
+## 💡 规范
+### 参数
+- 遵循RESTful API规范，使用HTTP方法和路径来表示资源和操作。
+- 参数使用 `query` 和 `body` 两种方式，`query` 参数在路径中，`body` 参数在请求体中，Content-Type 为 `application/json`。
+### 返回值
+- 返回值使用JSON格式。
+- 成功
+    - `200 OK` (GET)
+    - `201 CREATED` (POST, PUT)
+    - `204 NO CONTENT` (DELETE)
+- 失败
+    - 返回格式
+        ```js
+        { "error": "xxx" }
+        ```
+    - `400 INVALID REQUEST`
+        - "xxx is required"
+        - "xxx is not allowed"
+        - "xxx is not allowed to be empty"
+        - "xxx must be a(n) string/number/integer/boolean/valid date"
+        - "xxx must be greater/less than or equal to [number]"
+        - "xxx with value xxx fails to match the required pattern: /^\\d{4}-\\d{2}-\\d{2}$/"
+    - `404 NOT FOUND`
+        - "Not Found"
+    - `500 INTERNAL SERVER ERROR`
+        - "SequelizeUniqueConstraintError"
+            - 违反唯一性约束，比如交易对象名称，产品信息。
+        - "SequelizeForeignKeyConstraintError"
+            - 违反外键约束，比如删除已创建了清单的产品。
 
 ## 📦 产品
 ### 产品列表
 - **GET** `/products`
-- 参数`query`（可选）
+- 参数 `query`（可选）
     ```js
     {
         "keyword": "xxx",
@@ -87,7 +88,7 @@
 
 ### 产品详情
 - **GET** `/products/:id`, `/products/:material?/:name/:spec`
-- 参数`query`（可选）
+- 参数 `query`（可选）
     ```js
     {
         "sortBy": "id",
@@ -133,8 +134,8 @@
         "unit": "只"
     }
     ```
-    - `(material, name, spec)`必须唯一，如果重复会返回SequelizeUniqueConstraintError
-    - `material`可以为空字符串但不能是`null`，其余项不可以为空
+    - `(material, name, spec)` 必须唯一，如果重复会返回 `SequelizeUniqueConstraintError`。
+    - `material` 可以为空字符串但不能是 `null`，其余项不可以为空。
 - 返回值
     ```js
     {
@@ -150,20 +151,20 @@
 ### 修改产品
 - **PUT** `/products/:id`
 - 参数与返回值
-    - 与[创建产品](#创建产品)相同
+    - 与[创建产品](#创建产品)相同。
 
 
 ### 删除产品
 - **DELETE** `/products/:id`
 - 不带参数
 - 无返回值
-    - 如果该产品包含在清单中，则不可删除，返回SequelizeForeignKeyConstraintError
+    - 如果该产品包含在清单中，则不可删除，返回 `SequelizeForeignKeyConstraintError`。
 
 
 ## 👤 交易对象
 ### 交易对象列表
 - **GET** `/partners`
-- 参数`query`（可选）
+- 参数 `query`（可选）
     ```js
     {
         "keyword": "xx", 
@@ -237,8 +238,8 @@
         "folder": "文件夹1",  // optional
     }
     ```
-    - `name`必须唯一，否则返回SequelizeUniqueConstraintError
-    - `phone`/`address`/`folder`可以不包含在参数里，也可以指定为`null`
+    - `name` 必须唯一，否则返回 `SequelizeUniqueConstraintError`。
+    - `phone` / `address` / `folder` 可以不包含在参数里，也可以指定为 `null`。
 - 返回值
     ```js
     {
@@ -253,14 +254,14 @@
 ### 修改交易对象
 - **PUT** `/partners/:name`
 - 参数与返回值
-    - 与[创建交易对象](#创建交易对象)相同
+    - 与[创建交易对象](#创建交易对象)相同。
 
 
 ### 删除交易对象
 - **DELETE** `/partners/:name`
 - 不带参数
 - 无返回值
-    - 会删除其名下的所有清单
+    - 会删除其名下的所有清单。
 
 
 ## 🧾 清单
@@ -272,7 +273,7 @@
 
 ### 清单列表
 - **GET** `/[invoiceType]s`
-- 参数`query`（可选）
+- 参数 `query`（可选）
     ```js
     {
         "startDate": "2024-01-01",
@@ -312,8 +313,8 @@
         }
     ]
     ```
-    - 如果是order类型，则`orderId`必为`null`，有`refund`项且其`orderId`必不为`null`
-    - 如果是refund类型，则`orderId`必不为`null`，有`order`项且其`orderId`必为`null`
+    - 如果是 order 类型，则 `orderId` 必为 `null`，有 `refund` 项且其 `orderId` 必不为 `null`。
+    - 如果是 refund 类型，则 `orderId` 必不为 `null`，有 `order` 项且其 `orderId` 必为 `null`。
 
 ### 清单详情
 - **GET** `/[invoiceType]s/:id`
@@ -388,14 +389,14 @@
         ]
     }
     ```
-    - 如果是order类型，则`orderId`必为`null`，有`refund`项且其`orderId`必不为`null`
-    - 如果是refund类型，则`orderId`必不为null，有`order`项且其`orderId`必为`null`
+    - 如果是 order 类型，则 `orderId` 必为 `null`，有 `refund` 项且其 `orderId` 必不为 `null`。
+    - 如果是 refund 类型，则 `orderId` 必不为 `null`，有 `order` 项且其 `orderId` 必为 `null`。
 
 
 ### 创建清单
 - **POST** `/[invoiceType]s`
-- 参数`body`
-    - 如果`invoiceType`是order
+- 参数 `body`
+    - 如果 `invoiceType` 是 order
         ```js
         {
             "partnerName": "交易对象1",
@@ -421,7 +422,7 @@
             ]
         }
         ```
-    - 如果`invoiceType`是refund
+    - 如果 `invoiceType` 是 refund
         ```js
         {
             "partnerName": "交易对象1",
@@ -445,30 +446,30 @@
             ]
         }
         ```
-    - `date`格式必须为`yyyy-MM-dd`
-    - `amount`/`prepayment`/`payment`/`price`/`quantity`/`originalAmount`是数字类型，`discount`是[0, 100]的整数
-    - `weight`是数字类型，可以不包含也可以为`null`
-    - `remark`可以不包含也可以为`null`
+    - `date` 格式必须为 `yyyy-MM-dd`。
+    - `amount` / `prepayment` / `payment` / `price` / `quantity` / `originalAmount` 是数字类型，`discount` 是 [0, 100] 的整数。
+    - `weight` 是数字类型，可以不包含也可以为 `null`。
+    - `remark` 可以不包含也可以为 `null`。
 - 返回值
-    - 与[清单详情](#清单详情)相同
+    - 与[清单详情](#清单详情)相同。
 
 ### 修改清单
 - **PUT** `/[invoiceType]s/:id`
 - 参数与返回值
-    - 与[创建清单](#创建清单)相同
+    - 与[创建清单](#创建清单)相同。
 
 
 ### 删除清单
 - **DELETE** `/[invoiceType]s/:id`
 - 不带参数
 - 无返回值
-    - 如果是order，会同时删除对应的refund
+    - 如果是 order，会同时删除对应的 refund。
 
 
 ## 🔔 输入提示
 ### 交易对象提示
 - **GET** `/suggestions/partners/names`
-- 参数`query`
+- 参数 `query`
     ```js
     { "keyword": "keyword" }
     ```
@@ -480,7 +481,7 @@
     - `/suggestions/products/materials`
     - `/suggestions/products/names`
     - `/suggestions/products/specs`
-- 参数`query`
+- 参数 `query`
     ```js
     { "keyword": "keyword" }
     ```
@@ -492,7 +493,7 @@
 ### 交易摘要
 - **GET** `/statistics`
 TODO
-<!-- - 参数`query`
+<!-- - 参数 `query`
     ```js
     {
         "startDate": "YYYY-MM-DD", 

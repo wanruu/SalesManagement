@@ -4,7 +4,6 @@
 - [Introduction](#introduction)
 - [Features](#features)
 - [Database](#database)
-    - [Diagram](#diagram)
 
 ---
 
@@ -21,7 +20,6 @@ This is an Electron application for sales management, implemented by React.js, N
 # Database
 Use sqlite3 database to store data in a single file `sales.db`.
 
-## Diagram
 ![db diagram](screenshots/db_diagram.svg)
 
 Following is the source code in DBML (Database Markup Language) to draw the database diagram. (Website: https://dbdiagram.io)
