@@ -1,31 +1,27 @@
-import React, { useState, useEffect } from 'react'
+import React, { useState, useEffect, useMemo } from 'react'
 import { Space, Button, Modal, message } from 'antd'
-import {
-    ExclamationCircleFilled, PlusOutlined, ClearOutlined,
-    ExportOutlined
-} from '@ant-design/icons'
+import { PlusOutlined, ClearOutlined, ReloadOutlined } from '@ant-design/icons'
 import { useDispatch, useSelector } from 'react-redux'
-import { MyWorkBook, MyWorkSheet } from '../../utils/export'
 import { productService } from '../../services'
 import ProductManager from '../../components/ProductManager'
 import SearchManager from '../../components/SearchManager'
 import ProductTable from './ProductTable'
 import ProductForm from './ProductForm'
 import { pick, omit } from 'lodash'
+import { DeleteConfirm } from '../../components/Modal'
 
-
-const { confirm } = Modal
 
 
 const ProductPage = () => {
     // states
     const [products, setProducts] = useState([])
-    const [selectedProduct, setSelectedProduct] = useState(undefined)
-    const [editProduct, setEditProduct] = useState(undefined)
+    const [productToView, setProductToView] = useState(undefined)
+    const [productToEdit, setProductToEdit] = useState(undefined)
+    const [productsToDelete, setProductsToDelete] = useState([])
 
     // utils
     const [messageApi, contextHolder] = message.useMessage()
-    
+
     // redux
     const ifShowMaterial = useSelector(state => state.functionSetting.ifShowMaterial.value)
     const defaultUnit = useSelector(state => state.functionSetting.defaultUnit.value)
@@ -43,45 +39,36 @@ const ProductPage = () => {
         })
     }
 
-    const showDeleteConfirm = (products) => {
-        const title = products.length === 1 ? `是否删除产品 “${products[0].material} ${products[0].name} ${products[0].spec}” ?` : `是否删除 ${products.length} 个产品 ?`
-        confirm({
-            title: title,
-            icon: <ExclamationCircleFilled />,
-            content: '确认删除后不可撤销',
-            okText: '删除',
-            okType: 'danger',
-            cancelText: '取消',
-            onOk() {
-                productService.deleteMany(products).then(res => {
-                    messageApi.open({ type: 'success', content: '删除成功' })
-                    load()
-                }).catch(err => {
-                    messageApi.open({ type: 'error', content: '删除失败' })
-                    load()
-                })
-            }
+    const deleteConfirmTitle = useMemo(() => {
+        if (productsToDelete.length === 1) {
+            const info = [ifShowMaterial ? productsToDelete[0].material : null, productsToDelete[0].name, productsToDelete[0].spec].filter(i => i)
+            return `是否删除产品 “${info.join(' ')}” ?`
+        }
+        return `是否删除 ${productsToDelete.length} 个产品 ?`       
+    }, [ifShowMaterial, productsToDelete])
+        
+
+    const handleCreateProduct = () => {
+        setProductToEdit({
+            material: '', name: '', spec: '',
+            unit: defaultUnit
         })
     }
 
-    const handleExport = () => {
-        const headers = [
-            ifShowMaterial ? { title: '材质', dataIndex: 'material' } : null,
-            { title: '名称', dataIndex: 'name' },
-            { title: '规格', dataIndex: 'spec' },
-            { title: '单位', dataIndex: 'unit' },
-        ].filter(i => i != null)
-        let wb = new MyWorkBook('产品')
-        let ws = new MyWorkSheet('总览')
-        ws.writeJson(products, headers)
-        wb.writeSheet(ws)
-        wb.save()
-    }
-
-    const handleCreateProduct = () => {
-        setEditProduct({
-            material: '', name: '', spec: '',
-            unit: defaultUnit
+    const handleProductsDelete = () => {
+        const messageKey = 'delete-product'
+        messageApi.open({ key: messageKey, type: 'loading', content: '删除中', duration: 86400 })
+        productService.deleteMany(productsToDelete).then(res => {
+            messageApi.open({ key: messageKey, type: 'success', content: '删除成功' })
+            const ids = productsToDelete.map(p => p.id)
+            setProducts(products.filter(p => !ids.includes(p.id)))
+            setProductsToDelete([])
+        }).catch(err => {
+            messageApi.open({
+                key: messageKey, type: 'error', duration: 5,
+                content: `删除失败：${err.message}. ${err.response?.data?.error}`,
+            })
+            setProductsToDelete([])
         })
     }
 
@@ -104,37 +91,41 @@ const ProductPage = () => {
     return <Space direction='vertical' style={{ width: '100%' }} className='page-main-content'>
         {contextHolder}
 
-        <Modal open={editProduct} onCancel={_ => setEditProduct(undefined)} title={editProduct && editProduct.id ? '编辑产品' : '新增产品'} footer={null} destroyOnClose>
-            <ProductForm product={editProduct} onProductChange={_ => {
-                setEditProduct(undefined)
+        <Modal open={productToEdit} onCancel={_ => setProductToEdit(undefined)} title={productToEdit && productToEdit.id ? '编辑产品' : '新增产品'} footer={null} destroyOnClose>
+            <ProductForm product={productToEdit} onProductChange={_ => {
+                setProductToEdit(undefined)
                 load()
             }} />
         </Modal>
 
-        <Modal open={selectedProduct} onCancel={_ => setSelectedProduct(undefined)} title='产品详情' width='90%'
+        <Modal open={productToView} onCancel={_ => setProductToView(undefined)} title='产品详情' width='90%'
             footer={(_, { CancelBtn }) => <CancelBtn />}>
-            <ProductManager product={selectedProduct} />
+            <ProductManager product={productToView} />
         </Modal>
 
-       <Space wrap>
-            <Button icon={<PlusOutlined />} onClick={handleCreateProduct}>
+        <DeleteConfirm open={productsToDelete.length > 0} onCancel={_ => setProductsToDelete([])}
+            title={deleteConfirmTitle} onOk={handleProductsDelete} />
+
+        <Space wrap>
+            <Button icon={<PlusOutlined />} onClick={handleCreateProduct} type='primary' ghost>
                 新增
             </Button>
-            <Button icon={<ExportOutlined />} disabled={products.length === 0} onClick={handleExport}>
-                导出
-            </Button>
             <Button icon={<ClearOutlined />} type='dashed' disabled={products.filter(p => !p.invoiceItemNum > 0).length === 0}
-                onClick={_ => showDeleteConfirm(products.filter(p => !p.invoiceItemNum > 0))} danger>
-                清理
+                onClick={_ => setProductsToDelete(products.filter(p => !p.invoiceItemNum > 0))} danger>
+                一键清理
             </Button>
+            <Button icon={<ReloadOutlined />} onClick={_ => {
+                setProducts([])
+                load()
+            }}>刷新</Button>
         </Space>
 
         <SearchManager pageKey='product' onSearch={load}
             simpleSearchHelp={`支持${ifShowMaterial ? '材质、' : ''}名称、规格、单位（文字、拼音及首字母），以空格分开。`} />
-        <ProductTable products={products} 
-            onSelect={p => setSelectedProduct(p)}
-            onDelete={p => showDeleteConfirm([p])}
-            onEdit={p => setEditProduct(p)}
+        
+        <ProductTable products={products}
+            onSelect={setProductToView} onEdit={setProductToEdit}
+            onDelete={p => setProductsToDelete([p])}
         />
     </Space>
 }
