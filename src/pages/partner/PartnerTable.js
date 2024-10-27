@@ -27,7 +27,7 @@ const PartnerTable = (props) => {
         return [
             { title: '序号', fixed: 'left', render: (_, __, idx) => (curPage - 1) * pageSize + idx + 1 },
             { title: '姓名', dataIndex: 'name' },
-            { title: '文件位置', dataIndex: 'folder' },
+            { title: '文件夹', dataIndex: 'folder' },
             { title: '电话', dataIndex: 'phone' },
             { title: '地址', dataIndex: 'address' },
             { title: '身份', render: (_, partner) => <PartnerTypeTag {...partner} /> },

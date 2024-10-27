@@ -4,7 +4,7 @@ import { Form, Space, Input, Button } from 'antd'
 const { Item } = Form
 
 
-const PartnerSearch = ({ initialValues, onSearch, onChange, onReset }) => {
+const PartnerSearch = ({ initialValues, onSearch, onChange }) => {
     const [form] = Form.useForm()
 
     const initForm = () => {
@@ -13,7 +13,7 @@ const PartnerSearch = ({ initialValues, onSearch, onChange, onReset }) => {
     }
     const resetForm = () => {
         form.resetFields()
-        onReset?.()
+        onChange?.(form.getFieldsValue())
     }
 
     useEffect(initForm, [])

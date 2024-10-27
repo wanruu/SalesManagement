@@ -7,9 +7,10 @@ import { invoiceService } from '../../services'
 import { INVOICE_BASICS, DATE_FORMAT } from '../../utils/invoiceUtils'
 import { MyWorkBook, MyWorkSheet } from '../../utils/export'
 import InvoiceTable from './InvoiceTable'
-import { SearchManager } from '../../components/Search'
+import SearchManager from '../../components/SearchManager'
 import { useNavigate } from 'react-router-dom'
 import InvoiceManager from '../../components/InvoiceManager'
+import { pick, omit } from 'lodash'
 
 
 const InvoicePage = ({ type }) => {
@@ -20,17 +21,16 @@ const InvoicePage = ({ type }) => {
     const navigate = useNavigate()
 
     // redux
-    const searchMode = useSelector(state => state.page[type].searchMode)
-    const keywords = useSelector(state => state.page[type].keywords)
-    const searchForm = useSelector(state => state.page[type].searchForm)
+    const searchMode = useSelector(state => state.page[type].search.mode)
+    const searchForm = useSelector(state => state.page[type].search.form)
     const ifShowDelivered = useSelector(state => state.functionSetting.ifShowDelivered.value)
     const ifShowPayment = useSelector(state => state.functionSetting.ifShowPayment.value)
     const defaultUnit = useSelector(state => state.functionSetting.defaultUnit.value)
     const dispatch = useDispatch()
 
     const load = () => {
-        const params = searchMode == 'simple' ? { keyword: keywords } : {
-            ...searchForm,
+        const params = searchMode == 'simple' ? pick(searchForm, ['keyword']) : {
+            ...omit(searchForm, ['keyword']),
             startDate: searchForm.date?.[0]?.format(DATE_FORMAT),
             endDate: searchForm.date?.[1]?.format(DATE_FORMAT),
         }
@@ -108,7 +108,7 @@ const InvoicePage = ({ type }) => {
 
     useEffect(() => {
         const handleScroll = () => {
-            dispatch({ type: 'page/updateScrollY', menuKey: type, scrollY: window.scrollY })
+            dispatch({ type: 'page/updateScrollY', payload: { pageKey: type, scrollY: window.scrollY } })
         }
         window.addEventListener('scroll', handleScroll)
         return () => {
@@ -140,7 +140,8 @@ const InvoicePage = ({ type }) => {
             <Button icon={<PlusOutlined />} onClick={handleCreate}>新增</Button>
             <Button icon={<ExportOutlined />} onClick={handleExport}>导出</Button>
         </Space>
-        <SearchManager pageKey={type} onSearch={load} />
+        <SearchManager pageKey={type} onSearch={load}
+            simpleSearchHelp={`支持单号、${INVOICE_BASICS[type]?.partnerTitle}、日期（文字、拼音及首字母），以空格分开。`} />
 
         <InvoiceTable type={type} invoices={invoices} 
             onDelete={i => showDeleteConfirm([i])}

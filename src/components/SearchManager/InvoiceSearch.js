@@ -3,11 +3,10 @@ import { Form, Select, DatePicker, Space, Input, Button, Tooltip, Row, Divider }
 import { ExclamationCircleOutlined, SwapOutlined } from '@ant-design/icons'
 import { useSelector, useDispatch } from 'react-redux'
 import { DATE_FORMAT, INVOICE_BASICS } from '../../utils/invoiceUtils'
-import { DeliverTag } from '../Tag'
+import { DeliverTag } from '../../components/Tag'
 
 
 const { Item } = Form
-const { RangePicker } = DatePicker
 
 
 const INVOICE_DELIVER_OPTIONS = [
@@ -16,7 +15,7 @@ const INVOICE_DELIVER_OPTIONS = [
 
 
 
-function InvoiceSearch({ type, initialValues, onSearch, onChange, onReset }) {
+function InvoiceSearch({ type, initialValues, onSearch, onChange }) {
     const [form] = Form.useForm()
 
     const ifShowDelivered = useSelector(state => state.functionSetting.ifShowDelivered.value)
@@ -27,7 +26,7 @@ function InvoiceSearch({ type, initialValues, onSearch, onChange, onReset }) {
     }
     const resetForm = () => {
         form.resetFields()
-        onReset?.()
+        onChange?.(form.getFieldsValue())
     }
 
     useEffect(initForm, [])
@@ -59,7 +58,7 @@ function InvoiceSearch({ type, initialValues, onSearch, onChange, onReset }) {
                 <Input placeholder={partnerTitle + '名称'} allowClear style={{ maxWidth: '400px' }} />
             </Item>
             <Item label='日期' name='date' {...itemStyle}>
-                <RangePicker format={DATE_FORMAT} allowEmpty={[true, true]} style={{ maxWidth: '400px' }} />
+                <DatePicker.RangePicker format={DATE_FORMAT} allowEmpty={[true, true]} style={{ maxWidth: '400px' }} />
             </Item>
             {
                 ifShowDelivered ?

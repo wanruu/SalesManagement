@@ -5,9 +5,10 @@ import { useSelector, useDispatch } from 'react-redux'
 import { partnerService } from '../../services'
 import PartnerTable from './PartnerTable'
 import PartnerManager from '../../components/PartnerManager'
-import SearchManager from '../../components/Search/SearchManager'
+import SearchManager from '../../components/SearchManager'
 import { DeleteConfirm } from '../../components/Modal'
 import PartnerForm from './PartnerForm'
+import { pick, omit } from 'lodash'
 
 
 /**
@@ -39,7 +40,7 @@ const PartnerPage = () => {
      * @type {[Partner[], Function]}
      */
     const [partnersToDelete, setPartnersToDelete] = useState([])
-    
+
 
     const emptyPartners = useMemo(() => {
         return partners.filter(p => p.salesNum + p.purchaseNum == 0)
@@ -49,13 +50,12 @@ const PartnerPage = () => {
     const [messageApi, contextHolder] = message.useMessage()
 
     // redux
-    const searchMode = useSelector(state => state.page.partner.searchMode)
-    const keywords = useSelector(state => state.page.partner.keywords)
-    const searchForm = useSelector(state => state.page.partner.searchForm)
+    const searchMode = useSelector(state => state.page.partner.search.mode)
+    const searchForm = useSelector(state => state.page.partner.search.form)
     const dispatch = useDispatch()
 
     const load = () => {
-        const params = searchMode == 'simple' ? { keyword: keywords } : searchForm
+        const params = searchMode == 'simple' ? pick(searchForm, ['keyword']) : omit(searchForm, ['keyword'])
         partnerService.fetchMany(params).then(res => {
             setPartners(res.data)
         }).catch(err => {
@@ -109,7 +109,7 @@ const PartnerPage = () => {
 
     useEffect(() => {
         const handleScroll = () => {
-            dispatch({ type: 'page/updateScrollY', menuKey: 'partner', scrollY: window.scrollY })
+            dispatch({ type: 'page/updateScrollY', payload: { pageKey: 'partner', scrollY: window.scrollY } })
         }
         window.addEventListener('scroll', handleScroll)
         return () => {
@@ -120,7 +120,7 @@ const PartnerPage = () => {
     useEffect(() => window.scrollTo(0, scrollY), [partners])
     // ------------------------------------
 
-    
+
     return <Space direction='vertical' style={{ width: '100%' }} className='page-main-content'>
         {contextHolder}
 
@@ -148,7 +148,8 @@ const PartnerPage = () => {
                 load()
             }}>刷新</Button>
         </Space>
-        <SearchManager pageKey='partner' onSearch={load} />
+        <SearchManager pageKey='partner' onSearch={load}
+            simpleSearchHelp='支持姓名、文件夹、电话、地址（文字、拼音及首字母），以空格分开。' />
         <PartnerTable partners={partners}
             onEdit={setPartnerToEdit} onSelect={setPartnerToView}
             onDelete={p => setPartnersToDelete([p])}

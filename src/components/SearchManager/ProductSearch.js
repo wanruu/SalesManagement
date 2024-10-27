@@ -6,7 +6,7 @@ import { useSelector } from 'react-redux'
 const { Item } = Form
 
 
-const ProductSearch = ({ initialValues, onSearch, onChange, onReset }) => {
+const ProductSearch = ({ initialValues, onSearch, onChange }) => {
     const [form] = Form.useForm()
 
     const ifShowMaterial = useSelector(state => state.functionSetting.ifShowMaterial.value)
@@ -19,7 +19,7 @@ const ProductSearch = ({ initialValues, onSearch, onChange, onReset }) => {
     }
     const resetForm = () => {
         form.resetFields()
-        onReset?.()
+        onChange?.(form.getFieldsValue())
     }
 
     useEffect(initForm, [])

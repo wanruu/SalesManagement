@@ -8,9 +8,10 @@ import { useDispatch, useSelector } from 'react-redux'
 import { MyWorkBook, MyWorkSheet } from '../../utils/export'
 import { productService } from '../../services'
 import ProductManager from '../../components/ProductManager'
-import SearchManager from '../../components/Search/SearchManager'
+import SearchManager from '../../components/SearchManager'
 import ProductTable from './ProductTable'
 import ProductForm from './ProductForm'
+import { pick, omit } from 'lodash'
 
 
 const { confirm } = Modal
@@ -28,14 +29,13 @@ const ProductPage = () => {
     // redux
     const ifShowMaterial = useSelector(state => state.functionSetting.ifShowMaterial.value)
     const defaultUnit = useSelector(state => state.functionSetting.defaultUnit.value)
-    const searchMode = useSelector(state => state.page.product.searchMode)
-    const keywords = useSelector(state => state.page.product.keywords)
-    const searchForm = useSelector(state => state.page.product.searchForm)
+    const searchMode = useSelector(state => state.page.product.search.mode)
+    const searchForm = useSelector(state => state.page.product.search.form)
     const dispatch = useDispatch()
 
 
     const load = () => {
-        const params = searchMode == 'simple' ? { keyword: keywords } : searchForm
+        const params = searchMode == 'simple' ? pick(searchForm, ['keyword']) : omit(searchForm, ['keyword'])
         productService.fetchMany(params).then(res => {
             setProducts(res.data)
         }).catch(err => {
@@ -90,7 +90,7 @@ const ProductPage = () => {
 
     useEffect(() => {
         const handleScroll = () => {
-            dispatch({ type: 'page/updateScrollY', menuKey: 'product', scrollY: window.scrollY })
+            dispatch({ type: 'page/updateScrollY', payload: { pageKey: 'product', scrollY: window.scrollY } })
         }
         window.addEventListener('scroll', handleScroll)
         return () => {
@@ -129,7 +129,8 @@ const ProductPage = () => {
             </Button>
         </Space>
 
-        <SearchManager pageKey='product' onSearch={load} />
+        <SearchManager pageKey='product' onSearch={load}
+            simpleSearchHelp={`支持${ifShowMaterial ? '材质、' : ''}名称、规格、单位（文字、拼音及首字母），以空格分开。`} />
         <ProductTable products={products} 
             onSelect={p => setSelectedProduct(p)}
             onDelete={p => showDeleteConfirm([p])}

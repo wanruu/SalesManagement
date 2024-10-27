@@ -129,11 +129,11 @@ export default function SettingPage() {
 
 
     // scroll position listener & recover
-    const scrollY = useSelector(state => state.page.settings.scrollY)
+    const scrollY = useSelector(state => state.page.setting.scrollY)
 
     useEffect(() => {
         const handleScroll = () => {
-            dispatch({ type: 'page/updateScrollY', menuKey: 'settings', scrollY: window.scrollY })
+            dispatch({ type: 'page/updateScrollY', payload: { pageKey: 'setting', scrollY: window.scrollY } })
         }
         window.addEventListener('scroll', handleScroll)
         return () => {

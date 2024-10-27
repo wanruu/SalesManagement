@@ -1,92 +1,63 @@
 import { createSlice } from '@reduxjs/toolkit'
 
 
-const initPage = () => {
-    return {
-        showSearchBox: false,
-        searchMode: 'simple',
-        keywords: '',
-        searchForm: {},
+const initPage = () => (
+    {
+        search: {
+            mode: 'simple',
+            form: {}
+        },
         scrollY: 0
     }
-}
+)
+
 const pageSlice = createSlice({
     name: 'page',
-    initialState: { 
+    initialState: {
         salesOrder: initPage(),
         purchaseOrder: initPage(),
         salesRefund: initPage(),
         purchaseRefund: initPage(),
         product: initPage(),
         partner: initPage(),
-        settings: { scrollY: 0 }
+        setting: initPage(),
     },
     reducers: {
-        updateKeywords(state, action) {
-            const updateDict = {}
-            updateDict[action.menuKey] = { ...state[action.menuKey], keywords: action.payload}
-            return { 
-                ...state, 
-                ...updateDict
-            }
-        },
         updateSearchForm(state, action) {
-            const updateDict = {}
-            updateDict[action.menuKey] = { 
-                ...state[action.menuKey], 
-                searchForm: {
-                    ...state[action.menuKey].searchForm,
-                    ...action.payload
+            const { pageKey, form } = action.payload
+            const curPageDict = {}
+            curPageDict[pageKey] = {
+                ...state[pageKey],
+                search: {
+                    ...state[pageKey].search,
+                    form: {
+                        ...state[pageKey].search.form,
+                        ...form
+                    }
                 }
             }
-            return {
-                ...state, 
-                ...updateDict
-            }
+            return { ...state, ...curPageDict }
         },
-        resetSearchForm(state, action) {
-            const updateDict = {}
-            updateDict[action.menuKey] = { 
-                ...state[action.menuKey], 
-                searchForm: {}
+        updateSearchMode(state, action) {
+            const { pageKey, mode } = action.payload
+            const curPageDict = {}
+            curPageDict[pageKey] = {
+                ...state[pageKey],
+                search: {
+                    ...state[pageKey].search,
+                    mode: mode,
+                }
             }
-            return {
-                ...state, 
-                ...updateDict
-            }
-        },
-        setSearchMode(state, action) {
-            const updateDict = {}
-            updateDict[action.menuKey] = { 
-                ...state[action.menuKey], 
-                searchMode: action.searchMode
-            }
-            return {
-                ...state, 
-                ...updateDict
-            }
-        },
-        toggleShowSearchBox(state, action) {
-            const updateDict = {}
-            updateDict[action.menuKey] = { 
-                ...state[action.menuKey], 
-                showSearchBox: !state[action.menuKey].showSearchBox
-            }
-            return {
-                ...state, 
-                ...updateDict
-            }
+            return { ...state, ...curPageDict }
         },
         updateScrollY(state, action) {
-            const updateDict = {}
-            updateDict[action.menuKey] = { 
-                ...state[action.menuKey], 
-                scrollY: action.scrollY
+            const { pageKey, scrollY } = action.payload
+            const curPageDict = {}
+            curPageDict[pageKey] = {
+                ...state[pageKey],
+                scrollY: scrollY
             }
-            return {
-                ...state, 
-                ...updateDict
-            }
+            return { ...state, ...curPageDict }
         }
     }
 })
