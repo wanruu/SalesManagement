@@ -3,3 +3,4 @@ sales.db
 build/
 dist/
 __pycache__
+.vscode
