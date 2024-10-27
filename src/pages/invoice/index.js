@@ -46,13 +46,8 @@ const InvoicePage = ({ type }) => {
             startDate: searchForm.date?.[0]?.format(DATE_FORMAT),
             endDate: searchForm.date?.[1]?.format(DATE_FORMAT),
         }
-        invoiceService.fetchMany(type, params).then(response => {
-            const newInvoices = response.data.map(invoice => {
-                invoice.paid = Decimal(invoice.payment).plus(invoice.prepayment).toNumber()
-                invoice.unpaid = Decimal(invoice.amount).minus(invoice.paid).toNumber()
-                return invoice
-            })
-            setInvoices(newInvoices)
+        invoiceService.fetchMany(type, params).then(res => {
+            setInvoices(res.data)
         }).catch(err => {
             setInvoices([])
         })
