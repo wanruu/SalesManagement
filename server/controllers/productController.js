@@ -9,7 +9,7 @@ class ProductController extends BaseController {
             const { unit } = req.query
 
             // construct filter
-            const conditions = {}            
+            const conditions = {}
             if (unit) {
                 conditions.unit = { [Op.in]: unit }
             }
@@ -28,7 +28,7 @@ class ProductController extends BaseController {
                 ],
                 where: { ...conditions }
             }
-            const products = await Product.findAll(options)
+            const products = await Product.findAll(options).then(products => products.map(p => p.get({ plain: true })))
             req.products = products
 
             // complex filter
@@ -50,7 +50,7 @@ class ProductController extends BaseController {
                 where.spec = req.params.spec
             }
 
-            const { sortBy='id', order='DESC', detail=false } = req.query
+            const { sortBy = 'id', order = 'DESC', detail = false } = req.query
 
             if (detail) {
                 const options = {
@@ -64,29 +64,28 @@ class ProductController extends BaseController {
                         }
                     }],
                     order: [
-                        [{ model: InvoiceItem, as: 'invoiceItems'}, sortBy, order]
+                        [{ model: InvoiceItem, as: 'invoiceItems' }, sortBy, order]
                     ]
                 }
-                
-                const product = await Product.findOne(options)
+
+                const product = await Product.findOne(options).then(p => p.get({ plain: true }))
                 if (!product) {
                     return this.handleNotFound(res)
                 }
-                const invoiceItems = product.dataValues.invoiceItems
-                var totalWeight = 0
-                var totalQuantity = 0
-                for (const invoiceItem of invoiceItems) {
+
+                let totalWeight = 0
+                let totalQuantity = 0
+                for (const invoiceItem of product.invoiceItems) {
                     if (invoiceItem.weight != null) {
                         totalQuantity += invoiceItem.quantity
                         totalWeight += invoiceItem.weight
                     }
                 }
-                
-                const newProduct = product.dataValues
-                newProduct.unitWeight = totalQuantity == 0 ? null : totalWeight / totalQuantity
-                return res.send(newProduct)
+
+                product.unitWeight = totalQuantity == 0 ? null : totalWeight / totalQuantity
+                return res.send(product)
             } else {
-                const product = await Product.findOne({ where: where })
+                const product = await Product.findOne({ where: where }).then(p => p.get({ plain: true }))
                 if (!product) {
                     return this.handleNotFound(res)
                 }
@@ -113,7 +112,7 @@ class ProductController extends BaseController {
             if (affectedCount == 0) {
                 return this.handleNotFound(res)
             } else {
-                const newProduct = await Product.findOne(options)
+                const newProduct = await Product.findOne(options).then(p => p.get({ plain: true }))
                 return this.handleCreated(res, newProduct)
             }
         } catch (error) {
@@ -123,7 +122,7 @@ class ProductController extends BaseController {
 
     destroy = async (req, res, next) => {
         try {
-            const options = { where: { id: req.params.id }}
+            const options = { where: { id: req.params.id } }
             const deletedCount = await Product.destroy(options)  // 0 or 1
             if (deletedCount == 0) {
                 return this.handleNotFound(res)

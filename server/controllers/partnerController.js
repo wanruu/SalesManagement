@@ -30,7 +30,7 @@ class PartnerController extends BaseController {
                 order: [[sortBy, order]]
             }
 
-            const partners = await Partner.findAll(options)
+            const partners = await Partner.findAll(options).then(partners => partners.map(p => p.get({ plain: true })))
             req.partners = partners
             next()
         } catch (error) {
@@ -75,7 +75,7 @@ class PartnerController extends BaseController {
                     ]
                 }
             }
-            const partner = await Partner.findByPk(req.params.name, options)
+            const partner = await Partner.findByPk(req.params.name, options).then(p => p.get({ plain: true }))
             return res.send(partner)
         } catch (error) {
             return this.handleError(res, error)
@@ -98,7 +98,7 @@ class PartnerController extends BaseController {
             if (affectedCount == 0) {
                 return this.handleNotFound(res)
             } else {
-                const newPartner = await Partner.findByPk(req.body.name)
+                const newPartner = await Partner.findByPk(req.body.name).then(p => p.get({ plain: true }))
                 return this.handleCreated(res, newPartner)
             }
         } catch (error) {
