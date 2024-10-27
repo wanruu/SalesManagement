@@ -27,16 +27,20 @@ class Product extends Model {
         }
     }
     static async bulkFindOrCreateByInfo(productList, options = {}) {
-        const productPairs = await Promise.all(
+        // bulk find
+        const products = await Promise.all(
             productList.map((item) => {
-                return Product.findOrCreate({
-                    where: { material: item.material, name: item.name, spec: item.spec },
-                    defaults: { unit: item.unit },
-                    ...options,
+                return Product.findOne({
+                    where: { material: item.material, name: item.name, spec: item.spec }
                 })
             })
         )
-        return productPairs.map(([product, _]) => product.get({ plain: true }))        
+        // bulk create
+        const missingProducts = productList.filter((_, index) => !products[index]).map(item => ({
+            material: item.material, name: item.name, spec: item.spec, unit: item.unit,
+        }))
+        const createdProducts = await Product.bulkCreate(missingProducts, options)
+        return [...(products.filter(p => p)), ...createdProducts]
     }
 }
 

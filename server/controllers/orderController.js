@@ -14,7 +14,7 @@ class OrderController extends InvoiceController {
             const delivered = this.getDeliveredStr(data.invoiceItems)
             const invoice = await Invoice.create({ ...data, number: invoiceNumber, type: this.type, delivered: delivered }, { transaction: t })
             // Product
-            const products = await Product.bulkFindOrCreateByInfo(data.invoiceItems, true, { transaction: t })
+            const products = await Product.bulkFindOrCreateByInfo(data.invoiceItems, { transaction: t })
             // InvoiceItems
             const invoiceItems = data.invoiceItems.map((item) => {
                 const p = products.find(p => p.material == item.material && p.name == item.name && p.spec == item.spec)
@@ -53,7 +53,7 @@ class OrderController extends InvoiceController {
             await Invoice.update({ ...data, delivered: delivered }, { ...invoiceOptions, transaction: t })
             await Invoice.update({ partnerName: data.partnerName }, { where: { orderId: invoiceId }, transaction: t })  // update refund if any
             // Product
-            const products = await Product.bulkFindOrCreateByInfo(data.invoiceItems, true, { transaction: t })
+            const products = await Product.bulkFindOrCreateByInfo(data.invoiceItems, { transaction: t })
             // InvoiceItems
             await InvoiceItem.destroy({ where: { invoiceId: invoiceId }, transaction: t })
             const invoiceItems = data.invoiceItems.map((item) => {
