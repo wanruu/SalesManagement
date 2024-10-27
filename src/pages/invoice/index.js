@@ -80,6 +80,18 @@ const InvoicePage = ({ type }) => {
         })
     }
 
+    const handleInvoiceChange = (invoice, id) => {
+        // prevent reloading from server
+        const idx = invoices.findIndex(i => i.id === id)
+        const newInvoices = [...invoices]
+        if (idx === -1) {
+            newInvoices.unshift(invoice)
+        } else {            
+            newInvoices[idx] = invoice
+        }
+        setInvoices(newInvoices)
+    }
+
     // scroll position listener & recover
     const scrollY = useSelector(state => state.page[type]?.scrollY)
 
@@ -108,7 +120,7 @@ const InvoicePage = ({ type }) => {
             <InvoiceManager type={invoiceToView?.type} invoice={invoiceToView} mode={mode}
                 onCancel={_ => setInvoiceToView(undefined)}
                 onFormChange={_ => {}}
-                onInvoiceChange={_ => load()}
+                onInvoiceChange={invoice => handleInvoiceChange(invoice, invoiceToView.id)}
                 onModeChange={setMode}
             />
         </Modal>

@@ -44,16 +44,8 @@ const ProductPage = () => {
             const info = [ifShowMaterial ? productsToDelete[0].material : null, productsToDelete[0].name, productsToDelete[0].spec].filter(i => i)
             return `是否删除产品 “${info.join(' ')}” ?`
         }
-        return `是否删除 ${productsToDelete.length} 个产品 ?`       
+        return `是否删除 ${productsToDelete.length} 个产品 ?`
     }, [ifShowMaterial, productsToDelete])
-        
-
-    const handleCreateProduct = () => {
-        setProductToEdit({
-            material: '', name: '', spec: '',
-            unit: defaultUnit
-        })
-    }
 
     const handleProductsDelete = () => {
         const messageKey = 'delete-product'
@@ -70,6 +62,19 @@ const ProductPage = () => {
             })
             setProductsToDelete([])
         })
+    }
+
+    const handleProductChange = (product, id) => {
+        // prevent reloading from server
+        const idx = products.findIndex(p => p.id === id)
+        const newProducts = [...products]
+        if (idx === -1) {
+            newProducts.unshift(product)
+        } else {
+            newProducts[idx] = product
+        }
+        setProductToEdit(undefined)
+        setProducts(newProducts)
     }
 
     // scroll position listener & recover
@@ -92,10 +97,7 @@ const ProductPage = () => {
         {contextHolder}
 
         <Modal open={productToEdit} onCancel={_ => setProductToEdit(undefined)} title={productToEdit && productToEdit.id ? '编辑产品' : '新增产品'} footer={null} destroyOnClose>
-            <ProductForm product={productToEdit} onProductChange={_ => {
-                setProductToEdit(undefined)
-                load()
-            }} />
+            <ProductForm product={productToEdit} onProductChange={product => handleProductChange(product, productToEdit.id)} />
         </Modal>
 
         <Modal open={productToView} onCancel={_ => setProductToView(undefined)} title='产品详情' width='90%'
@@ -107,7 +109,7 @@ const ProductPage = () => {
             title={deleteConfirmTitle} onOk={handleProductsDelete} />
 
         <Space wrap>
-            <Button icon={<PlusOutlined />} onClick={handleCreateProduct} type='primary' ghost>
+            <Button icon={<PlusOutlined />} onClick={_ => setProductToEdit({ material: '', unit: defaultUnit })} type='primary' ghost>
                 新增
             </Button>
             <Button icon={<ClearOutlined />} type='dashed' disabled={products.filter(p => !p.invoiceItemNum > 0).length === 0}
@@ -122,7 +124,7 @@ const ProductPage = () => {
 
         <SearchManager pageKey='product' onSearch={load}
             simpleSearchHelp={`支持${ifShowMaterial ? '材质、' : ''}名称、规格、单位（文字、拼音及首字母），以空格分开。`} />
-        
+
         <ProductTable products={products}
             onSelect={setProductToView} onEdit={setProductToEdit}
             onDelete={p => setProductsToDelete([p])}
