@@ -1,16 +1,15 @@
 import React, { useEffect, useMemo, useState } from 'react'
 import { Modal, Button, Space, message } from 'antd'
-import { Decimal } from 'decimal.js'
 import { ReloadOutlined, PlusOutlined } from '@ant-design/icons'
 import { useSelector, useDispatch } from 'react-redux'
-import { invoiceService } from '../../services'
-import { INVOICE_BASICS, DATE_FORMAT } from '../../utils/invoiceUtils'
+import { invoiceService } from '@/services'
+import { INVOICE_BASICS, DATE_FORMAT } from '@/utils/invoiceUtils'
 import InvoiceTable from './InvoiceTable'
-import SearchManager from '../../components/SearchManager'
+import SearchManager from '@/components/SearchManager'
 import { useNavigate } from 'react-router-dom'
-import InvoiceManager from '../../components/InvoiceManager'
+import { ExistingInvoiceManager } from '@/components/InvoiceManager'
 import { pick, omit } from 'lodash'
-import { DeleteConfirm } from '../../components/Modal'
+import { DeleteConfirm } from '@/components/Modal'
 
 
 
@@ -19,7 +18,6 @@ const InvoicePage = ({ type }) => {
     const [invoices, setInvoices] = useState([])
     const [invoiceToView, setInvoiceToView] = useState(undefined)
     const [invoicesToDelete, setInvoicesToDelete] = useState([])
-    const [mode, setMode] = useState('view')
     const deleteConfirmTitle = useMemo(() => {
         const invoiceTitle = INVOICE_BASICS[type]?.title
         if (invoicesToDelete.length === 1) {
@@ -107,17 +105,11 @@ const InvoicePage = ({ type }) => {
     return <Space className='page-main-content' direction='vertical' style={{ width: '100%' }}>
         {contextHolder}
         <Modal title={`${INVOICE_BASICS[invoiceToView?.type]?.title} ${invoiceToView?.number}`}
-            open={invoiceToView} onCancel={_ => {
-                setInvoiceToView(undefined)
-                setMode('view')
-            }}
-            footer={null} width='90%'>
-            <InvoiceManager type={invoiceToView?.type} invoice={invoiceToView} mode={mode}
-                onCancel={_ => setInvoiceToView(undefined)}
-                onFormChange={_ => {}}
-                onInvoiceChange={invoice => handleInvoiceChange(invoice, invoiceToView.id)}
-                onModeChange={setMode}
-            />
+            open={invoiceToView} onCancel={_ => setInvoiceToView(undefined)}
+            footer={null} width='90%' destroyOnClose>
+            <ExistingInvoiceManager invoice={invoiceToView}
+                onSave={invoice => handleInvoiceChange(invoice, invoiceToView.id)}
+                onCancel={_ => setInvoiceToView(undefined)} />
         </Modal>
 
         <DeleteConfirm open={invoicesToDelete.length > 0} onCancel={_ => setInvoicesToDelete([])}
