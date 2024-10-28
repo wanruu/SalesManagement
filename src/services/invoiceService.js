@@ -1,4 +1,5 @@
 import apiClient from './api'
+import { trimObject } from './utils'
 
 
 const invoiceService = {
@@ -22,7 +23,8 @@ const invoiceService = {
 
     create: async (type, invoice) => {
         try {
-            const response = await apiClient.post(`/${type}s`, invoice)
+            const newInvoice = trimObject(invoice)
+            const response = await apiClient.post(`/${type}s`, newInvoice)
             return response
         } catch (error) {
             throw error
@@ -31,7 +33,8 @@ const invoiceService = {
 
     update: async (type, id, invoice) => {
         try {
-            const response = await apiClient.put(`/${type}s/${id}`, invoice)
+            const newInvoice = trimObject(invoice)
+            const response = await apiClient.put(`/${type}s/${id}`, newInvoice)
             return response
         } catch (error) {
             throw error

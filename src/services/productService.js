@@ -1,4 +1,5 @@
 import apiClient from './api'
+import { trimObject } from './utils'
 
 
 const productService = {
@@ -22,9 +23,12 @@ const productService = {
 
     fetchByInfo: async ({ material, name, spec }, params) => {
         try {
-            if (!name || !spec)
+            const newMaterial = trimObject(material)
+            const newName = trimObject(name)
+            const newSpec = trimObject(spec)
+            if (!newName || !newSpec)
                 return
-            const url = material ? `/products/${material}/${name}/${spec}` : `/products/${name}/${spec}`
+            const url = newMaterial ? `/products/${newMaterial}/${newName}/${newSpec}` : `/products/${newName}/${newSpec}`
             const response = await apiClient.get(url, { params: params })
             return response
         } catch (error) {
@@ -34,7 +38,8 @@ const productService = {
 
     create: async (product) => {
         try {
-            const response = await apiClient.post('/products', product)
+            const newProduct = trimObject(product)
+            const response = await apiClient.post('/products', newProduct)
             return response
         } catch (error) {
             throw error
@@ -43,7 +48,8 @@ const productService = {
 
     update: async (id, product) => {
         try {
-            const response = await apiClient.put(`/products/${id}`, product)
+            const newProduct = trimObject(product)
+            const response = await apiClient.put(`/products/${id}`, newProduct)
             return response
         } catch (error) {
             throw error

@@ -1,4 +1,5 @@
 import apiClient from './api'
+import { trimObject } from './utils'
 
 
 const partnerService = {
@@ -22,7 +23,8 @@ const partnerService = {
 
     create: async (partner) => {
         try {
-            const response = await apiClient.post('/partners', partner)
+            const newPartner = trimObject(partner)
+            const response = await apiClient.post('/partners', newPartner)
             return response
         } catch (error) {
             throw error
@@ -31,7 +33,8 @@ const partnerService = {
 
     update: async (name, partner) => {
         try {
-            const response = await apiClient.put(`/partners/${name}`, partner)
+            const newPartner = trimObject(partner)
+            const response = await apiClient.put(`/partners/${name}`, newPartner)
             return response
         } catch (error) {
             throw error
