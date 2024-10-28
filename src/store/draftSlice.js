@@ -8,18 +8,20 @@ const draftSlice = createSlice({
     initialState: {
         newTabIndex: 1,
         activeKey: 'main',
-        drafts: [], // [{ invoice, editInvoice, type, key, label, createAt, open, mode }]
+        drafts: [], // [{ invoice, editInvoice, type, key, label, createdAt, open, mode }]
     },
     reducers: {
         add(state, action) {
-            const { type, defaultUnit } = action.payload
+            const { type, defaultUnit, order } = action.payload
             const tabIndex = state.newTabIndex
+            const editInvoice = type.includes('Order') ? emptyInvoice(1, defaultUnit) : { ...emptyInvoice(0), order: order }
+            editInvoice.partnerName = order?.partnerName ?? ''
             const newDraft = {
-                editInvoice: type.includes('Order') ? emptyInvoice(1, defaultUnit) : emptyInvoice(0),
+                editInvoice: editInvoice,
                 type: type,
                 key: tabIndex,
                 label: `新建 ${tabIndex}`,
-                createAt: dayjs(),
+                createdAt: dayjs(),
                 open: true,
                 mode: 'edit',
             }

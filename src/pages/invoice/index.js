@@ -26,7 +26,7 @@ const InvoicePage = ({ type }) => {
             return `是否删除 ${invoicesToDelete.length} 张${invoiceTitle} ?`
         }
     }, [invoicesToDelete])
-    
+
     // utils
     const [messageApi, contextHolder] = message.useMessage()
     const navigate = useNavigate()
@@ -56,6 +56,15 @@ const InvoicePage = ({ type }) => {
         navigate('/')
     }
 
+    const handleRefundCreate = (order) => {
+        invoiceService.fetch(order.type, order.id).then(res => {
+            dispatch({ type: 'draft/add', payload: { type: INVOICE_BASICS[order.type].refundType, order: res.data } })
+            navigate('/')
+        }).catch(err => {
+            // TODO
+        })
+    }
+
     const handleDelete = () => {
         const messageKey = 'delete-invoice'
         messageApi.open({ key: messageKey, type: 'loading', content: '删除中', duration: 86400 })
@@ -79,7 +88,7 @@ const InvoicePage = ({ type }) => {
         const newInvoices = [...invoices]
         if (idx === -1) {
             newInvoices.unshift(invoice)
-        } else {            
+        } else {
             newInvoices[idx] = invoice
         }
         setInvoices(newInvoices)
@@ -126,9 +135,10 @@ const InvoicePage = ({ type }) => {
         <SearchManager pageKey={type} onSearch={load}
             simpleSearchHelp={`支持单号、${INVOICE_BASICS[type]?.partnerTitle}、日期（文字、拼音及首字母），以空格分开。`} />
 
-        <InvoiceTable type={type} invoices={invoices} 
+        <InvoiceTable type={type} invoices={invoices}
             onDelete={i => setInvoicesToDelete([i])}
-            onSelect={setInvoiceToView} />        
+            onSelect={setInvoiceToView}
+            onCreateRefund={handleRefundCreate} />
     </Space>
 }
 

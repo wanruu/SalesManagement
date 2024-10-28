@@ -17,7 +17,7 @@ const DraftTable = ({ drafts, onEdit, onDelete }) => {
         { title: '标签', dataIndex: 'label' },
         { title: '类型', dataIndex: 'type', render: type => <InvoiceTypeTag type={type} /> },
         { title: '交易对象', dataIndex: ['editInvoice', 'partnerName'] },
-        { title: '创建时间', dataIndex: ['createAt'], render: d => d?.format('HH:mm:ss') },
+        { title: '创建时间', dataIndex: ['createdAt'], render: d => d?.format('HH:mm:ss') },
         { title: '产品数', dataIndex: ['editInvoice', 'invoiceItems'], render: i => i?.length },
         { title: '操作', render: (_, draft) => (
             <Space>
@@ -28,7 +28,7 @@ const DraftTable = ({ drafts, onEdit, onDelete }) => {
     ].map(i => ({ ...i, align: 'center' }))
 
     return (
-        <Table dataSource={drafts.filter(d => !d.invoice)} rowKey='createAt'
+        <Table dataSource={drafts.filter(d => !d.invoice)} rowKey='createdAt'
             columns={columns} scroll={{ x: 'max-content' }}
             pagination={{
                 current: currentPage,

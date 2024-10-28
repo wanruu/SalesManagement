@@ -1,25 +1,20 @@
 import React, { useMemo, useState } from 'react'
 import { Table, Button } from 'antd'
-import { DeleteOutlined } from '@ant-design/icons'
-import { DeliverTag } from '../../components/Tag'
+import { DeleteOutlined, PlusOutlined } from '@ant-design/icons'
+import { DeliverTag } from '@/components/Tag'
 import { useSelector } from 'react-redux'
-import { INVOICE_BASICS } from '../../utils/invoiceUtils'
+import { INVOICE_BASICS } from '@/utils/invoiceUtils'
 import Decimal from 'decimal.js'
 
 
-const InvoiceTable = ({ type, invoices, onSelect, onDelete }) => {
+const InvoiceTable = ({ type, invoices, onSelect, onDelete, onCreateRefund }) => {
     const [currentPage, setCurrentPage] = useState(1)
     const pageSize = 10
-
-    const handlePageChange = (page) => {
-        setCurrentPage(page)
-    }
 
     const ifShowDelivered = useSelector(state => state.functionSetting.ifShowDelivered.value)
     const ifShowPayment = useSelector(state => state.functionSetting.ifShowPayment.value)
     const ifShowRefund = useSelector(state => state.functionSetting.ifShowRefund.value)
     const amountSign = useSelector(state => state.functionSetting.amountSign.value)
-    const isOrder = type.includes('Order')
 
     const columns = useMemo(() => {
         return [
@@ -43,10 +38,14 @@ const InvoiceTable = ({ type, invoices, onSelect, onDelete }) => {
             },
             !ifShowDelivered ? null : { title: '配送情况', dataIndex: 'delivered', render: d => <DeliverTag value={d} /> },
             !ifShowRefund ? null : {
-                title: INVOICE_BASICS[type].relatedInvoiceTitle, dataIndex: isOrder ? 'refund' : 'order',
-                render: relatedInvoice => (
-                    relatedInvoice ? <a onClick={_ => onSelect(relatedInvoice)}>{relatedInvoice.number}</a> : null
-                )
+                title: INVOICE_BASICS[type].relatedInvoiceTitle, 
+                dataIndex: type.includes('Order') ? 'refund' : 'order',
+                render: (relatedInvoice, invoice) => {
+                    if (type.includes('Order') && !relatedInvoice) {
+                        return <Button icon={<PlusOutlined />} onClick={_ => onCreateRefund?.(invoice)} />
+                    }
+                    return relatedInvoice ? <a onClick={_ => onSelect(relatedInvoice)}>{relatedInvoice.number}</a> : null
+                }
             },
             { title: '操作', render: (_, invoice) => <Button onClick={_ => onDelete(invoice)} danger icon={<DeleteOutlined />} /> }
         ]
@@ -60,7 +59,7 @@ const InvoiceTable = ({ type, invoices, onSelect, onDelete }) => {
             current: currentPage,
             pageSize: pageSize,
             total: (invoices ?? []).length,
-            onChange: handlePageChange,
+            onChange: setCurrentPage,
         }}
     />
 }
