@@ -3,7 +3,7 @@ import InvoiceManager from './InvoiceManager'
 
 
 const ExistingInvoiceManager = (props) => {
-    const { invoice, onInvoiceChange, onCancel } = props
+    const { invoice, onSave, onCancel } = props
     const { type } = invoice ?? {}
 
     const [mode, setMode] = useState('view')
@@ -11,7 +11,7 @@ const ExistingInvoiceManager = (props) => {
         <InvoiceManager type={type}
             invoice={invoice}
             mode={mode} onModeChange={setMode}
-            onInvoiceChange={onInvoiceChange}
+            onSave={onSave}
             onFormChange={() => {}}
             onCancel={onCancel} />
     )

@@ -68,7 +68,7 @@ const PartnerManager = (props) => {
             footer={null} title={invoiceModalTitle} destroyOnClose>
             <ExistingInvoiceManager invoice={selectedInvoice}
                 onCancel={_ => setSelectedInvoice(undefined)}
-                onInvoiceChange={load} />
+                onSave={load} />
         </Modal>
 
         <PartnerInfo partner={partner} onPartnerChange={handlePartnerChange} />

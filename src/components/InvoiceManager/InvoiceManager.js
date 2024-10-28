@@ -6,26 +6,15 @@ import InvoiceForm from './InvoiceForm'
 import { invoiceService } from '../../services'
 
 
-/*
-    Required: type
-    Optional:
-        invoice
-        editInvoice
-        mode
-        onModeChange
-        onInvoiceChange
-        onFormChange
-        onCancel
- */
-const InvoiceManager = ({ 
-    type, 
-    invoice: initInvoice,
-    editInvoice,
-    mode, onModeChange, 
-    onInvoiceChange, onFormChange, onCancel 
-}) => {
+
+const InvoiceManager = (props) => {
+    const {
+        type, invoice: initInvoice, editInvoice, mode,
+        onModeChange, onSave, onFormChange, onCancel
+    } = props
+
     const [invoice, setInvoice] = useState(undefined)
-    
+
     const load = () => {
         const id = initInvoice?.id
         if (id) {
@@ -46,8 +35,8 @@ const InvoiceManager = ({
                     invoice?.id ? onModeChange?.('view') : onCancel?.()
                 }}
                 onFormChange={onFormChange}
-                onInvoiceChange={invoice => {
-                    onInvoiceChange?.(invoice)
+                onSave={invoice => {
+                    onSave?.(invoice)
                     setInvoice(invoice)
                     onModeChange?.('view')
                 }} />
@@ -60,16 +49,16 @@ const InvoiceManager = ({
 
     return (
         <div style={{ marginTop: '15px' }}>
-            { modeDict[mode] }
+            {modeDict[mode]}
             {
                 mode != 'view' ? null :
-                <Col align='end'>
-                    <Space>
-                        <Button onClick={_ => onCancel?.()}>关闭</Button>
-                        <Button onClick={_ => onModeChange?.('print')}>打印预览</Button>
-                        <Button onClick={_ => onModeChange?.('edit')} type='primary'>编辑</Button>
-                    </Space>
-                </Col>
+                    <Col align='end'>
+                        <Space>
+                            <Button onClick={_ => onCancel?.()}>关闭</Button>
+                            <Button onClick={_ => onModeChange?.('print')}>打印预览</Button>
+                            <Button onClick={_ => onModeChange?.('edit')} type='primary'>编辑</Button>
+                        </Space>
+                    </Col>
             }
         </div>
     )

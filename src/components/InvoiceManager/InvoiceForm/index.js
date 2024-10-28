@@ -16,9 +16,9 @@ import './invoice-form.style.scss'
     Optional:
         onCancel: called when form is cancelled
         onFormChange: called when form is changed
-        onInvoiceChange: called then form is successfully submitted and response is received
+        onSave: called then form is successfully submitted and response is received
  */
-const InvoiceForm = ({ type, editInvoice, invoice, onInvoiceChange, onFormChange, onCancel }) => {
+const InvoiceForm = ({ type, editInvoice, invoice, onSave, onFormChange, onCancel }) => {
     const [form] = Form.useForm()
     const isOrder = type.includes('Order')
 
@@ -84,7 +84,7 @@ const InvoiceForm = ({ type, editInvoice, invoice, onInvoiceChange, onFormChange
         if (invoice?.id) {
             invoiceService.update(type, invoice.id, newInvoice).then(res => {
                 message.open({ key: messageKey, type: 'success', content: '更新成功' })
-                onInvoiceChange?.(res.data)
+                onSave?.(res.data)
             }).catch(err => {
                 message.open({ 
                     key: messageKey, type: 'error', duration: 5,
@@ -94,7 +94,7 @@ const InvoiceForm = ({ type, editInvoice, invoice, onInvoiceChange, onFormChange
         } else {
             invoiceService.create(type, newInvoice).then(res => {
                 message.open({ key: messageKey, type: 'success', content: '新建成功' })
-                onInvoiceChange?.(res.data)
+                onSave?.(res.data)
             }).catch(err => {
                 message.open({ 
                     key: messageKey, type: 'error', duration: 5,
