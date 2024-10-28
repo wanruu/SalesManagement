@@ -1,6 +1,6 @@
 import React, { useState } from 'react'
 import { AutoComplete } from 'antd'
-import { suggestionService } from '../../services'
+import { suggestionService } from '@/services'
 
 
 /*

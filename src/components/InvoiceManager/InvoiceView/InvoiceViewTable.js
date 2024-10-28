@@ -1,8 +1,8 @@
 import React, { useMemo, useState } from 'react'
 import { Table } from 'antd'
 import { useSelector } from 'react-redux'
-import { DeliverTag } from '../../Tag'
-import { BaseInvoice, BaseInvoiceItem, Product } from '../../../types'
+import { DeliverTag } from '@/components/Tag'
+import { BaseInvoice, BaseInvoiceItem, Product } from '@/types'
 import Decimal from 'decimal.js'
 
 

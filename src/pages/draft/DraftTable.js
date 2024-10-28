@@ -1,6 +1,6 @@
 import React, { useState } from 'react'
 import { Table, Button, Space } from 'antd'
-import { InvoiceTypeTag } from '../../components/Tag'
+import { InvoiceTypeTag } from '@/components/Tag'
 import { DeleteOutlined, EditOutlined } from '@ant-design/icons'
 
 

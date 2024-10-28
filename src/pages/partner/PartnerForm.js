@@ -1,6 +1,6 @@
 import React from 'react'
 import { Button, message, Form, Input, Col, Space } from 'antd'
-import { partnerService } from '../../services'
+import { partnerService } from '@/services'
 
 
 const formItems = [

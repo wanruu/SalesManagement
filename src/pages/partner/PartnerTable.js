@@ -1,7 +1,7 @@
 import React, { useMemo, useState } from 'react'
 import { Button, Table, Space } from 'antd'
 import { DeleteOutlined, EditOutlined, EyeOutlined } from '@ant-design/icons'
-import { PartnerTypeTag } from '../../components/Tag'
+import { PartnerTypeTag } from '@/components/Tag'
 
 
 /**

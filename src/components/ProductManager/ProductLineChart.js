@@ -1,7 +1,7 @@
 import React from 'react'
 import ReactEcharts from 'echarts-for-react'
 import { useSelector } from 'react-redux'
-import { INVOICE_BASICS } from '../../utils/invoiceUtils'
+import { INVOICE_BASICS } from '@/utils/invoiceUtils'
 
 
 const ProductLineChart = ({ product, type='salesOrder', field='quantity' }) => {

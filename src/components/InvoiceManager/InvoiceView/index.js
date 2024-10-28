@@ -2,7 +2,7 @@ import React from 'react'
 import InvoiceViewTable from './InvoiceViewTable'
 import InvoiceViewHeader from './InvoiceViewHeader'
 import { Space } from 'antd'
-import { BaseInvoice, BaseInvoiceItem, Product } from '../../../types'
+import { BaseInvoice, BaseInvoiceItem, Product } from '@/types'
 
 
 /**

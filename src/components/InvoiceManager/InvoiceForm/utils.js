@@ -1,6 +1,6 @@
 import { evaluate } from 'mathjs'
 import Decimal from 'decimal.js'
-import store from '../../../store'
+import store from '@/store'
 
 
 export const calcEquation = (equation) => {

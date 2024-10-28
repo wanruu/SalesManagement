@@ -2,13 +2,13 @@ import React, { useState, useEffect, useMemo } from 'react'
 import { Space, Button, Modal, message } from 'antd'
 import { PlusOutlined, ClearOutlined, ReloadOutlined } from '@ant-design/icons'
 import { useDispatch, useSelector } from 'react-redux'
-import { productService } from '../../services'
-import ProductManager from '../../components/ProductManager'
-import SearchManager from '../../components/SearchManager'
+import { productService } from '@/services'
+import ProductManager from '@/components/ProductManager'
+import SearchManager from '@/components/SearchManager'
 import ProductTable from './ProductTable'
 import ProductForm from './ProductForm'
 import { pick, omit } from 'lodash'
-import { DeleteConfirm } from '../../components/Modal'
+import { DeleteConfirm } from '@/components/Modal'
 
 
 

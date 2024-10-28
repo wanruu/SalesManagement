@@ -2,12 +2,12 @@ import React, { useState } from 'react'
 import { Form, Input, Table, Button, InputNumber, Select, Space, Modal } from 'antd'
 import { LineChartOutlined } from '@ant-design/icons'
 import Decimal from 'decimal.js'
-import { emptyInvoiceItem } from '../../../utils/invoiceUtils'
-import { ProductInput } from '../../Input'
-import { productService } from '../../../services'
+import { emptyInvoiceItem } from '@/utils/invoiceUtils'
+import { ProductInput } from '@/components/Input'
+import { productService } from '@/services'
 import { updateItemAmount, updateTotalAmount, updateQuantityByRemark, deliveredOptions } from './utils'
 import { useSelector } from 'react-redux'
-import ProductManager from '../../ProductManager'
+import ProductManager from '@/components/ProductManager'
 
 
 const { Item } = Form

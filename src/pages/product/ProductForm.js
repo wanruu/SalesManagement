@@ -1,6 +1,6 @@
 import React, { useEffect } from 'react'
 import { Input, Space, Button, Form, message, Col, Select } from 'antd'
-import { productService } from '../../services'
+import { productService } from '@/services'
 import { useSelector } from 'react-redux'
 
 

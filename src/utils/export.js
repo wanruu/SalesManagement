@@ -1,5 +1,5 @@
 import * as XLSX from 'xlsx'
-import _ from 'lodash'
+import { fromPairs } from 'lodash'
 import Decimal from 'decimal.js'
 
 /*
@@ -9,9 +9,9 @@ import Decimal from 'decimal.js'
 export const getExportData = (columns, data) => {
     const rows = data.map((o, idx) => {
         const pairs = columns.map(col => [col.title, col.onExport ? col.onExport(o[col.dataIndex], o, idx) : o[col.dataIndex]])
-        return _.fromPairs(pairs)
+        return fromPairs(pairs)
     })
-    const summary = _.fromPairs(columns.map(col => {
+    const summary = fromPairs(columns.map(col => {
         var val = col.summary || ''
         if (col.summary === 'sum') {
             val = data.reduce((pre, cur) => pre.plus(cur[col.dataIndex]) , Decimal(0)).toNumber()

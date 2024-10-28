@@ -2,7 +2,7 @@ import React, { useMemo } from 'react'
 import { useSelector } from 'react-redux'
 import Decimal from 'decimal.js'
 import { get } from 'lodash'
-import { BaseInvoiceItem } from '../../../types'
+import { BaseInvoiceItem } from '@/types'
 
 
 

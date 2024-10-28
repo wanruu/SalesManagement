@@ -6,7 +6,7 @@ import InvoicePrintTable from './InvoicePrintTable'
 import InvoicePrintHeader from './InvoicePrintHeader'
 import InvoicePrintFooter from './InvoicePrintFooter'
 import './invoice-print.style.scss'
-import { BaseInvoice, Partner, BaseInvoiceItem, Product } from '../../../types';
+import { BaseInvoice, Partner, BaseInvoiceItem, Product } from '@/types';
 
 
 

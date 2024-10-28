@@ -1,8 +1,8 @@
 import React, { useState, useEffect } from 'react'
 import { Form, Input, Table, Button, Space } from 'antd'
-import { INVOICE_BASICS } from '../../../utils/invoiceUtils'
-import { invoiceService } from '../../../services'
-import { PartnerInput } from '../../Input'
+import { INVOICE_BASICS } from '@/utils/invoiceUtils'
+import { invoiceService } from '@/services'
+import { PartnerInput } from '@/components/Input'
 import { useSelector } from 'react-redux'
 
 

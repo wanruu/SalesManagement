@@ -6,6 +6,9 @@ const os = require('os')
 // const appDir = path.dirname(app.getAppPath())
 
 
+app.commandLine.appendSwitch("disable-gpu");
+
+
 let mainWindow
 
 function getIpAddr() {

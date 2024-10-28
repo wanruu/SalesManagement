@@ -1,12 +1,12 @@
 import React, { useMemo } from 'react'
 import ReactEcharts from 'echarts-for-react'
-import { INVOICE_BASICS } from '../../utils/invoiceUtils'
-import _ from 'lodash'
+import { INVOICE_BASICS } from '@/utils/invoiceUtils'
+import { groupBy } from 'lodash'
 
 
 const ProductScatterChart = ({ product, field='price' }) => {
     const scatters = useMemo(() => {
-        return _.groupBy((product?.invoiceItems ?? []), item => item.invoice.type)
+        return groupBy((product?.invoiceItems ?? []), item => item.invoice.type)
     }, [product, field])
 
     const types = ['salesOrder', 'salesRefund', 'purchaseOrder', 'purchaseRefund']

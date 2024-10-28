@@ -1,12 +1,12 @@
 import React, { useEffect, useMemo, useState } from 'react'
 import ProductTable from './ProductTable'
-import { productService } from '../../services'
+import { productService } from '@/services'
 import { useSelector } from 'react-redux'
 import { Col, Row, Segmented, Select, Radio, Divider, Space, Button } from 'antd'
 import { AppstoreOutlined, LineChartOutlined, DotChartOutlined } from '@ant-design/icons';
 import ProductLineChart from './ProductLineChart'
 import ProductScatterChart from './ProductScatterChart'
-import { INVOICE_BASICS } from '../../utils/invoiceUtils'
+import { INVOICE_BASICS } from '@/utils/invoiceUtils'
 import { PartnerInput } from '../Input'
 
 const displayOptions = [

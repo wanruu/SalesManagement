@@ -4,7 +4,7 @@ import { Card, Col, Row, Select, Space, Button } from 'antd'
 import ReactEcharts from 'echarts-for-react'
 import Title from 'antd/es/typography/Title'
 
-import { DATE_FORMAT } from '../../utils/invoiceUtils'
+import { DATE_FORMAT } from '@/utils/invoiceUtils'
 // import AbstractView from '../components/statistic/AbstractView'
 // import RangeSelectView from '../components/statistic/RangeSelectView'
 import { DateRangeSelector } from '@/components/Selector'

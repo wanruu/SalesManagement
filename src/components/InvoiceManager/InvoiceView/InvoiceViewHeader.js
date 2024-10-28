@@ -2,9 +2,9 @@ import React, { useMemo } from 'react'
 import { Col, Row } from 'antd'
 import dayjs from 'dayjs'
 import Decimal from 'decimal.js'
-import { DATE_FORMAT, INVOICE_BASICS } from '../../../utils/invoiceUtils'
+import { DATE_FORMAT, INVOICE_BASICS } from '@/utils/invoiceUtils'
 import { useSelector } from 'react-redux'
-import { BaseInvoice } from '../../../types'
+import { BaseInvoice } from '@/types'
 
 
 
