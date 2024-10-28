@@ -52,7 +52,7 @@ const DraftPage = () => {
                     onFormChange={values => {
                         dispatch({ type: 'draft/updateEditInvoice', payload: { key: key, values: values } })
                     }}
-                    onInvoiceChange={invoice => {
+                    onSave={invoice => {
                         dispatch({ type: 'draft/updateInvoice', payload: { key: key, invoice: invoice }})
                         dispatch({ type: 'draft/updateEditInvoice', payload: { key: key, values: undefined } })
                     }} 
