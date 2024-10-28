@@ -1,8 +1,8 @@
 import React from 'react'
 import { Tabs, Segmented } from 'antd'
 import { useSelector, useDispatch } from 'react-redux'
-import InvoiceManager from '../../components/InvoiceManager'
-import { INVOICE_BASICS } from '../../utils/invoiceUtils'
+import InvoiceManager from '@/components/InvoiceManager'
+import { INVOICE_BASICS } from '@/utils/invoiceUtils'
 import DraftTable from './DraftTable'
 
 
@@ -54,6 +54,7 @@ const DraftPage = () => {
                     }}
                     onInvoiceChange={invoice => {
                         dispatch({ type: 'draft/updateInvoice', payload: { key: key, invoice: invoice }})
+                        dispatch({ type: 'draft/updateEditInvoice', payload: { key: key, values: undefined } })
                     }} 
                     onModeChange={mode => {
                         dispatch({ type: 'draft/updateMode', payload: { key: key, mode: mode }})
