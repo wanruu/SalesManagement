@@ -1,13 +1,12 @@
-import { Col, message, Modal, Row, Space, Tabs } from 'antd'
+import { Col, message, Row, Space, Tabs } from 'antd'
 import React, { useEffect, useState } from 'react'
-import { partnerService } from '../../services'
+import { partnerService } from '@/services'
 import PartnerInvoiceItemTable from './PartnerInvoiceItemTable'
 import PartnerInvoiceTable from './PartnerInvoiceTable'
 import PartnerProductTable from './PartnerProductTable'
 import { EditableItem } from '../Input'
 import { pick, isEqual } from 'lodash'
-import { ExistingInvoiceManager } from '../InvoiceManager'
-import { INVOICE_BASICS } from '../../utils/invoiceUtils'
+import { InvoiceManagerModal } from '../InvoiceManager'
 
 
 
@@ -24,8 +23,7 @@ const PartnerManager = (props) => {
 
     const [partner, setPartner] = useState({})
     const [tabKey, setTabKey] = useState(0)
-    const [selectedInvoice, setSelectedInvoice] = useState(undefined)
-
+    const [invoiceToView, setInvoiceToView] = useState(undefined)
 
     const load = () => {
         if (partnerName) {
@@ -42,18 +40,31 @@ const PartnerManager = (props) => {
         setPartner({ ...partner, ...newPartner })
     }
 
+    const afterInvoiceDelete = (invoice) => {
+        const newInvoices = partner.invoices.filter(i => i.id !== invoice.id)
+        const newPartner = { ...partner, invoices: newInvoices }
+        if (invoice.type.includes('sales')) {
+            newPartner.salesNum -= 1
+        } else {
+            newPartner.purchaseNum -= 1
+        }
+        setPartner(newPartner)
+        setInvoiceToView(undefined)
+    }
+
+
     useEffect(load, [partnerName])
 
     const tabItems = [
         {
             label: '总览',
             key: 0,
-            children: <PartnerInvoiceTable partner={partner} onSelectInvoice={setSelectedInvoice} />,
+            children: <PartnerInvoiceTable partner={partner} onSelectInvoice={setInvoiceToView} />,
         },
         {
             label: '明细',
             key: 1,
-            children: <PartnerInvoiceItemTable partner={partner} onSelectInvoice={setSelectedInvoice} />,
+            children: <PartnerInvoiceItemTable partner={partner} onSelectInvoice={setInvoiceToView} />,
         },
         {
             label: '产品',
@@ -62,14 +73,12 @@ const PartnerManager = (props) => {
         },
     ]
 
-    const invoiceModalTitle = `${INVOICE_BASICS[selectedInvoice?.type]?.title} ${selectedInvoice?.number}`
     return <Space direction='vertical' style={{ width: '100%', paddingTop: '5px' }} size={15}>
-        <Modal open={selectedInvoice} onCancel={() => setSelectedInvoice(undefined)} width='90%'
-            footer={null} title={invoiceModalTitle} destroyOnClose>
-            <ExistingInvoiceManager invoice={selectedInvoice}
-                onCancel={_ => setSelectedInvoice(undefined)}
-                onSave={load} />
-        </Modal>
+        <InvoiceManagerModal open={invoiceToView} invoice={invoiceToView}
+            onCancel={() => setInvoiceToView(undefined)}
+            onSave={load}  // TODO: prevent reloading
+            onDelete={afterInvoiceDelete}
+        />
 
         <PartnerInfo partner={partner} onPartnerChange={handlePartnerChange} />
         <Tabs defaultActiveKey='1'

@@ -1,36 +1,55 @@
-import React, { useState } from 'react'
-import { Button, Space, Col, message } from 'antd'
-import InvoiceForm from './InvoiceForm'
-import InvoiceView from './InvoiceView'
+import React, { useEffect, useState } from 'react'
+import { Col, Button, Space, message } from 'antd'
 import InvoicePrint from './InvoicePrint'
+import InvoiceView from './InvoiceView'
+import InvoiceForm from './InvoiceForm'
 import { invoiceService } from '@/services'
 import { INVOICE_BASICS } from '@/utils/invoiceUtils'
 import { DeleteConfirm } from '../Modal'
 
 
 
-const ExistingInvoiceManager = (props) => {
-    const { invoice, onSave, onCancel, onDelete } = props
-    const [mode, setMode] = useState('view')
-    const deleteConfirmTitle = `是否删除${INVOICE_BASICS[invoice.type]?.title} ${invoice.number} ?`
+const NewInvoiceManager = (props) => {
+    const {
+        type, invoice: initInvoice, editInvoice, mode,
+        onModeChange, onSave, onFormChange, onCancel,
+    } = props
+
+    const [invoice, setInvoice] = useState(initInvoice)
     const [showingDeleteConfirm, setShowingDeleteConfirm] = useState(false)
     const [messageApi, contextHolder] = message.useMessage()
+    const deleteConfirmTitle = `是否删除${INVOICE_BASICS[type]?.title} ${invoice?.number} ?`
 
     const modeDict = {
         'edit': (
-            <InvoiceForm type={invoice.type}
-                editInvoice={undefined}
+            <InvoiceForm type={type}
+                editInvoice={editInvoice}
                 invoice={invoice}
-                onCancel={onCancel}
-                onFormChange={_ => {}}
+                onCancel={_ => {
+                    invoice?.id ? onModeChange?.('view') : onCancel?.()
+                }}
+                onFormChange={onFormChange}
                 onSave={invoice => {
                     onSave?.(invoice)
-                    setMode('view')
+                    setInvoice(invoice)
+                    onModeChange?.('view')
                 }} />
         ),
         'view': <InvoiceView invoice={invoice} />,
-        'print': <InvoicePrint invoice={invoice} onCancel={_ => setMode('view')} />
+        'print': <InvoicePrint invoice={invoice} onCancel={_ => onModeChange?.('view')} />
     }
+
+    // load
+    useEffect(() => {
+        const id = initInvoice?.id
+        if (id) {
+            invoiceService.fetch(type, id).then(res => {
+                setInvoice(res.data)
+            }).catch(err => {
+                setInvoice({})
+            })
+        }
+    }, [type, initInvoice])
 
 
     const handleDelete = () => {
@@ -39,7 +58,7 @@ const ExistingInvoiceManager = (props) => {
         invoiceService.delete(invoice.type, invoice.id).then(res => {
             messageApi.open({ key: messageKey, type: 'success', content: '删除成功' })
             setShowingDeleteConfirm(false)
-            onDelete?.(invoice)
+            onCancel?.()
         }).catch(err => {
             messageApi.open({
                 key: messageKey, type: 'error', duration: 5,
@@ -47,7 +66,6 @@ const ExistingInvoiceManager = (props) => {
             })
         })
     }
-
 
     return (
         <>
@@ -66,8 +84,8 @@ const ExistingInvoiceManager = (props) => {
                             <Space>
                                 <Button onClick={_ => onCancel?.()}>关闭</Button>
                                 <Button onClick={_ => setShowingDeleteConfirm(true)} danger>删除</Button>
-                                <Button onClick={_ => setMode('print')}>打印预览</Button>
-                                <Button onClick={_ => setMode('edit')} type='primary' ghost>编辑</Button>
+                                <Button onClick={_ => onModeChange?.('print')}>打印预览</Button>
+                                <Button onClick={_ => onModeChange?.('edit')} type='primary' ghost>编辑</Button>
                             </Space>
                         </Col>
                 }
@@ -77,4 +95,4 @@ const ExistingInvoiceManager = (props) => {
 }
 
 
-export default ExistingInvoiceManager
+export default NewInvoiceManager

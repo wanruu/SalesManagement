@@ -1,5 +1,5 @@
 import React, { useEffect, useMemo, useState } from 'react'
-import { Modal, Button, Space, message } from 'antd'
+import { Button, Space, message } from 'antd'
 import { ReloadOutlined, PlusOutlined } from '@ant-design/icons'
 import { useSelector, useDispatch } from 'react-redux'
 import { invoiceService } from '@/services'
@@ -7,7 +7,7 @@ import { INVOICE_BASICS, DATE_FORMAT } from '@/utils/invoiceUtils'
 import InvoiceTable from './InvoiceTable'
 import SearchManager from '@/components/SearchManager'
 import { useNavigate } from 'react-router-dom'
-import { ExistingInvoiceManager } from '@/components/InvoiceManager'
+import { InvoiceManagerModal } from '@/components/InvoiceManager'
 import { pick, omit } from 'lodash'
 import { DeleteConfirm } from '@/components/Modal'
 
@@ -70,9 +70,7 @@ const InvoicePage = ({ type }) => {
         messageApi.open({ key: messageKey, type: 'loading', content: '删除中', duration: 86400 })
         invoiceService.deleteMany(invoicesToDelete).then(res => {
             messageApi.open({ key: messageKey, type: 'success', content: '删除成功' })
-            const ids = invoicesToDelete.map(i => i.id)
-            setInvoices(invoices.filter(i => !ids.includes(i.id)))
-            setInvoicesToDelete([])
+            afterDelete(invoicesToDelete)
         }).catch(err => {
             messageApi.open({
                 key: messageKey, type: 'error', duration: 5,
@@ -81,6 +79,14 @@ const InvoicePage = ({ type }) => {
             setInvoicesToDelete([])
         })
     }
+
+    const afterDelete = (invoicesDeleted) => {
+        const ids = invoicesDeleted.map(i => i.id)
+        setInvoices(invoices.filter(i => !ids.includes(i.id)))
+        setInvoicesToDelete([])
+        setInvoiceToView(undefined)
+    }
+
 
     const handleInvoiceChange = (invoice, id) => {
         // prevent reloading from server
@@ -113,13 +119,12 @@ const InvoicePage = ({ type }) => {
 
     return <Space className='page-main-content' direction='vertical' style={{ width: '100%' }}>
         {contextHolder}
-        <Modal title={`${INVOICE_BASICS[invoiceToView?.type]?.title} ${invoiceToView?.number}`}
-            open={invoiceToView} onCancel={_ => setInvoiceToView(undefined)}
-            footer={null} width='90%' destroyOnClose>
-            <ExistingInvoiceManager invoice={invoiceToView}
-                onSave={invoice => handleInvoiceChange(invoice, invoiceToView.id)}
-                onCancel={_ => setInvoiceToView(undefined)} />
-        </Modal>
+
+        <InvoiceManagerModal open={invoiceToView} invoice={invoiceToView}
+            onCancel={_ => setInvoiceToView(undefined)}
+            onSave={invoice => handleInvoiceChange(invoice, invoiceToView.id)}
+            onDelete={invoice => afterDelete([invoice])}
+        />
 
         <DeleteConfirm open={invoicesToDelete.length > 0} onCancel={_ => setInvoicesToDelete([])}
             title={deleteConfirmTitle} onOk={handleDelete} />

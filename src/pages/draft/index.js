@@ -1,7 +1,7 @@
 import React from 'react'
 import { Tabs, Segmented } from 'antd'
 import { useSelector, useDispatch } from 'react-redux'
-import InvoiceManager from '@/components/InvoiceManager'
+import { NewInvoiceManager } from '@/components/InvoiceManager'
 import { INVOICE_BASICS } from '@/utils/invoiceUtils'
 import DraftTable from './DraftTable'
 
@@ -37,15 +37,15 @@ const DraftPage = () => {
         const tabs = drafts.filter(d => d.open).map((draft, idx) => {
             const { invoice, editInvoice, type, key, label, mode } = draft
             const children = <>
-                { invoice?.number ? null : 
+                {invoice?.number ? null :
                     <Segmented options={typeOptions} style={{ margin: '5px 0 10px 0' }}
                         value={type}
                         onChange={val => {
                             dispatch({ type: 'draft/updateType', payload: { key: key, type: val, defaultUnit: defaultUnit } })
-                        }} 
+                        }}
                     />
                 }
-                <InvoiceManager type={type} invoice={invoice} editInvoice={editInvoice} mode={mode}
+                <NewInvoiceManager type={type} invoice={invoice} editInvoice={editInvoice} mode={mode}
                     onCancel={_ => {
                         dispatch({ type: 'draft/remove', payload: { key: key } })
                     }}
@@ -53,11 +53,11 @@ const DraftPage = () => {
                         dispatch({ type: 'draft/updateEditInvoice', payload: { key: key, values: values } })
                     }}
                     onSave={invoice => {
-                        dispatch({ type: 'draft/updateInvoice', payload: { key: key, invoice: invoice }})
+                        dispatch({ type: 'draft/updateInvoice', payload: { key: key, invoice: invoice } })
                         dispatch({ type: 'draft/updateEditInvoice', payload: { key: key, values: undefined } })
-                    }} 
+                    }}
                     onModeChange={mode => {
-                        dispatch({ type: 'draft/updateMode', payload: { key: key, mode: mode }})
+                        dispatch({ type: 'draft/updateMode', payload: { key: key, mode: mode } })
                     }}
                 />
             </>
@@ -75,7 +75,7 @@ const DraftPage = () => {
         children: <>
             草稿箱
             <DraftTable drafts={drafts}
-                onEdit={draft => dispatch({ type: 'draft/show', payload: { key: draft.key } })} 
+                onEdit={draft => dispatch({ type: 'draft/show', payload: { key: draft.key } })}
                 onDelete={draft => dispatch({ type: 'draft/remove', payload: { key: draft.key } })}
             />
         </>,
