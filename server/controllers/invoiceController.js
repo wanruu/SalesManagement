@@ -106,7 +106,10 @@ class InvoiceController extends BaseController {
     show = async (req, res, next) => {
         try {
             const invoice = await this.findById(req.params.id)
-            return res.send(invoice)
+            if (invoice) {
+                return res.send(invoice)
+            }
+            return this.handleNotFound(res)
         } catch (error) {
             return this.handleError(res, error)
         }

@@ -47,6 +47,9 @@ const NewInvoiceManager = (props) => {
                 setInvoice(res.data)
             }).catch(err => {
                 setInvoice({})
+                if (err.status === 404) {
+                    onCancel?.()
+                }
             })
         }
     }, [type, initInvoice])
