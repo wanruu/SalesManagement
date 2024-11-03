@@ -6,6 +6,7 @@ import zhCN from 'antd/locale/zh_CN'
 import store from './store'
 import { Provider } from 'react-redux'
 import './index.style.scss'
+import { GlobalMessage, GlobalNotification } from './components/GlobalComponents'
 // import reportWebVitals from './reportWebVitals'
 
 const root = ReactDOM.createRoot(document.getElementById('root'))
@@ -15,6 +16,8 @@ root.render(
         <ConfigProvider locale={zhCN}>
             <Provider store={store}>
                 <App />
+                <GlobalMessage />
+                <GlobalNotification />
             </Provider>
         </ConfigProvider>
     </React.StrictMode>
