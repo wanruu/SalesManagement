@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useMemo } from 'react'
-import { Space, Button, Modal, message } from 'antd'
+import { Space, Button, Modal } from 'antd'
 import { PlusOutlined, ClearOutlined, ReloadOutlined } from '@ant-design/icons'
 import { useDispatch, useSelector } from 'react-redux'
 import { productService } from '@/services'
@@ -18,9 +18,6 @@ const ProductPage = () => {
     const [productToView, setProductToView] = useState(undefined)
     const [productToEdit, setProductToEdit] = useState(undefined)
     const [productsToDelete, setProductsToDelete] = useState([])
-
-    // utils
-    const [messageApi, contextHolder] = message.useMessage()
 
     // redux
     const ifShowMaterial = useSelector(state => state.functionSetting.ifShowMaterial.value)
@@ -49,17 +46,23 @@ const ProductPage = () => {
 
     const handleProductsDelete = () => {
         const messageKey = 'delete-product'
-        messageApi.open({ key: messageKey, type: 'loading', content: '删除中', duration: 86400 })
+        dispatch({
+            type: 'globalInfo/addMessage',
+            payload: { key: messageKey, type: 'loading', duration: 86400, content: '删除中' }
+        });
         productService.deleteMany(productsToDelete).then(res => {
-            messageApi.open({ key: messageKey, type: 'success', content: '删除成功' })
+            dispatch({
+                type: 'globalInfo/addMessage',
+                payload: { key: messageKey, type: 'success', content: '删除成功' }
+            });
             const ids = productsToDelete.map(p => p.id)
             setProducts(products.filter(p => !ids.includes(p.id)))
             setProductsToDelete([])
         }).catch(err => {
-            messageApi.open({
-                key: messageKey, type: 'error', duration: 5,
-                content: `删除失败：${err.message}. ${err.response?.data?.error}`,
-            })
+            dispatch({
+                type: 'globalInfo/addMessage',
+                payload: { key: messageKey, type: 'error', duration: 5, content: `删除失败：${err.message}. ${err.response?.data?.error}` }
+            });
             setProductsToDelete([])
         })
     }
@@ -94,7 +97,6 @@ const ProductPage = () => {
     // ------------------------------------
 
     return <Space direction='vertical' style={{ width: '100%' }} className='page-main-content'>
-        {contextHolder}
 
         <Modal open={productToEdit} onCancel={_ => setProductToEdit(undefined)} title={productToEdit && productToEdit.id ? '编辑产品' : '新增产品'} footer={null} destroyOnClose>
             <ProductForm product={productToEdit} onProductChange={product => handleProductChange(product, productToEdit.id)} />

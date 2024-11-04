@@ -1,4 +1,4 @@
-import { Col, message, Row, Space, Tabs } from 'antd'
+import { Col, Row, Space, Tabs } from 'antd'
 import React, { useEffect, useState } from 'react'
 import { partnerService } from '@/services'
 import PartnerInvoiceItemTable from './PartnerInvoiceItemTable'
@@ -7,6 +7,7 @@ import PartnerProductTable from './PartnerProductTable'
 import { EditableItem } from '../Input'
 import { pick, isEqual } from 'lodash'
 import { InvoiceManagerModal } from '../InvoiceManager'
+import { useDispatch } from 'react-redux'
 
 
 
@@ -24,6 +25,7 @@ const PartnerManager = (props) => {
     const [partner, setPartner] = useState({})
     const [tabKey, setTabKey] = useState(0)
     const [invoiceToView, setInvoiceToView] = useState(undefined)
+    const dispatch = useDispatch()
 
     const load = () => {
         if (partnerName) {
@@ -104,18 +106,21 @@ const PartnerInfo = (props) => {
         const newPartner = pick(values, fieldnames)
         if (!isEqual(newPartner, pick(partner, fieldnames))) {
             const messageKey = 'update-partner'
-            message.open({
-                type: 'loading', duration: 86400,
-                content: '保存中', key: messageKey
-            })
+            dispatch({
+                type: 'globalInfo/addMessage',
+                payload: { key: messageKey, type: 'loading', content: '保存中', duration: 86400, }
+            });
             partnerService.update(partner.name, newPartner).then(res => {
                 onPartnerChange(res.data)
-                message.open({ type: 'success', content: '保存成功', key: messageKey })
+                dispatch({
+                    type: 'globalInfo/addMessage',
+                    payload: { key: messageKey, type: 'success', content: '保存成功' }
+                });
             }).catch(err => {
-                message.open({
-                    type: 'error', duration: 5, key: messageKey,
-                    content: `保存失败：${err.message}. ${err.response?.data?.error}`,
-                })
+                dispatch({
+                    type: 'globalInfo/addMessage',
+                    payload: { key: messageKey, type: 'error', content: `保存失败：${err.message}. ${err.response?.data?.error}`, duration: 5 }
+                });
             })
         }
     }

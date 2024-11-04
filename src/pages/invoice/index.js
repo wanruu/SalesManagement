@@ -1,5 +1,5 @@
 import React, { useEffect, useMemo, useState } from 'react'
-import { Button, Space, message } from 'antd'
+import { Button, Space } from 'antd'
 import { ReloadOutlined, PlusOutlined } from '@ant-design/icons'
 import { useSelector, useDispatch } from 'react-redux'
 import { invoiceService } from '@/services'
@@ -28,7 +28,6 @@ const InvoicePage = ({ type }) => {
     }, [invoicesToDelete])
 
     // utils
-    const [messageApi, contextHolder] = message.useMessage()
     const navigate = useNavigate()
 
     // redux
@@ -67,15 +66,21 @@ const InvoicePage = ({ type }) => {
 
     const handleDelete = () => {
         const messageKey = 'delete-invoice'
-        messageApi.open({ key: messageKey, type: 'loading', content: '删除中', duration: 86400 })
+        dispatch({
+            type: 'globalInfo/addMessage',
+            payload: { key: messageKey, type: 'loading', duration: 86400, content: '删除中' }
+        });
         invoiceService.deleteMany(invoicesToDelete).then(res => {
-            messageApi.open({ key: messageKey, type: 'success', content: '删除成功' })
+            dispatch({
+                type: 'globalInfo/addMessage',
+                payload: { key: messageKey, type: 'success', content: '删除成功' }
+            });
             afterDelete(invoicesToDelete)
         }).catch(err => {
-            messageApi.open({
-                key: messageKey, type: 'error', duration: 5,
-                content: `删除失败：${err.message}. ${err.response?.data?.error}`,
-            })
+            dispatch({
+                type: 'globalInfo/addMessage',
+                payload: { key: messageKey, type: 'error', duration: 5, content: `删除失败：${err.message}. ${err.response?.data?.error}` }
+            });
             setInvoicesToDelete([])
         })
     }
@@ -118,7 +123,6 @@ const InvoicePage = ({ type }) => {
 
 
     return <Space className='page-main-content' direction='vertical' style={{ width: '100%' }}>
-        {contextHolder}
 
         <InvoiceManagerModal open={invoiceToView} invoice={invoiceToView}
             onCancel={_ => setInvoiceToView(undefined)}

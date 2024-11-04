@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useMemo } from 'react'
-import { Button, Space, message, Modal } from 'antd'
+import { Button, Space, Modal } from 'antd'
 import { ClearOutlined, PlusOutlined, ReloadOutlined } from '@ant-design/icons'
 import { useSelector, useDispatch } from 'react-redux'
 import { partnerService } from '@/services'
@@ -47,8 +47,6 @@ const PartnerPage = () => {
     }, [partners])
 
 
-    const [messageApi, contextHolder] = message.useMessage()
-
     // redux
     const searchMode = useSelector(state => state.page.partner.search.mode)
     const searchForm = useSelector(state => state.page.partner.search.form)
@@ -60,27 +58,33 @@ const PartnerPage = () => {
             setPartners(res.data)
         }).catch(err => {
             setPartners([])
-            messageApi.open({
-                type: 'error', duration: 5,
-                content: `加载失败：${err.message}. ${err.response?.data?.error}`,
-            })
+            dispatch({
+                type: 'globalInfo/addMessage',
+                payload: { type: 'error', duration: 5, content: `加载失败：${err.message}. ${err.response?.data?.error}` }
+            });
         })
     }
 
 
     const handlePartnerDelete = () => {
         const messageKey = 'delete-partner'
-        messageApi.open({ key: messageKey, type: 'loading', content: '删除中', duration: 86400 })
+        dispatch({
+            type: 'globalInfo/addMessage',
+            payload: { key: messageKey, type: 'loading', duration: 86400, content: '删除中' }
+        });
         partnerService.deleteMany(partnersToDelete).then(res => {
-            messageApi.open({ key: messageKey, type: 'success', content: '删除成功' })
+            dispatch({
+                type: 'globalInfo/addMessage',
+                payload: { key: messageKey, type: 'success', content: '删除成功' }
+            });
             const names = partnersToDelete.map(p => p.name)
             setPartners(partners.filter(p => !names.includes(p.name)))
             setPartnersToDelete([])
         }).catch(err => {
-            messageApi.open({
-                key: messageKey, type: 'error', duration: 5,
-                content: `删除失败：${err.message}. ${err.response?.data?.error}`,
-            })
+            dispatch({
+                type: 'globalInfo/addMessage',
+                payload: { key: messageKey, type: 'error', duration: 5, content: `删除失败：${err.message}. ${err.response?.data?.error}`, }
+            });
             setPartnersToDelete([])
         })
     }
@@ -120,8 +124,6 @@ const PartnerPage = () => {
 
 
     return <Space direction='vertical' style={{ width: '100%' }} className='page-main-content'>
-        {contextHolder}
-
         {/* Must be destroyOnClose, or the form can't be reset. */}
         <Modal title={partnerToEdit?.name ? '编辑交易对象' : '新增交易对象'} open={partnerToEdit} destroyOnClose
             onCancel={_ => setPartnerToEdit(undefined)} footer={null}>

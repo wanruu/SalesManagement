@@ -1,7 +1,7 @@
 import React, { useEffect } from 'react'
-import { Input, Space, Button, Form, message, Col, Select } from 'antd'
+import { Input, Space, Button, Form, Col, Select } from 'antd'
 import { productService } from '@/services'
-import { useSelector } from 'react-redux'
+import { useSelector, useDispatch } from 'react-redux'
 
 
 const { Item } = Form
@@ -17,6 +17,7 @@ const ProductForm = ({ product, onProductChange }) => {
     const units = useSelector(state => state.functionSetting.units.value)
     const unitOptions = units.map(u => ({ label: u, value: u }))
     const defaultUnit = useSelector(state => state.functionSetting.defaultUnit.value)
+    const dispatch = useDispatch()
 
     const handleFinish = async () => {
         const data = form.getFieldsValue(true)
@@ -27,7 +28,10 @@ const ProductForm = ({ product, onProductChange }) => {
             unit: data.unit,
         }
         const messageKey = 'product'
-        message.open({ type: 'loading', key: messageKey, content: '提交中' })
+        dispatch({
+            type: 'globalInfo/addMessage',
+            payload: { key: messageKey, type: 'loading', content: '提交中', duration: 86400 }
+        });
         try {
             let res
             if (product.id) {
@@ -36,15 +40,21 @@ const ProductForm = ({ product, onProductChange }) => {
                 res = await productService.create(newProduct)
             }
             onProductChange?.(res.data)
-            message.open({ key: messageKey, type: 'success', content: '保存成功' })
+            dispatch({
+                type: 'globalInfo/addMessage',
+                payload: { key: messageKey, type: 'success', content: '保存成功', }
+            });
         } catch (err) {
             if (err.response?.data?.error == 'SequelizeUniqueConstraintError') {
-                message.open({ type: 'error', key: messageKey, content: '产品已存在' })
+                dispatch({
+                    type: 'globalInfo/addMessage',
+                    payload: { key: messageKey, type: 'error', content: '产品已存在' }
+                });
             } else {
-                message.open({ 
-                    type: 'error', key: messageKey, duration: 5,
-                    content: `${err.message}. ${err.response?.data?.error}` 
-                })
+                dispatch({
+                    type: 'globalInfo/addMessage',
+                    payload: { key: messageKey, type: 'error', content: `${err.message}. ${err.response?.data?.error}` , duration: 5 }
+                });
             }
         }
     }

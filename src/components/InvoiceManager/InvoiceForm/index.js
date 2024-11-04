@@ -1,5 +1,5 @@
 import React, { useEffect } from 'react'
-import { Form, Button, Space, Col, message, Divider } from 'antd'
+import { Form, Button, Space, Col, Divider } from 'antd'
 import dayjs from 'dayjs'
 import { DATE_FORMAT } from '@/utils/invoiceUtils'
 import { invoiceService } from '@/services'
@@ -7,6 +7,7 @@ import InvoiceFormHeader from './InvoiceFormHeader'
 import OrderFormTable from './OrderFormTable'
 import { RefundTable, AllRefundTable } from './RefundFormTable'
 import './invoice-form.style.scss'
+import { useDispatch } from 'react-redux'
 
 
 /*
@@ -21,6 +22,7 @@ import './invoice-form.style.scss'
 const InvoiceForm = ({ type, editInvoice, invoice, onSave, onFormChange, onCancel }) => {
     const [form] = Form.useForm()
     const isOrder = type.includes('Order')
+    const dispatch = useDispatch()
 
     const initForm = () => {
         form.resetFields(['order'])  // 其他field会在setFieldsValue之后更新，唯独order可能不会更新（当从refund切回order时）
@@ -80,32 +82,44 @@ const InvoiceForm = ({ type, editInvoice, invoice, onSave, onFormChange, onCance
     
         // Send request
         const messageKey = 'upload-invoice'
-        message.open({ key: messageKey, type: 'loading', content: '提交中' })
+        dispatch({
+            type: 'globalInfo/addMessage',
+            payload: { key: messageKey, type: 'loading', content: '提交中', duration: 86400 }
+        });
         if (invoice?.id) {
             invoiceService.update(type, invoice.id, newInvoice).then(res => {
-                message.open({ key: messageKey, type: 'success', content: '更新成功' })
+                dispatch({
+                    type: 'globalInfo/addMessage',
+                    payload: { key: messageKey, type: 'success', content: '更新成功' }
+                });
                 onSave?.(res.data)
             }).catch(err => {
-                message.open({ 
-                    key: messageKey, type: 'error', duration: 5,
-                    content: `${err.message}. ${err.response?.data?.error}`,
-                })
+                dispatch({
+                    type: 'globalInfo/addMessage',
+                    payload: { key: messageKey, type: 'error', content: `${err.message}. ${err.response?.data?.error}`, duration: 5 }
+                });
             })
         } else {
             invoiceService.create(type, newInvoice).then(res => {
-                message.open({ key: messageKey, type: 'success', content: '新建成功' })
+                dispatch({
+                    type: 'globalInfo/addMessage',
+                    payload: { key: messageKey, type: 'success', content: '新建成功' }
+                });
                 onSave?.(res.data)
             }).catch(err => {
-                message.open({ 
-                    key: messageKey, type: 'error', duration: 5,
-                    content: `${err.message}. ${err.response?.data?.error}`,
-                })
+                dispatch({
+                    type: 'globalInfo/addMessage',
+                    payload: { key: messageKey, type: 'error', content: `${err.message}. ${err.response?.data?.error}`, duration: 5 }
+                });
             })
         }
     }
 
     const handleFinishFailed = () => {
-        message.error('表格不完整')
+        dispatch({
+            type: 'globalInfo/addMessage',
+            payload: { type: 'error', content: '表格不完整' }
+        });
     }
 
     // 确保金额改变时不调用，只有type改变才调用

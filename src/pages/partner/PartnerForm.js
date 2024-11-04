@@ -1,6 +1,7 @@
 import React from 'react'
-import { Button, message, Form, Input, Col, Space } from 'antd'
+import { Button, Form, Input, Col, Space } from 'antd'
 import { partnerService } from '@/services'
+import { useDispatch } from 'react-redux'
 
 
 const formItems = [
@@ -36,11 +37,15 @@ const formItems = [
 const PartnerForm = (props) => {
     const { partner, onPartnerChange } = props
     const [form] = Form.useForm()
+    const dispatch = useDispatch()
 
     const handleFinish = async () => {
         const newPartner = form.getFieldsValue()
         const messageKey = 'submit-partner'
-        message.open({ type: 'loading', key: messageKey, content: '保存中' })
+        dispatch({
+            type: 'globalInfo/addMessage',
+            payload: { key: messageKey, type: 'loading', content: '保存中', duration: 86400 }
+        });
         try {
             let res
             if (partner.name) {
@@ -49,15 +54,21 @@ const PartnerForm = (props) => {
                 res = await partnerService.create(newPartner)
             }
             onPartnerChange?.(res.data)
-            message.open({ key: messageKey, type: 'success', content: '保存成功' })
+            dispatch({
+                type: 'globalInfo/addMessage',
+                payload: { key: messageKey, type: 'success', content: '保存成功' }
+            });
         } catch (err) {
             if (err.response?.data?.error == 'SequelizeUniqueConstraintError') {
-                message.open({ type: 'error', key: messageKey, content: '姓名重复' })
+                dispatch({
+                    type: 'globalInfo/addMessage',
+                    payload: { key: messageKey, type: 'error', content: '姓名重复' }
+                });
             } else {
-                message.open({
-                    type: 'error', key: messageKey, duration: 5,
-                    content: `保存失败：${err.message}. ${err.response?.data?.error}`
-                })
+                dispatch({
+                    type: 'globalInfo/addMessage',
+                    payload: { key: messageKey, type: 'error', content: `保存失败：${err.message}. ${err.response?.data?.error}`, duration: 5 }
+                });
             }
         }
     }

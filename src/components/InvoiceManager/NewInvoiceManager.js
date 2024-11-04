@@ -1,12 +1,12 @@
 import React, { useEffect, useState } from 'react'
-import { Col, Button, Space, message } from 'antd'
+import { Col, Button, Space } from 'antd'
 import InvoicePrint from './InvoicePrint'
 import InvoiceView from './InvoiceView'
 import InvoiceForm from './InvoiceForm'
 import { invoiceService } from '@/services'
 import { INVOICE_BASICS } from '@/utils/invoiceUtils'
 import { DeleteConfirm } from '../Modal'
-
+import { useDispatch } from 'react-redux'
 
 
 const NewInvoiceManager = (props) => {
@@ -17,8 +17,8 @@ const NewInvoiceManager = (props) => {
 
     const [invoice, setInvoice] = useState(initInvoice)
     const [showingDeleteConfirm, setShowingDeleteConfirm] = useState(false)
-    const [messageApi, contextHolder] = message.useMessage()
     const deleteConfirmTitle = `是否删除${INVOICE_BASICS[type]?.title} ${invoice?.number} ?`
+    const dispatch = useDispatch()
 
     const modeDict = {
         'edit': (
@@ -57,22 +57,27 @@ const NewInvoiceManager = (props) => {
 
     const handleDelete = () => {
         const messageKey = 'delete-invoice'
-        messageApi.open({ key: messageKey, type: 'loading', content: '删除中', duration: 86400 })
+        dispatch({
+            type: 'globalInfo/addMessage',
+            payload: { key: messageKey, type: 'loading', content: '删除中', duration: 86400, }
+        });
         invoiceService.delete(invoice.type, invoice.id).then(res => {
-            messageApi.open({ key: messageKey, type: 'success', content: '删除成功' })
+            dispatch({
+                type: 'globalInfo/addMessage',
+                payload: { key: messageKey, type: 'success', content: '删除成功', }
+            });
             setShowingDeleteConfirm(false)
             onCancel?.()
         }).catch(err => {
-            messageApi.open({
-                key: messageKey, type: 'error', duration: 5,
-                content: `删除失败：${err.message}. ${err.response?.data?.error}`,
-            })
+            dispatch({
+                type: 'globalInfo/addMessage',
+                payload: { key: messageKey, type: 'error', content: `删除失败：${err.message}. ${err.response?.data?.error}`, duration: 5, }
+            });
         })
     }
 
     return (
         <>
-            {contextHolder}
             <DeleteConfirm title={deleteConfirmTitle} open={showingDeleteConfirm}
                 zIndex={1500}
                 onCancel={_ => setShowingDeleteConfirm(false)}
