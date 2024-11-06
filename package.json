@@ -1,16 +1,16 @@
 {
     "name": "sales",
-    "version": "1.0.0",
+    "version": "2.0.0-beta.0",
     "description": "[README](README.md)",
     "main": "public/electron.js",
-    "directories": {
-        "test": "test"
-    },
     "scripts": {
         "commit": "git-cz",
         "test": "python test/main.py",
         "react-start": "set NODE_OPTIONS=--openssl-legacy-provider && react-app-rewired start",
-        "electron-start": "set APP_DEV=true && electron public/electron.js"
+        "electron-start": "set APP_DEV=true && electron public/electron.js",
+        "react-build": "react-app-rewired build",
+        "electron-build": "electron-builder build --win --x64",
+        "build": "npm run react-build && npm run electron-build"
     },
     "config": {
         "commitizen": {
@@ -36,7 +36,6 @@
         "axios": "^1.7.7",
         "cors": "^2.8.5",
         "echarts-for-react": "^3.0.2",
-        "electron": "^32.1.2",
         "joi": "^17.13.3",
         "mathjs": "^13.2.0",
         "pinyin-pro": "^3.25.0",
@@ -65,9 +64,39 @@
         "commitizen": "^4.3.1",
         "cz-conventional-changelog": "^3.3.0",
         "cz-emoji-conventional": "^1.1.0",
+        "electron": "^33.1.0",
+        "electron-builder": "^25.1.8",
         "electron-react-devtools": "^0.5.3",
         "react-app-rewired": "^2.2.1",
         "sass": "^1.79.4",
         "sass-loader": "^16.0.2"
+    },
+    "build": {
+        "productName": "清单管理",
+        "appId": "com.wendy.sales",
+        "directories": {
+            "output": "dist"
+        },
+        "win": {
+            "icon": "build/icon.ico",
+            "target": [
+                {
+                    "target": "nsis"
+                }
+            ]
+        },
+        "nsis": {
+            "oneClick": false,
+            "allowElevation": true,
+            "allowToChangeInstallationDirectory": true,
+            "createDesktopShortcut": true,
+            "createStartMenuShortcut": true,
+            "shortcutName": "清单管理"
+        },
+        "files": [
+            "node_modules/**/*",
+            "build/**/*",
+            "server/**/*"
+        ]
     }
 }
