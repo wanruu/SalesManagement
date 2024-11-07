@@ -1,6 +1,6 @@
 import React, { useMemo, useState } from 'react'
 import { Layout, theme, Menu } from 'antd'
-import { BrowserRouter, Link, Route, Routes, useLocation } from 'react-router-dom'
+import { HashRouter, Link, Route, Routes, useLocation } from 'react-router-dom'
 import {
     SettingOutlined,
     PlusCircleOutlined,
@@ -18,9 +18,9 @@ const { Header, Content, Footer, Sider } = Layout
 
 
 const AppWrapper = () => {
-    return <BrowserRouter>
+    return <HashRouter>
         <App />
-    </BrowserRouter>
+    </HashRouter>
 }
 
 
@@ -103,7 +103,7 @@ const App = () => {
             <Layout style={{ marginLeft: siderWidth, transition: 'margin 0.2s ease-in-out' }}>
                 <Content style={{ background: colorBgContainer, overflow: 'initial' }}>
                     <Routes>
-                        <Route path='/' element={<DraftPage />} />
+                        <Route index element={<DraftPage />} />
                         <Route path='salesOrder' element={<InvoicePage type='salesOrder' key='salesOrder' />} />
                         <Route path='purchaseOrder' element={<InvoicePage type='purchaseOrder' key='purchaseOrder' />} />
                         <Route path='salesRefund' element={<InvoicePage type='salesRefund' key='salesRefund' />} />
